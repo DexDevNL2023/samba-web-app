@@ -1,0 +1,221 @@
+<div class="d-flex justify-content-center">
+  <div class="col-md-8">
+    <h2 *ngIf="settingsForm.value.login" [translateValues]="{ username: settingsForm.value.login | translate }">
+      Paramètres de l'utilisateur pour [<strong>{{ settingsForm.value.login | translate }}</strong>]
+    </h2>
+
+    <p-messages *ngIf="success" severity="success" [text]="'settings.form.successMessage' | translate"></p-messages>
+
+    <form *ngIf="settingsForm.value.login" name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
+      <div class="mb-3">
+        <label class="form-label" for="imageUrl">Photo de profile</label>
+        <p-fileUpload
+          name="imageUrl"
+          chooseLabel="Choisir"
+          uploadLabel="Télécharger"
+          cancelLabel="Annuler"
+          accept="image/*"
+          (onSelect)="onFileSelected('imageUrl', $event)"
+          [showUploadButton]="true"
+          [showCancelButton]="true"
+          [auto]="true"
+        ></p-fileUpload>
+        <div *ngIf="imageUrlPreview" class="mt-2">
+          <img [src]="imageUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="firstName">Prénoms</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Prénoms"
+          formControlName="firstName"
+          data-cy="firstname"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="lastName">Nom de famille</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          name="lastName"
+          placeholder="Nom de famille"
+          formControlName="lastName"
+          data-cy="lastname"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Email"
+          formControlName="email"
+          data-cy="email"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="numNiu">NIU</label>
+        <input
+          type="text"
+          class="form-control"
+          id="numNiu"
+          name="numNiu"
+          formControlName="numNiu"
+        />
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label" for="dateNaissance">Date de naissance</label>
+        <p-calendar
+          id="dateNaissance"
+          name="dateNaissance"
+          formControlName="dateNaissance"
+          [showIcon]="true"
+          inputId="icon"
+          dateFormat="dd/mm/yy"
+          [monthNavigator]="true"
+          [yearNavigator]="true"
+          yearRange="1900:{{ currentYear }}"
+          placeholder="Sélectionnez une date"
+        ></p-calendar>
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label" for="numCni">CNI</label>
+        <input
+          type="text"
+          class="form-control"
+          id="numCni"
+          name="numCni"
+          formControlName="numCni"
+        />
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label" for="sexe">Genre</label>
+        <p-dropdown
+          [options]="genders"
+          placeholder="Genre"
+          formControlName="sexe"
+        ></p-dropdown>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="telephone">Téléphone</label>
+        <input
+          type="text"
+          class="form-control"
+          id="telephone"
+          name="telephone"
+          formControlName="telephone"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="addresse">Adresse</label>
+        <input
+          type="text"
+          class="form-control"
+          id="addresse"
+          name="addresse"
+          formControlName="addresse"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="ville">Ville</label>
+        <input
+          type="text"
+          class="form-control"
+          id="ville"
+          name="ville"
+          formControlName="ville"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="pays">Pays</label>
+        <input
+          type="text"
+          class="form-control"
+          id="pays"
+          name="pays"
+          formControlName="pays"
+        />
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label" for="signature">Signature</label>
+        <p-fileUpload
+          name="signature"
+          chooseLabel="{{ 'global.form.choose' | translate }}"
+          uploadLabel="{{ 'global.form.upload' | translate }}"
+          cancelLabel="{{ 'global.form.cancel' | translate }}"
+          accept="image/*"
+          (onSelect)="onFileSelected('signature', $event)"
+          [showUploadButton]="true"
+          [showCancelButton]="true"
+          [auto]="true"
+        ></p-fileUpload>
+        <div *ngIf="signatureUrlPreview" class="mt-2">
+          <img [src]="signatureUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
+        </div>
+      </div>
+
+      <div *ngIf="languages && languages.length > 0" class="mb-3">
+        <label for="langKey">Langue</label>
+        <p-dropdown
+          [options]="languages"
+          placeholder="Langue"
+          formControlName="langKey"
+        ></p-dropdown>
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-3">
+        <label class="form-label">Activé</label>
+        <p-checkbox
+          id="activated"
+          name="activated"
+          formControlName="activated"
+          binary="true"
+          [label]="'Activé'"
+          [binary]="true"
+          [styleClass]="'p-mr-2'"
+        ></p-checkbox>
+      </div>
+
+      <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-3">
+        <label class="form-label" for="authorities">Rôles</label>
+        <p-multiSelect
+          id="authorities"
+          name="authorities"
+          [options]="authorities"
+          [(ngModel)]="selectedAuthorities"
+          formControlName="authorities"
+          [defaultLabel]="'Sélectionnez les rôles'"
+          [style]="{'width':'100%'}"
+          [panelStyle]="{'max-height':'200px'}"
+          optionLabel="label"
+          dataKey="value"
+          appendTo="body"
+          data-cy="authorities"
+        ></p-multiSelect>
+      </div>
+
+      <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">
+        Enregistrer
+      </button>
+    </form>
+  </div>
+</div>

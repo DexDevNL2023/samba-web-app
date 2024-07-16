@@ -1,0 +1,60 @@
+<div class="grid dashboard">
+    <!-- Boxes d'aperçu -->
+    <div *ngFor="let box of overviewBoxes; let i = index" class="col-12 lg:col-6 xl:col-3">
+        <div class="overview-box overview-box-{{ i + 1 }}">
+            <div class="overview-box-icon">
+                <i [ngClass]="box.icon"></i>
+            </div>
+            <div class="overview-box-content">
+                <div class="overview-box-title">{{ box.title }}</div>
+                <div class="overview-box-stats">{{ box.stats }}</div>
+                <div class="overview-box-details">{{ box.details }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des partenaires -->
+    <div class="col-12 lg:col-6 global-sales">
+        <p-panel header="Partenaires">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Nom du Partenaire</th>
+                        <th>Nombre d'Assurés</th>
+                        <th>% de Souscription</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let partner of partners">
+                        <td><img [src]="partner.logo" width="45"></td>
+                        <td>{{ partner.name }}</td>
+                        <td>{{ partner.insuredCount }}</td>
+                        <td>{{ partner.subscriptionPercent }}</td>
+                        <td><i class="pi" [ngClass]="partner.status === 'up' ? 'pi-arrow-up' : 'pi-arrow-down'"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </p-panel>
+    </div>
+
+    <!-- Historique des paiements -->
+    <div class="col-12 lg:col-6 stats">
+        <p-panel header="Historique des Paiements">
+            <div class="knob-1 knob">
+                <div class="knob-2 knob">
+                    <div class="knob-3 knob"></div>
+                </div>
+            </div>
+
+            <div class="grid legend">
+                <div *ngFor="let history of paymentHistory" class="col-12 md:col-4 {{ history.style.toLowerCase() }}">
+                    <div class="legend-color"></div>
+                    <div class="legend-name">{{ history.type }}</div>
+                    <div class="legend-number">{{ history.amount }}</div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

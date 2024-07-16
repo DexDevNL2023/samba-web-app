@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/prismjs/themes/prism-coy.css";
+//@import '../node_modules/primeng/resources//themes/vela-blue/theme.css';
+@import "assets/demo/flags/flags.css";
+@import "assets/demo/documentation.scss";
+
+
+:host ::ng-deep .p-message {
+    margin-left: .25em;
+}
+
+:host ::ng-deep .p-toast{
+    z-index:99999;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.layout-topbar {
+    position: relative;
+    z-index: 1000;
+}
+
+.p-breadcrumb {
+    margin-top: 10px; /* Ajustez la marge selon vos besoins */
+    padding: 0 1rem;  /* Ajustez le padding selon vos besoins */
+}
+
+.p-breadcrumb .max-w-full {
+    max-width: 100%;
+}

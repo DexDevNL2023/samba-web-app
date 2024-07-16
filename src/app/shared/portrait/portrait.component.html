@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en" #toPrint id="toPrint" style="display: none;">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SAMBA'A Web App 1.1</title>
+    </head>
+
+    <body class="">
+    <!-- Entete-->
+    <table class="table" width="100%">
+        <tr class="entete" style="text-align: center; margin: auto; font-size: 0.87em; font-weight: bold; width: auto;">
+            <td class="left">
+                <div *ngFor="let item of headerPrintData?.enteteGauche;">
+                    {{item}}<br />
+                    **********<br />
+                </div>
+                <span style="font-size: 0.8em;">TEL: {{ headerPrintData?.param?.telephone }}, B.P: {{ headerPrintData?.param?.bp }}, {{ headerPrintData?.param?.ville }}</span>
+            </td>
+            <td class="center">
+               <img src="../../../assets/layout/images/logo-couleur.png" width="100" height="60" class="img"><br>
+                <span style="font-size: 0.8em;">Email: {{headerPrintData?.param?.email}}
+                 <br> Site: {{headerPrintData?.param?.site}}</span>
+            </td>
+            <td class="right">
+                <div *ngFor="let item of headerPrintData?.enteteDroite;">
+                    {{item}}<br />
+                    **********<br />
+                </div>
+                <span style="font-size: 0.8em;">TEL: {{ headerPrintData?.param?.telephone }}, P.B: {{ headerPrintData?.param?.bp }}, {{ headerPrintData?.param?.ville }}</span>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <!-- La signature-->
+    <div style="border-top: 0.3px solid  black;" ></div>
+    <table>
+        <tr style="font-size: 0.8em;">
+            <td style="text-align: left;">
+                <i>SAMBA'A Web App v1.1 , powered by <a href="github.com/DexDevNL2023">IT-CONSULTING TELEO</a></i>
+            </td>
+            <td style="text-align: right;">
+                <i>Imprimé le {{today | date:'d-M-Y'}}  à {{today | date:'H'}}h {{today | date:'mm'}}min</i>
+            </td>
+        </tr>
+    </table>
+    <!-- le titre-->
+    <h5 class="titre" style="text-align: center; text-decoration: wavy; font-weight: bold; font-size: 1.5em; text-transform: uppercase;">
+        <u>{{titlePage}}</u>
+    </h5>
+     <!-- le tableau-->
+    <table class="table" border="1" cellspacing="1" cellpadding="4" width="100%" style=" margin: 2% auto; width: 100%;  border: solid black 1px;">
+        <tr class="table-header" style="text-align: center; font-weight: bold;font-size: 1em;">
+            <th width="4%">#</th>
+            <th *ngFor="let item of tableHeaders;">{{item.header}}</th>
+        </tr>
+        <tr *ngFor="let row of tableRows; let i=index;" [ngStyle]="{'background-color':i%2===0 ? '' : 'rgb(245, 240, 240)'}" style="height: 15px; font-size: 0.9em;">
+            <td align="center" style="border: solid black 0.5px;">{{i+1}}</td>
+            <td *ngFor="let col of tableHeaders;" style="border: solid black 0.5px; max-width: 15em; overflow-wrap: break-word;">
+               {{displayValue(row, col?.field)}}
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
+<style type="text/css" media="print">
+    @page
+    {
+        size: auto;   /* auto is the initial value */
+        margin: 0mm;  /* this affects the margin in the printer settings */
+    }
+</style>
