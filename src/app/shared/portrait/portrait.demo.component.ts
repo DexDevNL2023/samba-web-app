@@ -6,9 +6,10 @@ import { HeaderPrintData } from '../../models/headerPrintData';
 
 
 @Component({
-  selector: 'app-portrait',
-  templateUrl: './portrait.component.html',
-  styleUrls: ['./portrait.component.scss']
+  selector: 'app-demo-portrait',
+  standalone: true,
+  templateUrl: './portrait.demo.component.html',
+  styleUrls: ['./portrait.demo.component.scss']
 })
 export class PortraitComponent {
 
@@ -25,7 +26,7 @@ export class PortraitComponent {
    ngOnInit() {
      this.paramService.getParametres().subscribe(data => {this.initHeaderPrintData(data)});
    }
-
+ 
    initHeaderPrintData(data: Company){
      this.headerPrintData.enteteDroite =  data.enteteDroite?.split(";");
      this.headerPrintData.enteteGauche =  data.enteteGauche?.split(";");

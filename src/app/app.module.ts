@@ -131,8 +131,6 @@ import { StateStorageService } from './core/auth/state-storage.service';
 import { AuthExpiredInterceptor } from './core/interceptor/auth-expired.interceptor';
 import { AuthInterceptor } from './core/interceptor/auth.interceptor';
 import { LoginService } from './login/login.service';
-import { PortraitComponent } from './shared/portrait/portrait.component';
-import { ImportComponent } from './shared/import/import.component';
 import { CompanyService } from './service/company.service';
 import { BaseService } from './service/base.service';
 import { UserRouteAccessService } from './core/auth/user-route-access.service';
@@ -256,12 +254,11 @@ import { DashboardService } from './service/dashboard.service';
         PasswordResetInitComponent,
         RegisterComponent,
         SettingsComponent,
-        PortraitComponent,
-        ImportComponent,
         ProfilComponent,
         ChatNotificationComponent,
         AppBreadcrumbComponent,
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentSinistreService, UserRouteAccessService,
@@ -281,8 +278,7 @@ import { DashboardService } from './service/dashboard.service';
           multi: true,
         },
     ],
-    bootstrap: [AppComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

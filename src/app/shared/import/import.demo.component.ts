@@ -2,11 +2,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { BaseService } from '../../service/base.service';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 
 @Component({
-  selector: 'app-import',
-  templateUrl: './import.component.html'
+  selector: 'app-demo-import',
+  standalone: true,
+  imports: [DialogModule, ProgressBarModule],
+  templateUrl: './import.demo.component.html'
 })
 export class ImportComponent {
 

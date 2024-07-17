@@ -8,11 +8,13 @@ import { DialogModule } from 'primeng/dialog';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AccountService } from '../core/auth/account.service';
 import { BaseService } from '../service/base.service';
+import { PortraitComponent } from '../shared/portrait/portrait.demo.component';
+import { ImportComponent } from '../shared/import/import.demo.component';
 
 @Component({
   selector: 'app-generic-crud',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, ToolbarModule, TableModule, DialogModule],
+  imports: [FormsModule, ReactiveFormsModule, PortraitComponent,ImportComponent, ToolbarModule, TableModule, DialogModule],
   templateUrl: './generic.crud.component.html', // Template HTML pour ce composant
   styleUrls: ['./generic.crud.component.scss'] // Fichier de style CSS pour ce composant
 })
@@ -71,7 +73,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected abstract getRequiredFields(): string[];
   
-  protected abstract getEntityDetails(): { name: string, link: string, isExpandable: boolean, fields: { name: string, type: string }[] };
+  protected abstract getEntityDetails(): { name: string, link: string, endPoint: string, isExpandable: boolean, fields: { name: string, type: string }[] };
   
   protected abstract getModuleKey(): string;
 
