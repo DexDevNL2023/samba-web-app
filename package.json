@@ -4,12 +4,12 @@
     "license": "PrimeNG Commercial",
     "scripts": {
         "ng": "ng",
-        "heroku-postbuild": "ng build --configuration production && npm install -g http-server-spa",
+        "start": "ng serve",
         "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "start": "http-server-spa dist/samba-web-app index.html 8080"
+        "heroku-postbuild": "ng build --configuration production && npm install -g http-server-spa"
     },
     "private": true,
     "dependencies": {
