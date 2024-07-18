@@ -4,10 +4,10 @@ const path = require('path');
 const app = express();
 
 // Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist/samba-web-app')));
+app.use(express.static(path.join(__dirname, '/dist/samba-web-app')));
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/samba-web-app/index.html'));
+  res.sendFile(path.join(__dirname, '/dist/samba-web-app/index.html'));
 });
 
 const PORT = process.env.PORT || 8080;
