@@ -33,7 +33,9 @@
                             "src/favicon.ico"
                         ],
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "src/assets/theme/theme-teal-yellow.css",
+                            "src/assets/layout/css/layout-teal-yellow.css"
                         ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
