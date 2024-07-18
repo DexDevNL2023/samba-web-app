@@ -13,5 +13,5 @@ export interface Notification extends BaseEntity {
   dateEnvoi?: Date | null;
   type?: keyof typeof NotificationType | null;
   isRead: Boolean | null;
-  utilisateur?: Pick<UserExtra, 'id'> | null;
+  utilisateur?: Pick<UserExtra, 'id' | 'numNiu' | 'lastName' | 'firstName' | 'telephone' | 'addresse' | 'ville' | 'pays'> | null;
 }

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PasswordService } from './password.service';
 import { Account } from '../../core/auth/account.model';
 import { AccountService } from '../../core/auth/account.service';
+import { AppMainComponent } from '../../app.main.component';
 
 @Component({
   selector: 'app-password',
@@ -14,13 +15,14 @@ export default class PasswordComponent implements OnInit {
   doNotMatch = false; // Indicateur pour afficher une erreur si les nouveaux mots de passe ne correspondent pas
   error = false; // Indicateur pour afficher une erreur générale lors de la modification du mot de passe
   success = false; // Indicateur pour afficher un message de succès après la modification du mot de passe
-  account$?: Observable<Account | null>; // Observable contenant les informations du compte utilisateur
+  account: Account | null = null; // Compte utilisateur actuel
   passwordForm: FormGroup; // Formulaire de modification du mot de passe
 
   constructor(
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction de formulaires
     private passwordService: PasswordService, // Service PasswordService pour la gestion du mot de passe
-    private accountService: AccountService // Service AccountService pour la gestion du compte utilisateur
+    private accountService: AccountService, // Service AccountService pour la gestion du compte utilisateur
+    public appMain: AppMainComponent
   ) {
     // Initialisation du formulaire de modification du mot de passe avec des champs et des validateurs
     this.passwordForm = this.formBuilder.group({
@@ -29,10 +31,25 @@ export default class PasswordComponent implements OnInit {
       confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]], // Champ pour la confirmation du nouveau mot de passe, requis avec une longueur minimale et maximale
     });
   }
-
+ 
   ngOnInit(): void {
-    // Obtient les informations du compte utilisateur lors de l'initialisation du composant
-    this.account$ = this.accountService.identity();
+    // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
+    this.accountService.identity().subscribe(account => {
+      if (account) {
+        this.account = account;
+      }
+    });
+    this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
+  }
+
+  private updateBreadcrumb() {
+    // Mettre à jour le breadcrumb en fonction du contexte
+    const breadcrumbItems = [
+      { icon: 'pi pi-home', routerLink: '/admin' },
+      { label: 'Change password', routerLink: '/admin/password' }
+    ];
+
+    this.appMain.setBreadcrumbItems(breadcrumbItems); // Call the public method instead
   }
 
   // Méthode appelée lors de la soumission du formulaire de modification du mot de passe

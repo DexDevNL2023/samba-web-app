@@ -13,10 +13,10 @@ export enum ClaimStatus {
 
 export interface Sinistre extends BaseEntity {
   numeroSinistre?: string | null;
+  raison?: string | null;
   dateDeclaration?: Date | null;
   dateTraitement?: Date | null;
   status?: keyof typeof ClaimStatus | null;
-  raison?: string | null;
   montantReclame?: number | null;
   montantApprouve?: number | null;
   souscription?: Pick<Souscription, 'id'> | null;

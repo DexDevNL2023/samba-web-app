@@ -9,7 +9,7 @@ export enum Gender {
   FEMALE = 'FEMALE',
   OTHER = 'OTHER'
 }
-  
+
 export interface UserExtra extends BaseEntity {
   numNiu?: string | null;
   activated?: boolean | null;
@@ -28,8 +28,7 @@ export interface UserExtra extends BaseEntity {
   pays?: string | null;
   authorities: string[] | null;
   signature?: string | null;
-  registrant?: Pick<Registrant, 'id'> | null;
-  dossiers?: Pick<MedicalRecord, 'id'>[] | null;
-  souscriptions?: Pick<Souscription, 'id'>[] | null;
-  notifications?: Pick<Notification, 'id'>[] | null;
+  registrant?: Pick<Registrant, 'id' | 'branche' | 'partenaire'> | null;
+  dossiers?: Pick<MedicalRecord, 'id' | 'numMedicalRecord' | 'dateUpdated'>[] | null;
+  souscriptions?: Pick<Souscription, 'id' | 'numeroSouscription' | 'dateSouscription' | 'dateExpiration' | 'status' | 'frequencePaiement'>[] | null;
 }

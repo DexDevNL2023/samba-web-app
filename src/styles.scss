@@ -16,21 +16,3 @@
 :host ::ng-deep .p-toast{
     z-index:99999;
 }
-
-.full-width {
-    width: 100% !important;
-}
-
-.layout-topbar {
-    position: relative;
-    z-index: 1000;
-}
-
-.p-breadcrumb {
-    margin-top: 10px; /* Ajustez la marge selon vos besoins */
-    padding: 0 1rem;  /* Ajustez le padding selon vos besoins */
-}
-
-.p-breadcrumb .max-w-full {
-    max-width: 100%;
-}

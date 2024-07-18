@@ -26,11 +26,18 @@ export enum PrestationType {
   AUTRES = 'AUTRES'
 }
 
+export enum PrestationStatus {
+  NON_REMBOURSE = 'NON_REMBOURSE',
+  EN_ATTENTE = 'EN_ATTENTE',
+  REMBOURSE = 'REMBOURSE'
+}
+
 export interface PrestationSoin extends BaseEntity {
-  nom?: string | null;
+  label?: string | null;
   datePrestation?: Date | null;
   description?: string | null;
   type?: keyof typeof PrestationType | null;
+  status?: keyof typeof PrestationStatus | null;
   montant?: number | null;
   fournisseur?: Pick<Fournisseur, 'id'> | null;
   financeurs?: Pick<FinanceurSoin, 'id'>[] | null;

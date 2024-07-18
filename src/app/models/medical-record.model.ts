@@ -6,6 +6,6 @@ export interface MedicalRecord extends BaseEntity {
   numMedicalRecord?: string | null;
   details?: string | null;
   dateUpdated?: Date | null;
-  patient?: Pick<UserExtra, 'id'> | null;
-  documents?: Pick<MedicalDocument, 'id'>[] | null;
+  patient?: Pick<UserExtra, 'id' | 'numNiu' | 'lastName' | 'firstName' | 'telephone' | 'addresse' | 'ville' | 'pays'> | null;
+  documents?: Pick<MedicalDocument, 'id' | 'nom' | 'url'>[] | null;
 }

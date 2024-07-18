@@ -46,11 +46,10 @@ export class ProfilComponent implements OnInit{
       // Vérifie si l'autorité spécifiée est présente dans la liste des autorisations
       return rules.every(authority => this.account?.authorities?.includes(authority));
     }
-
+ 
     // Méthode pour rediriger vers les paramètres
     goToSettings(): void {
-      const userId = this.account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
-      this.router.navigate(['/admin/setting', userId]);
+      this.router.navigate(['/admin/setting']);
     }
 
     updatePermission(id: number, event: any){

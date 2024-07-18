@@ -5,8 +5,8 @@ import { Souscription } from "./souscription.model";
 
 export interface PoliceAssurance extends BaseEntity {
   numeroPolice?: string | null;
+  label?: string | null;
   estDeTypeSante?: boolean | null;
-  description?: string | null;
   conditions?: string | null;
   percentage: number | null;
   montantSouscription: number | null;

@@ -5,5 +5,5 @@ export interface Branche extends BaseEntity {
     code?: string;
     ville?: string;
     isDefaut?: Boolean;
-    partenaires?: Pick<Fournisseur, 'id'>[] | null;
+    partenaires?: Pick<Fournisseur, 'id' | 'nom' | 'telephone' | 'ville' | 'pays'>[] | null;
 }

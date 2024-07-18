@@ -12,7 +12,7 @@ export interface Assurance extends BaseEntity {
   nom?: string | null;
   description?: string | null;
   type?: keyof typeof InsuranceType | null;
-  polices?: Pick<PoliceAssurance, 'id'>[] | null;
-  rapports?: Pick<Rapport, 'id'>[] | null;
+  polices?: Pick<PoliceAssurance, 'id' | 'numeroPolice'| 'label' | 'estDeTypeSante' | 'montantSouscription'>[] | null;
+  rapports?: Pick<Rapport, 'id' | 'titre' | 'dateGeneration' | 'url'>[] | null;
 }
   

@@ -13,7 +13,6 @@ import { ProgressBarModule } from 'primeng/progressbar';
   templateUrl: './import.demo.component.html'
 })
 export class ImportComponent {
-
   importDialog: boolean;
   imported: boolean;
   load: boolean;
@@ -38,7 +37,6 @@ export class ImportComponent {
   }
 
   async onFileChange($event: any) {
-
     this.load = true;
     let listes: any[] = [];
     try {
@@ -73,6 +71,5 @@ export class ImportComponent {
       this.load = false;
       this.messageService.add({ severity: 'error', summary: 'Erreur', detail: e, life: 5000 });
     }
-
   }
 }

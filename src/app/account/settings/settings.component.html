@@ -1,14 +1,14 @@
 <div class="d-flex justify-content-center">
   <div class="col-md-8">
-    <h2 *ngIf="settingsForm.value.login" [translateValues]="{ username: settingsForm.value.login | translate }">
-      Paramètres de l'utilisateur pour [<strong>{{ settingsForm.value.login | translate }}</strong>]
+    <h2 class="mt-3">
+      Paramètres de l'utilisateur pour <strong>{{ settingsForm.value.login }}</strong>
     </h2>
 
-    <p-messages *ngIf="success" severity="success" [text]="'settings.form.successMessage' | translate"></p-messages>
+    <p-messages *ngIf="success" severity="success" [text]="'Profil mis à jour'"></p-messages>
 
     <form *ngIf="settingsForm.value.login" name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
       <div class="mb-3">
-        <label class="form-label" for="imageUrl">Photo de profile</label>
+        <label class="form-label" for="imageUrl">Photo de profil</label>
         <p-fileUpload
           name="imageUrl"
           chooseLabel="Choisir"
@@ -16,7 +16,7 @@
           cancelLabel="Annuler"
           accept="image/*"
           (onSelect)="onFileSelected('imageUrl', $event)"
-          [showUploadButton]="true"
+          [showUploadButton]="false"
           [showCancelButton]="true"
           [auto]="true"
         ></p-fileUpload>
@@ -159,9 +159,9 @@
         <label class="form-label" for="signature">Signature</label>
         <p-fileUpload
           name="signature"
-          chooseLabel="{{ 'global.form.choose' | translate }}"
-          uploadLabel="{{ 'global.form.upload' | translate }}"
-          cancelLabel="{{ 'global.form.cancel' | translate }}"
+          chooseLabel="Choisir"
+          uploadLabel="Télécharger"
+          cancelLabel="Annuler"
           accept="image/*"
           (onSelect)="onFileSelected('signature', $event)"
           [showUploadButton]="true"
@@ -173,49 +173,17 @@
         </div>
       </div>
 
-      <div *ngIf="languages && languages.length > 0" class="mb-3">
-        <label for="langKey">Langue</label>
-        <p-dropdown
-          [options]="languages"
-          placeholder="Langue"
-          formControlName="langKey"
-        ></p-dropdown>
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label">Dossiers Médicaux</label>
+        <!-- Display medical records here -->
       </div>
 
-      <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-3">
-        <label class="form-label">Activé</label>
-        <p-checkbox
-          id="activated"
-          name="activated"
-          formControlName="activated"
-          binary="true"
-          [label]="'Activé'"
-          [binary]="true"
-          [styleClass]="'p-mr-2'"
-        ></p-checkbox>
+      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
+        <label class="form-label">Souscriptions</label>
+        <!-- Display subscriptions here -->
       </div>
 
-      <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-3">
-        <label class="form-label" for="authorities">Rôles</label>
-        <p-multiSelect
-          id="authorities"
-          name="authorities"
-          [options]="authorities"
-          [(ngModel)]="selectedAuthorities"
-          formControlName="authorities"
-          [defaultLabel]="'Sélectionnez les rôles'"
-          [style]="{'width':'100%'}"
-          [panelStyle]="{'max-height':'200px'}"
-          optionLabel="label"
-          dataKey="value"
-          appendTo="body"
-          data-cy="authorities"
-        ></p-multiSelect>
-      </div>
-
-      <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">
-        Enregistrer
-      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="!settingsForm.valid">Sauvegarder</button>
     </form>
   </div>
 </div>

@@ -13,6 +13,6 @@ export enum FinanceurType {
   adresse?: string | null;
   telephone?: string | null;
   email?: string | null;
-  prestations?: Pick<PrestationSoin, 'id'>[] | null;
+  prestations?: Pick<PrestationSoin, 'id' | 'label' | 'datePrestation' | 'type' | 'status'>[] | null;
 }
   

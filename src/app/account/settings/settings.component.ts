@@ -3,8 +3,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LANGUAGES } from '../../config/language.constants';
 import { UserExtra } from 'src/app/models/user-extra.model';
 import { UserExtraService } from '../../service/utilisateur.service';
-import { ActivatedRoute } from '@angular/router';
 import { Authority } from '../../config/authority.constants';
+import { AppMainComponent } from '../../app.main.component';
+import { AccountService } from '../../core/auth/account.service';
+import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
 
 @Component({
   selector: 'app-settings',
@@ -14,21 +16,81 @@ export default class SettingsComponent implements OnInit {
   success = false; // Indicateur pour afficher le succès de la sauvegarde des paramètres
   languages = LANGUAGES; // Liste des langues disponibles
   settingsForm: FormGroup; // Formulaire de paramètres utilisateur
-  user: UserExtra | null = null; // Utilisateur
-  authorities: any[]; // Utilisez un tableau d'objets pour p-multiSelect
+  user: UserExtra | null = {
+    numNiu: '123456789',
+    activated: true,
+    langKey: 'en',
+    imageUrl: 'https://example.com/profile.jpg',
+    login: 'johndoe',
+    lastName: 'Doe',
+    firstName: 'John',
+    email: 'johndoe@example.com',
+    dateNaissance: new Date('1990-01-01'),
+    numCni: 'CNI123456',
+    sexe: 'MALE',
+    telephone: '+1234567890',
+    addresse: '123 Main St',
+    ville: 'Sample City',
+    pays: 'Sample Country',
+    authorities: [Authority.CLIENT],
+    signature: 'https://example.com/signature.jpg',
+    registrant: {
+      branche: { id: 1,  ville: 'Douala'},
+      partenaire: { id: 1, nom: 'Pharmacie du soliel' }
+    },
+    dossiers: [
+      {
+        id: 1,
+        numMedicalRecord: 'MR123456',
+        dateUpdated: new Date('2024-01-01')
+      },
+      {
+        id: 2,
+        numMedicalRecord: 'MR123457',
+        dateUpdated: new Date('2024-02-01')
+      }
+    ],
+    souscriptions: [
+      {
+        id: 1,
+        numeroSouscription: 'SUB123456',
+        dateSouscription: new Date('2023-01-01'),
+        dateExpiration: new Date('2024-01-01'),
+        status: SubscriptionStatus.ACTIVE,
+        frequencePaiement: PaymentFrequency.MENSUEL
+      },
+      {
+        id: 2,
+        numeroSouscription: 'SUB123457',
+        dateSouscription: new Date('2023-02-01'),
+        dateExpiration: new Date('2024-02-01'),
+        status: SubscriptionStatus.RESILIE,
+        frequencePaiement: PaymentFrequency.ANNUEL
+      }
+    ]
+  }; // Utilisateur
   currentYear: number = new Date().getFullYear();
+  genders = [
+    { label: 'Male', value: 'MALE' },
+    { label: 'Female', value: 'FEMALE' },
+    { label: 'Other', value: 'OTHER' }
+  ];
+  authorities = [
+    { label: 'Client', value: Authority.CLIENT },
+    { label: 'Agent', value: Authority.AGENT },
+    { label: 'Administrator', value: Authority.ADMINISTRATOR },
+    { label: 'Provider', value: Authority.PROVIDER }
+  ];
+  selectedAuthorities: string[] = [];
+  imageUrlPreview: string | ArrayBuffer | null = null;
+  signatureUrlPreview: string | ArrayBuffer | null = null;
 
   constructor(
+    private accountService: AccountService,
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction du formulaire
     private userService: UserExtraService, // Service UserExtraService pour la gestion du compte utilisateur
-    private route: ActivatedRoute // Service ActivatedRoute pour accéder aux paramètres de la route
+    public appMain: AppMainComponent
   ) {
-    // Mapping des valeurs de l'énumération avec des libellés personnalisés
-    this.authorities = Object.values(Authority).map(key => ({
-      value: key,
-      label: this.getLabelForAuthority(key) // Utilisation d'une fonction pour obtenir le libellé
-    }));
-
     // Initialisation du formulaire avec les champs et validateurs nécessaires
     this.settingsForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
@@ -49,35 +111,33 @@ export default class SettingsComponent implements OnInit {
       pays: [''],
       signature: [''],
     });
-  }
+  } 
   
   ngOnInit(): void {
-    // Récupère l'ID de l'utilisateur à partir des paramètres de la route
-    this.route.paramMap.subscribe(params => {
-      const userId = +params.get('id')!;
-      if (userId) {
-        this.userService.find(userId).subscribe((user: UserExtra) => {
-          this.user = user;
-          this.settingsForm.patchValue(user); // Remplir le formulaire avec les données de l'utilisateur
-        });
+    // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
+    this.accountService.identity().subscribe(account => {
+      if (account) {
+        const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
+        if (userId) {
+          this.userService.find(userId).subscribe((user: UserExtra) => {
+            this.user = user;
+            this.selectedAuthorities = user.authorities || [];
+          });
+        }
       }
     });
+    this.settingsForm.patchValue(this.user); // Remplir le formulaire avec les données de l'utilisateur
+    this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
   }
 
-  getLabelForAuthority(authority: string): string {
-    // Fonction pour obtenir le libellé correspondant à chaque autorité
-    switch (authority) {
-      case Authority.CLIENT:
-        return 'Client';
-      case Authority.AGENT:
-        return 'Agent';
-      case Authority.ADMINISTRATOR:
-        return 'Administrateur';
-      case Authority.PROVIDER:
-        return 'Partenaire';
-      default:
-        return 'Inconnu';
-    }
+  private updateBreadcrumb() {
+    // Mettre à jour le breadcrumb en fonction du contexte
+    const breadcrumbItems = [
+      { icon: 'pi pi-home', routerLink: '/admin' },
+      { label: 'Profile setting', routerLink: '/admin/setting' }
+    ];
+
+    this.appMain.setBreadcrumbItems(breadcrumbItems); // Call the public method instead
   }
 
   // Méthode pour sauvegarder les paramètres utilisateur modifiés
@@ -95,22 +155,22 @@ export default class SettingsComponent implements OnInit {
     }
   }
 
-  // Méthode appelée lorsqu'un fichier est sélectionné pour imageUrl ou signature
   onFileSelected(field: string, event: any): void {
-    const file = event.target.files[0];
+    const file = event.files[0];
     if (file) {
-      // Met à jour la valeur du champ dans le formulaire avec le fichier sélectionné
-      this.settingsForm.patchValue({
-        [field]: file
-      });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (field === 'imageUrl') {
+          this.imageUrlPreview = reader.result;
+        } else if (field === 'signature') {
+          this.signatureUrlPreview = reader.result;
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
 
-  // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
-  hasAuthority(rules: string[]): boolean {
-    // Récupère les autorisations actuelles de l'utilisateur depuis le formulaire
-    const authorities = this.settingsForm.get('authorities')?.value;
-    // Vérifie si l'autorité spécifiée est présente dans la liste des autorisations
-    return rules.every(authority => authorities?.includes(authority));
+  hasAuthority(authorities: string[]): boolean {
+    return this.user.authorities?.some(auth => authorities.includes(auth)) || false;
   }
 }
