@@ -4,7 +4,10 @@
     "compilerOptions": {
       "baseUrl": "./",
       "paths": {
-        "assets/*": ["src/assets/*"]
+        "assets/*": ["src/assets/*"],
+        "file-saver-es": [
+          "@types/file-saver"
+        ]
       },
       "outDir": "./dist/out-tsc",
       "forceConsistentCasingInFileNames": true,
