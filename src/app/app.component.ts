@@ -22,8 +22,8 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this.primengConfig.ripple = true;
         this.ripple = true;
-        this.loadStyle('dist/samba-web-app/assets/theme/theme-teal-yellow.css', 'theme-css');
-        this.loadStyle('dist/samba-web-app/assets/layout/css/layout-teal-yellow.css', 'layout-css');
+        this.loadStyle('assets/theme/theme-teal-yellow.css', 'theme-css');
+        this.loadStyle('assets/layout/css/layout-teal-yellow.css', 'layout-css');
     }
 
     loadStyle(href: string, id: string) {
