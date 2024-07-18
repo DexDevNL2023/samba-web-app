@@ -5,7 +5,7 @@
     "scripts": {
         "ng": "ng",
         "heroku-postbuild": "ng build --configuration production && npm install -g http-server-spa",
-        "build": "ng build --prod",
+        "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
