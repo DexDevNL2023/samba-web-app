@@ -3,12 +3,6 @@
     "compileOnSave": false,
     "compilerOptions": {
       "baseUrl": "./",
-      "paths": {
-        "assets/*": ["src/assets/*"],
-        "file-saver-es": [
-          "@types/file-saver"
-        ]
-      },
       "outDir": "./dist/out-tsc",
       "forceConsistentCasingInFileNames": true,
       "strict": false,

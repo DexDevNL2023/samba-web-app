@@ -23,9 +23,9 @@
           <div class="flex align-items-center justify-content-end mb-4">
               <a class="font-medium text-blue-500 hover:text-blue-700 cursor-pointer transition-colors transition-duration-150" routerLink="/register">Créer un nouveau compte</a>
           </div>
-          <h1 class="text-white-alpha-70" data-cy="loginTitle">Connexion</h1>
+          <h1 class="text-black-alpha-70" data-cy="loginTitle">Connexion</h1>
           <div *ngIf="authenticationError" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70"><strong>Échec de la connexion !</strong> Veuillez vérifier vos informations d'identification et réessayer.</span>
+            <span class="text-black-alpha-70"><strong>Échec de la connexion !</strong> Veuillez vérifier vos informations d'identification et réessayer.</span>
           </div>
           <form class="form" (ngSubmit)="login()" [formGroup]="loginForm">
               <label for="username" class="block text-900 font-medium mb-2">Nom d'utilisateur</label>

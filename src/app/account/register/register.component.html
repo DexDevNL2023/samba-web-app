@@ -23,21 +23,21 @@
           <div class="flex align-items-center justify-content-end mb-4">
               <a class="font-medium text-blue-500 hover:text-blue-700 cursor-pointer transition-colors transition-duration-150" routerLink="/login">Vous avez deja un compte ?</a>
           </div>
-          <h1 class="text-white-alpha-70" data-cy="loginTitle">Inscription</h1>
+          <h1 class="text-black-alpha-70" data-cy="loginTitle">Inscription</h1>
           <div *ngIf="success" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70"><strong>Inscription réussie !</strong> Veuillez vérifier votre email pour confirmation.</span>
+            <span class="text-black-alpha-70"><strong>Inscription réussie !</strong> Veuillez vérifier votre email pour confirmation.</span>
           </div>
           <div *ngIf="error" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70"><strong>Échec de l'inscription !</strong> Veuillez réessayer ultérieurement.</span>
+            <span class="text-black-alpha-70"><strong>Échec de l'inscription !</strong> Veuillez réessayer ultérieurement.</span>
           </div>
           <div *ngIf="errorUserExists" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70"><strong>Nom d'utilisateur déjà enregistré !</strong> Veuillez en choisir un autre nom d'utilisateur.</span>
+            <span class="text-black-alpha-70"><strong>Nom d'utilisateur déjà enregistré !</strong> Veuillez en choisir un autre nom d'utilisateur.</span>
           </div>
           <div *ngIf="errorEmailExists" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70"><strong>Cet email est déjà utilisé !</strong> Veuillez en choisir un autre email.</span>
+            <span class="text-black-alpha-70"><strong>Cet email est déjà utilisé !</strong> Veuillez en choisir un autre email.</span>
           </div>
           <div *ngIf="doNotMatch" class="alert alert-danger" data-cy="loginError">
-            <span class="text-white-alpha-70">Le mot de passe et sa confirmation ne correspondent pas !</span>
+            <span class="text-black-alpha-70">Le mot de passe et sa confirmation ne correspondent pas !</span>
           </div>
 
           <form class="form" (ngSubmit)="register()" [formGroup]="registerForm">
