@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "dist/samba-web-app/**/*", "use": "@vercel/static" }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "/index.html" }
+    ]
+  }
+  
