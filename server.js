@@ -5,7 +5,6 @@ const app = express();
 
 app.use(express.static(__dirname));
 app.use(express.static(__dirname + '/dist/samba-web-app'));
-app.use(express.static(__dirname + '/dist/samba-web-app/assets'));
 
 app.get('/ping', function (req, res)
 {
