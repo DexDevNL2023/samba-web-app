@@ -32,3 +32,6 @@ export interface UserExtra extends BaseEntity {
   dossiers?: Pick<MedicalRecord, 'id' | 'numMedicalRecord' | 'dateUpdated'>[] | null;
   souscriptions?: Pick<Souscription, 'id' | 'numeroSouscription' | 'dateSouscription' | 'dateExpiration' | 'status' | 'frequencePaiement'>[] | null;
 }
+
+export type singleUser = Omit<UserExtra, 'registrant' | 'dossiers' | 'souscriptions'>;
+export type dataUser = Pick<UserExtra, 'registrant' | 'dossiers' | 'souscriptions'>;

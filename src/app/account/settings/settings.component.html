@@ -152,6 +152,57 @@
           </div>
         </div>
 
+        <div class="mb-4">
+          <label for="pays" class="block font-normal text-900 mb-2">Pays</label>
+          <input
+            id="pays"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="pays"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="langKey" class="block font-normal text-900 mb-2">Langue</label>
+          <p-dropdown
+            id="langKey"
+            [options]="languages"
+            placeholder="Langue"
+            formControlName="langKey"
+          ></p-dropdown>
+        </div>
+
+        <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+          <label for="authorities" class="block font-normal text-900 mb-2">Rôles</label>
+          <p-multiSelect
+            id="authorities"
+            name="authorities"
+            [options]="authorities"
+            [(ngModel)]="selectedAuthorities"
+            formControlName="authorities"
+            [defaultLabel]="'Sélectionnez les rôles'"
+            [style]="{'width':'100%'}"
+            [panelStyle]="{'max-height':'200px'}"
+            optionLabel="label"
+            dataKey="value"
+            appendTo="body"
+            data-cy="authorities"
+          ></p-multiSelect>
+        </div>
+
+        <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+          <label for="activated" class="block font-normal text-900 mb-2">Activé/Descactivé le compte de l'utilisateur</label>
+          <p-checkbox
+            id="activated"
+            name="activated"
+            formControlName="activated"
+            binary="true"
+            [label]="'Activé'"
+            [styleClass]="'p-mr-2'"
+          ></p-checkbox>
+        </div>
+
         <div class="flex align-items-center">
           <button pButton pRipple label="Sauvegarder" class="p-element p-ripple w-auto mt-3 p-button p-component" [disabled]="!settingsForm.valid">
             <span class="p-button-label">Sauvegarder</span>

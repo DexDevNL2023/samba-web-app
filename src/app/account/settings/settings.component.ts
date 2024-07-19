@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LANGUAGES } from '../../config/language.constants';
-import { UserExtra } from 'src/app/models/user-extra.model';
+import { singleUser } from 'src/app/models/user-extra.model';
 import { UserExtraService } from '../../service/utilisateur.service';
 import { Authority } from '../../config/authority.constants';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
-import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
 
 @Component({
   selector: 'app-settings',
@@ -14,9 +13,9 @@ import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.
 })
 export default class SettingsComponent implements OnInit {
   success = false; // Indicateur pour afficher le succès de la sauvegarde des paramètres
-  languages = LANGUAGES; // Liste des langues disponibles
   settingsForm: FormGroup; // Formulaire de paramètres utilisateur
-  user: UserExtra | null = {
+  user: singleUser | null = {
+    id: 1,
     numNiu: '123456789',
     activated: true,
     langKey: 'en',
@@ -33,43 +32,13 @@ export default class SettingsComponent implements OnInit {
     ville: 'Sample City',
     pays: 'Sample Country',
     authorities: [Authority.CLIENT],
-    signature: 'https://example.com/signature.jpg',
-    registrant: {
-      branche: { id: 1,  ville: 'Douala'},
-      partenaire: { id: 1, nom: 'Pharmacie du soliel' }
-    },
-    dossiers: [
-      {
-        id: 1,
-        numMedicalRecord: 'MR123456',
-        dateUpdated: new Date('2024-01-01')
-      },
-      {
-        id: 2,
-        numMedicalRecord: 'MR123457',
-        dateUpdated: new Date('2024-02-01')
-      }
-    ],
-    souscriptions: [
-      {
-        id: 1,
-        numeroSouscription: 'SUB123456',
-        dateSouscription: new Date('2023-01-01'),
-        dateExpiration: new Date('2024-01-01'),
-        status: SubscriptionStatus.ACTIVE,
-        frequencePaiement: PaymentFrequency.MENSUEL
-      },
-      {
-        id: 2,
-        numeroSouscription: 'SUB123457',
-        dateSouscription: new Date('2023-02-01'),
-        dateExpiration: new Date('2024-02-01'),
-        status: SubscriptionStatus.RESILIE,
-        frequencePaiement: PaymentFrequency.ANNUEL
-      }
-    ]
-  }; // Utilisateur
+    signature: 'https://example.com/signature.jpg'
+  }; // Utilisateur actuel
   currentYear: number = new Date().getFullYear();
+  languages = [
+    { label: 'Francais', value: 'fr' },
+    { label: 'Anglais', value: 'en' }
+  ];
   genders = [
     { label: 'Male', value: 'MALE' },
     { label: 'Female', value: 'FEMALE' },
@@ -119,7 +88,7 @@ export default class SettingsComponent implements OnInit {
       if (account) {
         const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
-          this.userService.find(userId).subscribe((user: UserExtra) => {
+          this.userService.find(userId).subscribe((user: singleUser) => {
             this.user = user;
             this.selectedAuthorities = user.authorities || [];
           });

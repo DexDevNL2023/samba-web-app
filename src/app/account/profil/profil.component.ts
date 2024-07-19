@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { Permission } from '../../models/permission.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from 'src/app/app.main.component';
+import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
+import { dataUser } from 'src/app/models/user-extra.model';
+import { UserExtraService } from '../../service/utilisateur.service';
 
 @Component({
   selector: 'app-profil',
@@ -13,14 +16,58 @@ import { AppMainComponent } from 'src/app/app.main.component';
 export class ProfilComponent implements OnInit{
     account: Account | null = null; // Compte utilisateur actuel
     form: FormGroup | null = null;
+    data: dataUser | null = {
+      registrant: {
+        branche: { id: 1,  ville: 'Douala'},
+        partenaire: { id: 1, nom: 'Pharmacie du soliel' }
+      },
+      dossiers: [
+        {
+          id: 1,
+          numMedicalRecord: 'MR123456',
+          dateUpdated: new Date('2024-01-01')
+        },
+        {
+          id: 2,
+          numMedicalRecord: 'MR123457',
+          dateUpdated: new Date('2024-02-01')
+        }
+      ],
+      souscriptions: [
+        {
+          id: 1,
+          numeroSouscription: 'SUB123456',
+          dateSouscription: new Date('2023-01-01'),
+          dateExpiration: new Date('2024-01-01'),
+          status: SubscriptionStatus.ACTIVE,
+          frequencePaiement: PaymentFrequency.MENSUEL
+        },
+        {
+          id: 2,
+          numeroSouscription: 'SUB123457',
+          dateSouscription: new Date('2023-02-01'),
+          dateExpiration: new Date('2024-02-01'),
+          status: SubscriptionStatus.RESILIE,
+          frequencePaiement: PaymentFrequency.ANNUEL
+        }
+      ]
+    }; // donnees utilisateur actuel
 
-    constructor(private accountService: AccountService, private router: Router, public appMain: AppMainComponent){}
+    constructor(private accountService: AccountService, private userService: UserExtraService, private router: Router, public appMain: AppMainComponent){}
  
     ngOnInit(): void {
         // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
         this.accountService.identity().subscribe(account => {
           if (account) {
             this.account = account;
+            const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
+            if (userId) {
+              if(this.hasAuthority(['ROLE_CLIENT'])) {
+                this.userService.getUserDetails(userId).subscribe((data: dataUser) => {
+                  this.data = data;
+                });
+              }
+            }
           }
         });
         this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -42,9 +89,8 @@ export class ProfilComponent implements OnInit{
     }
 
     // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
-    hasAuthority(rules: string[]): boolean {
-      // Vérifie si l'autorité spécifiée est présente dans la liste des autorisations
-      return rules.every(authority => this.account?.authorities?.includes(authority));
+    hasAuthority(authorities: string[]): boolean {
+      return this.account.authorities?.some(auth => authorities.includes(auth)) || false;
     }
  
     // Méthode pour rediriger vers les paramètres

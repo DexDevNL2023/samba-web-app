@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { UserExtra } from '../models/user-extra.model';
+import { forkJoin, Observable } from 'rxjs';
+import { dataUser, UserExtra } from '../models/user-extra.model';
 import { MedicalRecord } from '../models/medical-record.model';
 import { Notification } from '../models/notification.model';
 import { Souscription } from '../models/souscription.model';
 import { GenericCrudService } from './generic.crud.service';
+import { Registrant } from '../models/registrant.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserExtraService extends GenericCrudService<UserExtra> {
 
     constructor(http: HttpClient) {
         super(http, 'users');
+    }
+
+    // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+    getRegistrant(userId: number): Observable<Registrant> {
+        return this.http.get<Registrant>(`${this.baseUrl}/${this.endpoint}/${userId}/registrant`);
     }
 
     // Méthode pour récupérer les dossiers médicaux d'un utilisateur
@@ -27,5 +33,14 @@ export class UserExtraService extends GenericCrudService<UserExtra> {
     // Méthode pour récupérer les souscriptions d'un utilisateur
     getSouscriptions(userId: number): Observable<Souscription[]> {
         return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/${userId}/souscriptions`);
+    }
+
+    // Méthode pour récupérer les données combinées d'un utilisateur
+    getUserDetails(userId: number): Observable<dataUser> {
+        return forkJoin({
+            registrant: this.getRegistrant(userId),
+            dossiers: this.getMedicalRecords(userId),
+            souscriptions: this.getSouscriptions(userId)
+        });
     }
 }

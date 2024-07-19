@@ -83,6 +83,54 @@
                     </p-accordionTab>
                     </p-accordion>
                 </p-tabPanel>
+
+                <!-- Ajouter des onglets pour registrant, dossiers, et souscriptions -->
+                <p-tabPanel header="Registrant" *ngIf="data?.registrant">
+                    <div class="p-3">
+                        <p>Branche: {{ data.registrant.branche.ville }}</p>
+                        <p>Partenaire: {{ data.registrant.partenaire.nom }}</p>
+                    </div>
+                </p-tabPanel>
+
+                <p-tabPanel header="Dossiers" *ngIf="data?.dossiers?.length">
+                    <p-table [value]="data.dossiers" [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Numéro de Dossier Médical</th>
+                                <th>Date de Mise à Jour</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-dossier>
+                            <tr>
+                                <td>{{ dossier.numMedicalRecord }}</td>
+                                <td>{{ dossier.dateUpdated | date }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+
+                <p-tabPanel header="Souscriptions" *ngIf="data?.souscriptions?.length">
+                    <p-table [value]="data.souscriptions" [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Numéro de Souscription</th>
+                                <th>Date de Souscription</th>
+                                <th>Date d'Expiration</th>
+                                <th>Status</th>
+                                <th>Fréquence de Paiement</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-souscription>
+                            <tr>
+                                <td>{{ souscription.numeroSouscription }}</td>
+                                <td>{{ souscription.dateSouscription | date }}</td>
+                                <td>{{ souscription.dateExpiration | date }}</td>
+                                <td>{{ souscription.status }}</td>
+                                <td>{{ souscription.frequencePaiement }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
             </p-tabView>
         </div>
     </div>
