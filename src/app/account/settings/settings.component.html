@@ -1,189 +1,179 @@
-<div class="d-flex justify-content-center">
-  <div class="col-md-8">
-    <h2 class="mt-3">
-      Paramètres de l'utilisateur pour <strong>{{ settingsForm.value.login }}</strong>
-    </h2>
-
-    <p-messages *ngIf="success" severity="success" [text]="'Profil mis à jour'"></p-messages>
-
-    <form *ngIf="settingsForm.value.login" name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
-      <div class="mb-3">
-        <label class="form-label" for="imageUrl">Photo de profil</label>
-        <p-fileUpload
-          name="imageUrl"
-          chooseLabel="Choisir"
-          uploadLabel="Télécharger"
-          cancelLabel="Annuler"
-          accept="image/*"
-          (onSelect)="onFileSelected('imageUrl', $event)"
-          [showUploadButton]="false"
-          [showCancelButton]="true"
-          [auto]="true"
-        ></p-fileUpload>
-        <div *ngIf="imageUrlPreview" class="mt-2">
-          <img [src]="imageUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
+<div class="surface-card p-5 shadow-2 border-round flex-auto xl:ml-5">
+  <div class="text-900 font-semibold text-lg mt-3">Profile</div>
+  <p-divider class="p-element">
+    <div role="separator" class="p-divider p-component p-divider-horizontal p-divider-solid p-divider-left">
+      <div class="p-divider-content"></div>
+    </div>
+  </p-divider>
+  <div class="flex gap-5 flex-column-reverse md:flex-row">
+    <div class="flex-auto p-fluid">
+      <form *ngIf="settingsForm.value.login" name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
+        <div class="mb-4">
+          <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
+          <input
+            id="lastName"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="lastName"
+            data-cy="lastname"
+          />
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="firstName">Prénoms</label>
-        <input
-          type="text"
-          class="form-control"
-          id="firstName"
-          name="firstName"
-          placeholder="Prénoms"
-          formControlName="firstName"
-          data-cy="firstname"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="lastName">Nom de famille</label>
-        <input
-          type="text"
-          class="form-control"
-          id="lastName"
-          name="lastName"
-          placeholder="Nom de famille"
-          formControlName="lastName"
-          data-cy="lastname"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="email">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          placeholder="Email"
-          formControlName="email"
-          data-cy="email"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="numNiu">NIU</label>
-        <input
-          type="text"
-          class="form-control"
-          id="numNiu"
-          name="numNiu"
-          formControlName="numNiu"
-        />
-      </div>
-
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label" for="dateNaissance">Date de naissance</label>
-        <p-calendar
-          id="dateNaissance"
-          name="dateNaissance"
-          formControlName="dateNaissance"
-          [showIcon]="true"
-          inputId="icon"
-          dateFormat="dd/mm/yy"
-          [monthNavigator]="true"
-          [yearNavigator]="true"
-          yearRange="1900:{{ currentYear }}"
-          placeholder="Sélectionnez une date"
-        ></p-calendar>
-      </div>
-
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label" for="numCni">CNI</label>
-        <input
-          type="text"
-          class="form-control"
-          id="numCni"
-          name="numCni"
-          formControlName="numCni"
-        />
-      </div>
-
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label" for="sexe">Genre</label>
-        <p-dropdown
-          [options]="genders"
-          placeholder="Genre"
-          formControlName="sexe"
-        ></p-dropdown>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="telephone">Téléphone</label>
-        <input
-          type="text"
-          class="form-control"
-          id="telephone"
-          name="telephone"
-          formControlName="telephone"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="addresse">Adresse</label>
-        <input
-          type="text"
-          class="form-control"
-          id="addresse"
-          name="addresse"
-          formControlName="addresse"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="ville">Ville</label>
-        <input
-          type="text"
-          class="form-control"
-          id="ville"
-          name="ville"
-          formControlName="ville"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="pays">Pays</label>
-        <input
-          type="text"
-          class="form-control"
-          id="pays"
-          name="pays"
-          formControlName="pays"
-        />
-      </div>
-
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label" for="signature">Signature</label>
-        <p-fileUpload
-          name="signature"
-          chooseLabel="Choisir"
-          uploadLabel="Télécharger"
-          cancelLabel="Annuler"
-          accept="image/*"
-          (onSelect)="onFileSelected('signature', $event)"
-          [showUploadButton]="true"
-          [showCancelButton]="true"
-          [auto]="true"
-        ></p-fileUpload>
-        <div *ngIf="signatureUrlPreview" class="mt-2">
-          <img [src]="signatureUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
+        <div class="mb-4">
+          <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
+          <input
+            id="firstName"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="firstName"
+            data-cy="firstname"
+          />
         </div>
-      </div>
 
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label">Dossiers Médicaux</label>
-        <!-- Display medical records here -->
-      </div>
+        <div class="mb-4">
+          <label for="email" class="block font-normal text-900 mb-2">Email</label>
+          <input
+            id="email"
+            type="email"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="email"
+            data-cy="email"
+          />
+        </div>
 
-      <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-3">
-        <label class="form-label">Souscriptions</label>
-        <!-- Display subscriptions here -->
-      </div>
+        <div class="mb-4">
+          <label for="numNiu" class="block font-normal text-900 mb-2">NIU</label>
+          <input
+            id="numNiu"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="numNiu"
+          />
+        </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="!settingsForm.valid">Sauvegarder</button>
-    </form>
+        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
+          <label for="dateNaissance" class="block font-normal text-900 mb-2">Date de naissance</label>
+          <p-calendar
+            id="dateNaissance"
+            formControlName="dateNaissance"
+            [showIcon]="true"
+            inputId="icon"
+            dateFormat="dd/mm/yy"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            yearRange="1900:{{ currentYear }}"
+            placeholder="Sélectionnez une date"
+          ></p-calendar>
+        </div>
+
+        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
+          <label for="numCni" class="block font-normal text-900 mb-2">CNI</label>
+          <input
+            id="numCni"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="numCni"
+          />
+        </div>
+
+        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
+          <label for="sexe" class="block font-normal text-900 mb-2">Genre</label>
+          <p-dropdown
+            [options]="genders"
+            placeholder="Genre"
+            formControlName="sexe"
+          ></p-dropdown>
+        </div>
+
+        <div class="mb-4">
+          <label for="telephone" class="block font-normal text-900 mb-2">Téléphone</label>
+          <input
+            id="telephone"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="telephone"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="addresse" class="block font-normal text-900 mb-2">Adresse</label>
+          <input
+            id="addresse"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="addresse"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="ville" class="block font-normal text-900 mb-2">Ville</label>
+          <input
+            id="ville"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="ville"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="pays" class="block font-normal text-900 mb-2">Pays</label>
+          <input
+            id="pays"
+            type="text"
+            pInputText
+            class="p-inputtext p-component p-element"
+            formControlName="pays"
+          />
+        </div>
+
+        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
+          <label for="signature" class="block font-normal text-900 mb-2">Signature</label>
+          <p-fileUpload
+            name="signature"
+            chooseLabel="Choisir"
+            uploadLabel="Télécharger"
+            cancelLabel="Annuler"
+            accept="image/*"
+            (onSelect)="onFileSelected('signature', $event)"
+            [showUploadButton]="true"
+            [showCancelButton]="true"
+            [auto]="true"
+          ></p-fileUpload>
+          <div *ngIf="signatureUrlPreview" class="mt-2">
+            <img [src]="signatureUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
+          </div>
+        </div>
+
+        <div class="flex align-items-center">
+          <button pButton pRipple label="Sauvegarder" class="p-element p-ripple w-auto mt-3 p-button p-component" [disabled]="!settingsForm.valid">
+            <span class="p-button-label">Sauvegarder</span>
+            <span class="p-ink"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="flex flex-column align-items-center flex-or">
+      <span class="font-normal text-900 mb-2">Profile Picture</span>
+      <p-avatar for="imageUrl" image="{{ imageUrlPreview || '../../../assets/layout/images/avatar.png' }}" styleClass="h-10rem w-10rem mr-2" size="xlarge"
+        shape="circle" />
+      <p-fileUpload
+        mode="basic"
+        name="imageUrl"
+        chooseLabel="Upload Image"
+        accept="image/*"
+        (onSelect)="onFileSelected('imageUrl', $event)"
+        [showUploadButton]="false"
+        [showCancelButton]="true"
+        [auto]="true"></p-fileUpload>
+    </div>
   </div>
 </div>
