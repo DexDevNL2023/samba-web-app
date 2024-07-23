@@ -1,6 +1,6 @@
-<div class="container-fluid h-full ">
+<div class="container-fluid h-full">
     <div class="flex gap-5 flex-column md:flex-row">
-        <div class="col">
+        <div class="col-12 md:col-4">
             <div class="card border-round-lg center justify-content-center p-0" style="width: 100%;">
                 <div class="align-content-center justify-content-center flex">
                     <img src="../../../assets/layout/images/ban.jpg" width="100%" height="150px" alt="">
@@ -12,75 +12,64 @@
                     <div class="w-full">
                         <ul class="list-none p-0 m-0 w-full">
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
-                                <div class="text-500 w-[40%]  font-medium">Noms : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"> <span class="text-500 w-full  font-bold text-black-alpha-80">{{account?.lastName}} </span></div>
+                                <div class="text-500 w-[40%] font-medium">Noms : </div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.lastName}}</span></div>
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
-                                <div class="text-500 w-[40%]   font-medium">Prenoms : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"> <span class="text-500 w-full  font-bold text-black-alpha-80">{{account?.firstName}}</span></div>
+                                <div class="text-500 w-[40%] font-medium">Prenoms : </div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.firstName}}</span></div>
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
-                                <div class="text-500 w-[40%]   font-medium">Email : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"> <span class="text-500 w-full  font-bold text-black-alpha-80">{{account?.email}}</span></div>
+                                <div class="text-500 w-[40%] font-medium">Email : </div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.email}}</span></div>
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
-                                <div class="text-500 w-[40%]   font-medium">Langue : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"> <span class="text-500 w-full  font-bold text-black-alpha-80">{{account.langKey }}</span></div>
+                                <div class="text-500 w-[40%] font-medium">Langue : </div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account.langKey}}</span></div>
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
-                                <div class="text-500 w-[40%]   font-medium">Role : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"> <span class="text-500 w-full  font-bold text-black-alpha-80">{{getAuthoritiesAsText()}}</span></div>
+                                <div class="text-500 w-[40%] font-medium">Role : </div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{getAuthoritiesAsText()}}</span></div>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-12 md:col-8">
             <p-tabView>
                 <p-tabPanel header="Liste des Permissions">
                     <p-accordion [activeIndex]="0">
-
-                    <p-accordionTab *ngFor="let rule of account.rules">
-                        <ng-template pTemplate="header">
-                            <span class="flex align-items-center gap-2 w-full">
-                                <span class="font-bold white-space-nowrap">{{rule.module}} </span>
-                                <p-badge value="{{rule?.permissions.length}}" class="ml-auto" />
-                            </span>
-                        </ng-template>
-                        <p-table  [value]="rule?.permissions" [tableStyle]="{'min-width': '50rem'}">
-                            <ng-template pTemplate="header" style="background-color: #2E394B !important">
-                                <tr style="width: 10% !important;">
-                                    <th pSortableColumn="index"  style="width: 5% !important;">
-                                        <div class="flex justify-content-between align-items-center">
-                                            #
-                                        </div>
-                                    </th>
-                                    <th  pSortableColumn="libelle" class="col-9">
-                                        permissions
-                                    </th>
-                                    <th  pSortableColumn="haveAccess" class="col-9">
-                                        Access
-                                    </th>
-                                </tr>
+                        <p-accordionTab *ngFor="let rule of account.rules">
+                            <ng-template pTemplate="header">
+                                <span class="flex align-items-center gap-2 w-full">
+                                    <span class="font-bold white-space-nowrap">{{rule.module}}</span>
+                                    <p-badge value="{{rule?.permissions.length}}" class="ml-auto"></p-badge>
+                                </span>
                             </ng-template>
-                            <ng-template pTemplate="body"let-permission let-rowIndex="rowIndex">
-                                <tr>
-                                    <td>
-                                        {{rowIndex + 1}}
-                                    </td>
-                                    <td>
-                                        {{permission.libelle}}
-                                    </td>
-                                    <td>
-                                        <div class=" d-flex">
-                                            <p-checkbox [(ngModel)]="permission.haveAccess" (onChange)="updatePermission(permission.id,$event)" [binary]="true" inputId="binary"></p-checkbox>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </p-accordionTab>
+                            <p-table [value]="rule?.permissions" [tableStyle]="{'min-width': '50rem'}">
+                                <ng-template pTemplate="header" style="background-color: #2E394B !important">
+                                    <tr style="width: 10% !important;">
+                                        <th pSortableColumn="index" style="width: 5% !important;">
+                                            <div class="flex justify-content-between align-items-center">#</div>
+                                        </th>
+                                        <th pSortableColumn="libelle" class="col-9">Permissions</th>
+                                        <th pSortableColumn="haveAccess" class="col-9">Access</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-permission let-rowIndex="rowIndex">
+                                    <tr>
+                                        <td>{{rowIndex + 1}}</td>
+                                        <td>{{permission.libelle}}</td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <p-checkbox [(ngModel)]="permission.haveAccess" (onChange)="updatePermission(permission.id, $event)" [binary]="true" inputId="binary"></p-checkbox>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </p-accordionTab>
                     </p-accordion>
                 </p-tabPanel>
 
@@ -135,6 +124,3 @@
         </div>
     </div>
 </div>
-
-
- 

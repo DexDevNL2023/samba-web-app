@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from '../app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
+import { Column } from '../models/column.model';
 
 @Component({
   selector: 'app-generic-crud',
@@ -52,7 +53,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   imageUrlPreview: string | ArrayBuffer | null = null;
 
   // Configuration des colonnes de la table
-  cols: any[] = [];
+  cols: Column[] = [];
 
   constructor(
     private messageService: MessageService,
@@ -68,12 +69,36 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   ngOnInit() {
     // Initialise les colonnes de la table
-    this.getColumns();
+    this.initColumns();
+    this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
 
     // Simulate fetching data from a service
     this.fetchBranches();
+  }
+
+  /**
+   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
+   */
+  protected abstract assignColumnValues(): void;
+
+  // Méthode abstraite à implémenter pour initialiser les colonnes de la table
+  protected abstract initColumns(): void;
+
+  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
+  protected abstract getRequiredFields(): string[];
+  
+  /**
+   * Met à jour les valeurs d'une colonne spécifique.
+   * @param field - Le champ de la colonne à mettre à jour.
+   * @param values - Les valeurs à assigner à la colonne.
+   */
+  private setColumnValues(field: string, values: any[]) {
+    const column = this.cols.find(col => col.field === field);
+    if (column) {
+      column.values = values;
+    }
   }
 
   fetchBranches(): void {
@@ -91,12 +116,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       });
     }
   }
-
-  // Méthode abstraite à implémenter pour initialiser les colonnes de la table
-  protected abstract getColumns(): void;
-
-  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
-  protected abstract getRequiredFields(): string[];
 
   private updateBreadcrumb() {
     // Mettre à jour le breadcrumb en fonction du contexte
