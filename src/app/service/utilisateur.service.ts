@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable } from 'rxjs';
-import { dataUser, UserExtra } from '../models/user-extra.model';
 import { MedicalRecord } from '../models/medical-record.model';
 import { Notification } from '../models/notification.model';
 import { Souscription } from '../models/souscription.model';
 import { GenericCrudService } from './generic.crud.service';
 import { Registrant } from '../models/registrant.model';
+import { UserData } from '../models/user-data.model';
+import { UserExtra } from '../models/user-extra.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserExtraService extends GenericCrudService<UserExtra> {
@@ -36,7 +37,7 @@ export class UserExtraService extends GenericCrudService<UserExtra> {
     }
 
     // Méthode pour récupérer les données combinées d'un utilisateur
-    getUserDetails(userId: number): Observable<dataUser> {
+    getUserDetails(userId: number): Observable<UserData> {
         return forkJoin({
             registrant: this.getRegistrant(userId),
             dossiers: this.getMedicalRecords(userId),

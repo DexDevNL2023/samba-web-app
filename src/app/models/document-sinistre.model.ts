@@ -6,6 +6,6 @@ export interface DocumentSinistre extends BaseEntity {
   description?: string | null;
   url?: string | null;
   dateTelechargement?: Date | null;
-  sinistre?: Pick<Sinistre, 'id' | 'numeroSinistre' | 'raison' | 'dateDeclaration' | 'dateTraitement' | 'status'> | null;
+  sinistre?: Pick<Sinistre, 'id'> | null;
 }
   

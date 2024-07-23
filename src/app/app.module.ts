@@ -230,13 +230,7 @@ import { DashboardService } from './service/dashboard.service';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        HttpClientModule
     ],
-    exports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-      ],
     declarations: [
         AppComponent,
         AppMainComponent,

@@ -5,6 +5,6 @@ export interface MedicalDocument extends BaseEntity {
   nom?: string | null;
   description?: string | null;
   url?: string | null;
-  dossier?: Pick<MedicalRecord, 'id' | 'numMedicalRecord' | 'dateUpdated'> | null;
+  dossier?: Pick<MedicalRecord, 'id'> | null;
 }
   

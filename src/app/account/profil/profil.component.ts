@@ -6,8 +6,8 @@ import { Permission } from '../../models/permission.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from 'src/app/app.main.component';
 import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
-import { dataUser } from 'src/app/models/user-extra.model';
 import { UserExtraService } from '../../service/utilisateur.service';
+import { UserData } from '../../models/user-data.model';
 
 @Component({
   selector: 'app-profil',
@@ -16,8 +16,9 @@ import { UserExtraService } from '../../service/utilisateur.service';
 export class ProfilComponent implements OnInit{
     account: Account | null = null; // Compte utilisateur actuel
     form: FormGroup | null = null;
-    data: dataUser | null = {
+    data: UserData | null = {
       registrant: {
+        id: 1,
         branche: { id: 1,  ville: 'Douala'},
         partenaire: { id: 1, nom: 'Pharmacie du soliel' }
       },
@@ -63,7 +64,7 @@ export class ProfilComponent implements OnInit{
             const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
             if (userId) {
               if(this.hasAuthority(['ROLE_CLIENT'])) {
-                this.userService.getUserDetails(userId).subscribe((data: dataUser) => {
+                this.userService.getUserDetails(userId).subscribe((data: UserData) => {
                   this.data = data;
                 });
               }

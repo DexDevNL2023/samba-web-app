@@ -1,6 +1,5 @@
 import { BaseEntity } from "./base-entity.model";
 import { MedicalRecord } from "./medical-record.model";
-import { Notification } from "./notification.model";
 import { Registrant } from "./registrant.model";
 import { Souscription } from "./souscription.model";
 
@@ -28,10 +27,9 @@ export interface UserExtra extends BaseEntity {
   pays?: string | null;
   authorities: string[] | null;
   signature?: string | null;
-  registrant?: Pick<Registrant, 'id' | 'branche' | 'partenaire'> | null;
-  dossiers?: Pick<MedicalRecord, 'id' | 'numMedicalRecord' | 'dateUpdated'>[] | null;
-  souscriptions?: Pick<Souscription, 'id' | 'numeroSouscription' | 'dateSouscription' | 'dateExpiration' | 'status' | 'frequencePaiement'>[] | null;
+  registrant?: Pick<Registrant, 'id'> | null;
+  dossiers?: Pick<MedicalRecord, 'id'>[] | null;
+  souscriptions?: Pick<Souscription, 'id'>[] | null;
 }
 
-export type singleUser = Omit<UserExtra, 'registrant' | 'dossiers' | 'souscriptions'>;
-export type dataUser = Pick<UserExtra, 'registrant' | 'dossiers' | 'souscriptions'>;
+export type liteUser = Omit<UserExtra, 'registrant' | 'dossiers' | 'souscriptions'>;

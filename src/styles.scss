@@ -21,3 +21,31 @@
 :host ::ng-deep .p-toast{
     z-index:99999;
 }
+
+.p-text-bold {
+    font-weight: bold;
+}
+
+.block {
+    display: block;
+}
+
+.font-normal {
+    font-weight: normal; /* ou ajustez selon vos besoins */
+}
+
+.text-900 {
+    color: #000; /* ou la couleur que vous souhaitez utiliser */
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem; /* ajustez selon vos besoins */
+}
+
+.align-right {
+    display: flex;
+    justify-content: flex-end;
+}
+.button-wrapper {
+    margin-left: 0.5rem; /* Espace entre les boutons */
+}

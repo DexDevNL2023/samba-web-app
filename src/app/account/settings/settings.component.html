@@ -136,20 +136,17 @@
 
         <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
           <label for="signature" class="block font-normal text-900 mb-2">Signature</label>
+          <img name="signature" id="signature" formControlName="signature" src="{{ signatureUrlPreview }}" alt="Preview"
+          style="max-width: 200px; max-height: 200px;" size="xlarge" />
           <p-fileUpload
-            name="signature"
-            chooseLabel="Choisir"
-            uploadLabel="Télécharger"
-            cancelLabel="Annuler"
-            accept="image/*"
-            (onSelect)="onFileSelected('signature', $event)"
-            [showUploadButton]="true"
-            [showCancelButton]="true"
-            [auto]="true"
-          ></p-fileUpload>
-          <div *ngIf="signatureUrlPreview" class="mt-2">
-            <img [src]="signatureUrlPreview" alt="Preview" style="max-width: 100px; max-height: 100px;" />
-          </div>
+              mode="basic"
+              for="signature"
+              chooseLabel="Upload a signature"
+              accept="image/*"
+              (onSelect)="onFileSelected('signature', $event)"
+              [showUploadButton]="false"
+              [showCancelButton]="true"
+              [auto]="true"></p-fileUpload>
         </div>
 
         <div class="mb-4">
@@ -187,24 +184,24 @@
             optionLabel="label"
             dataKey="value"
             appendTo="body"
-            data-cy="authorities"
-          ></p-multiSelect>
+            data-cy="authorities">
+            </p-multiSelect>
         </div>
 
-        <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
-          <label for="activated" class="block font-normal text-900 mb-2">Activé/Descactivé le compte de l'utilisateur</label>
+        <div class="mb-4">
+          <label for="activated" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
           <p-checkbox
             id="activated"
             name="activated"
             formControlName="activated"
             binary="true"
-            [label]="'Activé'"
+            [label]="'Activé/Descactivé'"
             [styleClass]="'p-mr-2'"
           ></p-checkbox>
         </div>
 
         <div class="flex align-items-center">
-          <button pButton pRipple label="Sauvegarder" class="p-element p-ripple w-auto mt-3 p-button p-component" [disabled]="!settingsForm.valid">
+          <button pButton pRipple class="p-element p-ripple w-auto mt-3 p-button p-component" [disabled]="!settingsForm.valid">
             <span class="p-button-label">Sauvegarder</span>
             <span class="p-ink"></span>
           </button>

@@ -14,6 +14,6 @@ export interface Garantie extends BaseEntity {
   dateDebut?: Date | null;
   dateFin?: Date | null;
   status?: keyof typeof GarantieStatus | null;
-  polices?: Pick<PoliceAssurance, 'id' | 'numeroPolice'| 'label' | 'estDeTypeSante' | 'montantSouscription'>[] | null;
+  polices?: Pick<PoliceAssurance, 'id'>[] | null;
 }
   

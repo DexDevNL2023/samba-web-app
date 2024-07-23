@@ -19,5 +19,5 @@ export interface Paiement extends BaseEntity {
   montant?: number | null;
   type?: keyof typeof PaymentType | null;
   status?: keyof typeof PaymentStatus | null;
-  souscription?: Pick<Souscription, 'id' | 'numeroSouscription' | 'dateSouscription' | 'dateExpiration' | 'status' | 'frequencePaiement'> | null;
+  souscription?: Pick<Souscription, 'id'> | null;
 }

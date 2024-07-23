@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Company } from '../../models/company.model';
 import { CompanyService } from '../../service/company.service';
@@ -8,6 +8,7 @@ import { HeaderPrintData } from '../../models/headerPrintData';
 @Component({
   selector: 'app-demo-portrait',
   standalone: true,
+  imports: [ CommonModule ],
   templateUrl: './portrait.demo.component.html',
   styleUrls: ['./portrait.demo.component.scss']
 })
