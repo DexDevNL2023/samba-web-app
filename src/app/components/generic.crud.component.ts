@@ -285,37 +285,41 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       }
   }
 
+  // Improved error handling in onFileChange()
   async onFileChange($event: any) {
-      let listes: any[] = [];
-      try {
-          let input = $event.files as FileList;
-          if (input.length > 0) {
-          const data = await readXlsxFile(input[0]);
-          data.map((row) => {
-              type MyObject = {};
-              if (data[0] != row) {            
-              let item: MyObject = {};
-              for (let index = 0; index < data[0].length; index++) {
-                  const entete = data[0][index];
-                  const value = row[index];
-                  item[''+entete+''] = value;   
-              }
-              listes.push(item);
-              }
-          });
-          console.log(listes);
-          this.baseService.create(this.importLink, listes).subscribe(data => {
-              console.log(data);
-              if(data){
-               this.ngOnInit();
-              }
-          });
-          } else {
-              this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Fichier incorrect!", life: 5000 });
+    try {
+      let input = $event.files as FileList;
+      if (input.length > 0) {
+        const data = await readXlsxFile(input[0]);
+        const processedData = this.processExcelData(data);
+        this.baseService.create(this.importLink, processedData).subscribe(
+          data => {
+            console.log(data);
+            this.ngOnInit();
+          },
+          error => {
+            this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Échec de l\'importation.', life: 5000 });
           }
-      } catch (e) {
-          this.messageService.add({ severity: 'error', summary: 'Erreur', detail: e, life: 5000 });
+        );
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: "Fichier incorrect!", life: 5000 });
       }
+    } catch (e) {
+      this.messageService.add({ severity: 'error', summary: 'Erreur', detail: e.message || 'Erreur inconnue', life: 5000 });
+    }
+  }
+
+  // Helper method for processing Excel data
+  private processExcelData(data: any[]): any[] {
+    let listes: any[] = [];
+    data.slice(1).forEach(row => {
+      let item: any = {};
+      row.forEach((value, index) => {
+        item[data[0][index]] = value;
+      });
+      listes.push(item);
+    });
+    return listes;
   }
 
   // Méthode pour éditer un élément spécifique
