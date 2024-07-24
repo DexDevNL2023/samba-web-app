@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
@@ -12,12 +12,15 @@ import { Assurance, InsuranceType } from '../../models/assurance.model';
 import { PoliceAssurance } from '../../models/police-assurance.model';
 import { Rapport, RapportType } from '../../models/rapport.model';
 import { AssuranceService } from '../../service/assurance.service';
+import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
 
 @Component({
-  selector: 'app-generic-crud',
+  selector: 'app-assurance-crud',
   templateUrl: './../generic.crud.component.html'
 })
 export class AssuranceCrudComponent implements OnInit {
+  @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
+  printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
   displayItemDialog: boolean = false; 
   selectedItemView: any;
@@ -746,14 +749,7 @@ export class AssuranceCrudComponent implements OnInit {
     this.baseService.generateExcel(this.entityName, this.items);
   }
 
-  protected printListe() {
-    console.log("call service to print");
-    this.baseService.printListe(this.entityName, document.getElementById('toPrint').innerHTML);
-  }
-
-  protected refreshPage(data){
-    if(data){
-     this.ngOnInit();
-    }
+  showPrintPreview() {
+      this.printPreviewVisible = true;
   }
 }

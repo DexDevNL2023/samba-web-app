@@ -143,6 +143,7 @@ import { MessageService } from 'primeng/api';
 import { AppConfigComponent } from './app.config.component';
 import { DashboardService } from './service/dashboard.service';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
+import { PortraitComponent } from './shared/portrait/portrait.demo.component';
 
 @NgModule({
     imports: [
@@ -253,6 +254,7 @@ import { AssuranceCrudComponent } from './components/assurance/assurance.crud.co
         ChatNotificationComponent,
         AppBreadcrumbComponent,
         AssuranceCrudComponent,
+        PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

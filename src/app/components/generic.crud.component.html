@@ -14,7 +14,7 @@
 
 				<ng-template pTemplate="right">
 					<button severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
-						(click)="printListe()" pTooltip="PRINT" tooltipPosition="bottom"></button>
+						(click)="showPrintPreview()" pTooltip="PRINT" tooltipPosition="bottom"></button>
 					<button severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
 						(click)="dt.exportCSV()" pTooltip="CSV" tooltipPosition="bottom"></button>
 					<button severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
@@ -612,4 +612,8 @@
         </div>
     </div>
 </div>
-<app-demo-portrait [titlePage]="entityName" [tableHeaders]="cols" [tableRows]="items"></app-demo-portrait>
+<!-- app-invoice.component.html -->
+<p-dialog header="Print Preview" [(visible)]="printPreviewVisible" [modal]="true" [style]="{width: '80vw'}"
+	[modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+	<app-demo-portrait [cols]="cols" [items]="items" [titlePage]="entityName"></app-demo-portrait>
+</p-dialog>

@@ -49,3 +49,61 @@
 .button-wrapper {
     margin-left: 0.5rem; /* Espace entre les boutons */
 }
+
+
+
+.entete {
+    text-align: center;
+    margin: auto;
+    font-size: 0.87em;
+    font-weight: bold;
+    width: auto;
+}
+
+.left, .center, .right {
+    vertical-align: top;
+}
+
+.left, .right {
+    width: 33%; /* Ajustez la largeur selon vos besoins */
+}
+
+.center {
+    width: 34%; /* Ajustez la largeur selon vos besoins */
+}
+
+.table {
+    width: 100%;
+}
+
+.img {
+    height: 60px; /* Ajustez la hauteur selon vos besoins */
+}
+
+.titre {
+    text-align: center;
+    text-decoration: wavy;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+.invoice-items table {
+    width: 100%;
+}
+
+.invoice-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.footer-text {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+.invoice-details {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
