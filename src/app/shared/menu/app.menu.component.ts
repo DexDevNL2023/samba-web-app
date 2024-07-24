@@ -46,7 +46,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Gestion des Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
                     { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/document-sinistres'] },
                 ]
             },
