@@ -13,7 +13,7 @@ export class DocumentSinistreService extends GenericCrudService<DocumentSinistre
     }
 
     // Méthode pour récupérer le sinistre associé à un document sinistre spécifique
-    getSinistre(documentId: number): Observable<Sinistre> {
-        return this.http.get<Sinistre>(`${this.baseUrl}/${this.endpoint}/${documentId}/sinistre`);
+    getAllSinistres(): Observable<Sinistre[]> {
+        return this.http.get<Sinistre[]>(`${this.baseUrl}/${this.endpoint}/all/sinistre`);
     }
 }

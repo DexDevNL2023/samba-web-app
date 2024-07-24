@@ -15,6 +15,7 @@ import { ProfilComponent } from './account/profil/profil.component';
 import { ChatNotificationComponent } from './account/notification/chat-notification.component';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
+import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
  
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { BrancheCrudComponent } from './components/branche/branche.crud.componen
                     { path: '', component: DashboardComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT'] } },
                     { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT'] } },
                     { path: 'branches', component: BrancheCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR'] } },
+                    { path: 'document-sinistres', component: DocumentSinistreCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT'] } },
                     { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },

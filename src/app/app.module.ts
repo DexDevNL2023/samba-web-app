@@ -145,6 +145,7 @@ import { DashboardService } from './service/dashboard.service';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { PortraitComponent } from './shared/portrait/portrait.demo.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
+import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
 
 @NgModule({
     imports: [
@@ -256,6 +257,7 @@ import { BrancheCrudComponent } from './components/branche/branche.crud.componen
         AppBreadcrumbComponent,
         AssuranceCrudComponent,
         BrancheCrudComponent,
+        DocumentSinistreCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -17,11 +17,11 @@ export interface Sinistre extends BaseEntity {
   dateDeclaration?: Date | null;
   dateTraitement?: Date | null;
   status?: keyof typeof ClaimStatus | null;
-  montantReclame?: number | null;
+  montantSinistre?: number | null;
   montantApprouve?: number | null;
-  souscription?: Pick<Souscription, 'id'> | null;
-  fournisseur?: Pick<Fournisseur, 'id'> | null;
-  prestationSoin?: Pick<PrestationSoin, 'id'> | null;
-  reclamations?: Pick<Reclamation, 'id'>[] | null;
-  documents?: Pick<DocumentSinistre, 'id'>[] | null;
+  souscription?: number | null;
+  fournisseur?: number | null;
+  prestationSoin?: number | null;
+  reclamations?: number[] | null;
+  documents?: number[] | null;
 }

@@ -34,7 +34,7 @@ export class AppMenuComponent implements OnInit {
             { moduleKey: 'RECLAMATION_MODULE', label: 'Gestion des Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] },
             { moduleKey: 'SANTE_MODULE', label: 'Gestion des Dossiers Medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
         ];
-        
+         
         // Menu pour l'Administrateur :
         this.adminMenu = [
             { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] },
@@ -42,7 +42,14 @@ export class AppMenuComponent implements OnInit {
             { moduleKey: 'BRANCHE_MODULE', label: 'Gestions des Branches', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/branches'] },
             { moduleKey: 'ASSURANCE_MODULE', label: 'Gestion des Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
             { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Gestion des Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-            { moduleKey: 'SINISTRE_MODULE', label: 'Gestion des Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+            {
+                label: 'Gestion des sinistres',
+                icon: 'pi pi-fw pi-exclamation-triangle',
+                items: [
+                    { moduleKey: 'SINISTRE_MODULE', label: 'Gestion des Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/document-sinistres'] },
+                ]
+            },
             { moduleKey: 'RECLAMATION_MODULE', label: 'Gestion des Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
             { moduleKey: 'REPPORTING_MODULE', label: 'Générer vos Rapports', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
