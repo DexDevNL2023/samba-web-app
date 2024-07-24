@@ -1,4 +1,3 @@
-import { Assurance } from "./assurance.model";
 import { BaseEntity } from "./base-entity.model";
 
 export enum RapportType {
@@ -13,5 +12,5 @@ export interface Rapport extends BaseEntity {
   type?: keyof typeof RapportType | null;
   dateGeneration?: Date | null;
   url?: string | null;
-  assurance?: Pick<Assurance, 'id'> | null;
+  assurance?: number | null;
 }

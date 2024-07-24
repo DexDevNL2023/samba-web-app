@@ -142,6 +142,7 @@ import { AppBreadcrumbComponent } from './shared/breadcrumb/app.breadcrumb.compo
 import { MessageService } from 'primeng/api';
 import { AppConfigComponent } from './app.config.component';
 import { DashboardService } from './service/dashboard.service';
+import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 
 @NgModule({
     imports: [
@@ -251,6 +252,7 @@ import { DashboardService } from './service/dashboard.service';
         ProfilComponent,
         ChatNotificationComponent,
         AppBreadcrumbComponent,
+        AssuranceCrudComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

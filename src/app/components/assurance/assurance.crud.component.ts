@@ -1,34 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { Table, TableModule } from 'primeng/table'; // Import du composant Table de PrimeNG
-import { GenericCrudService } from '../service/generic.crud.service'; // Import du service GenericCrudService
-import { BaseEntity } from '../models/base-entity.model'; // Import du modèle NewBaseEntity
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; // Import des modules Angular pour la construction de formulaires
-import { AppMainComponent } from '../app.main.component';
-import { DialogModule } from 'primeng/dialog';
-import { ToolbarModule } from 'primeng/toolbar';
-import { AccountService } from '../core/auth/account.service';
-import { BaseService } from '../service/base.service';
-import { PortraitComponent } from '../shared/portrait/portrait.demo.component';
-import { EntityByBranch } from '../models/entity-by-branch.model';
+import { Table } from 'primeng/table';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AppMainComponent } from '../../app.main.component';
+import { AccountService } from '../../core/auth/account.service';
+import { BaseService } from '../../service/base.service';
+import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { AppRoutingModule } from '../app-routing.module';
-import { BrowserModule } from '@angular/platform-browser';
-import { Column } from '../models/column.model';
+import { Column } from '../../models/column.model';
+import { Assurance, InsuranceType } from '../../models/assurance.model';
+import { PoliceAssurance } from '../../models/police-assurance.model';
+import { Rapport, RapportType } from '../../models/rapport.model';
+import { AssuranceService } from '../../service/assurance.service';
 
 @Component({
   selector: 'app-generic-crud',
-  standalone: true,
-  imports: [ CommonModule, RouterModule, BrowserModule, AppRoutingModule, ReactiveFormsModule, PortraitComponent, ToolbarModule, TableModule, DialogModule ],
-  templateUrl: './generic.crud.component.html', // Template HTML pour ce composant
-  styleUrls: ['./generic.crud.component.scss'] // Fichier de style CSS pour ce composant
+  templateUrl: './../generic.crud.component.html'
 })
-export abstract class GenericCrudComponent<Entity extends BaseEntity> implements OnInit {
-  branches: EntityByBranch<Entity>[] = [];
-  data: any[] = [];
-  items: Entity[] = [];
+export class AssuranceCrudComponent implements OnInit {
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
   displayItemDialog: boolean = false; 
   selectedItemView: any;
@@ -37,71 +26,234 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Entity; // Élément de type Entity actuellement sélectionné ou en cours de modification
-  selectedItems: Entity[] = []; // Tableau d'éléments de type Entity sélectionnés
+  selectedItem: Assurance; // Élément de type Assurance actuellement sélectionné ou en cours de modification
+  selectedItems: Assurance[] = []; // Tableau d'éléments de type Assurance sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
   entityName: string = '';
   moduleKey: string = '';
+  isTable = true;
   expandedRows: { [key: string]: boolean } = {};
   isExpanded = false;
-  isTable = true;
   formGroup: FormGroup; // Groupe de contrôles de formulaire
   // Déclaration de la variable loading pour contrôler l'affichage du skeleton loader
   loading: boolean = true;
   imageUrlPreview: string | ArrayBuffer | null = null;
-
   // Configuration des colonnes de la table
-  cols: Column[] = [];
+  cols: Column[] = [
+    { field: 'id', header: 'ID', type: 'id' },
+    { field: 'nom', header: 'Name', type: 'text' },
+    { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'description', header: 'Description', type: 'textarea' },
+    { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'numeroPolice', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+        { field: 'label', header: 'Libelle', type: 'text' },
+        { field: 'montantSouscription', header: 'Cout', type: 'currency' }
+      ]
+    },
+    { field: 'rapports', header: 'Rapports', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'titre', header: 'Intitule', type: 'text' },
+        { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+        { field: 'dateGeneration', header: 'Gener le', type: 'date' }
+      ]
+    }
+  ];
+  
+  items: Assurance[] = [
+    {
+      id: 1,
+      nom: 'Assurance Santé',
+      description: 'Assurance pour les soins médicaux',
+      type: InsuranceType.PERSONNE,
+      polices: [1,4,5],
+      rapports: [1,2]
+    },
+    {
+      id: 2,
+      nom: 'Assurance Automobile',
+      description: 'Assurance pour les véhicules',
+      type: InsuranceType.BIEN,
+      polices: [2,5],
+      rapports: [2]
+    }
+  ];
+  branches: EntityByBranch<Assurance>[] = [
+      {
+          name: 'Branch A',
+          partenaires: [
+              {
+                  name: 'Registrant A1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      },
+      {
+          name: 'Branch B',
+          partenaires: [
+              {
+                  name: 'Registrant B1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      }
+  ];
+  polices: PoliceAssurance[] = [
+    {
+      id: 1,
+      numeroPolice: 'P001',
+      label: 'Police Assurance Santé',
+      estDeTypeSante: true,
+      conditions: 'Condition 1',
+      percentage: 80,
+      montantSouscription: 50000,
+      assurance: 1,
+      garanties: [1],
+      souscriptions: [1,2]
+    },
+    {
+      id: 2,
+      numeroPolice: 'P002',
+      label: 'Police Assurance Automobile',
+      estDeTypeSante: false,
+      conditions: 'Condition 2',
+      percentage: 70,
+      montantSouscription: 30000,
+      assurance: 2,
+      garanties: [2,3],
+      souscriptions: [2,3,4]
+    }
+  ];
+  rapports: Rapport[] = [
+    {
+      id: 1,
+      titre: 'Rapport de Performance',
+      description: 'Description du rapport de performance',
+      type: RapportType.PERFORMANCE,
+      dateGeneration: new Date(),
+      url: 'http://example.com/performance',
+      assurance: 1
+    },
+    {
+      id: 2,
+      titre: 'Rapport de Paiement',
+      description: 'Description du rapport de paiement',
+      type: RapportType.PAIEMENT,
+      dateGeneration: new Date(),
+      url: 'http://example.com/paiement',
+      assurance: 2
+    }
+  ];
+
+  // Liste pour InsuranceType
+  insuranceTypes = [
+    { label: 'Personne', value: InsuranceType.PERSONNE },
+    { label: 'Bien', value: InsuranceType.BIEN },
+    { label: 'Agricole', value: InsuranceType.AGRICOLE }
+  ];
+
+  // Liste pour RapportType
+  rapportTypes = [
+    { label: 'Performance', value: RapportType.PERFORMANCE },
+    { label: 'Paiement', value: RapportType.PAIEMENT },
+    { label: 'Sinistre', value: RapportType.SINISTRE }
+  ];
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: GenericCrudService<Entity>, // Service pour les opérations CRUD génériques
+    private service: AssuranceService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
+    this.entityName = 'Assurance';
+    this.componentLink = '/admin/assurances';
+    this.importLink = '/import-assurance';
+    this.moduleKey = 'ASSURANCE_MODULE';
+    this.isTable = true;
   }
 
   ngOnInit() {
+    this.initializeData();
     // Initialise les colonnes de la table
-    this.initColumns();
+    //this.loadPolices();
+    //this.loadRapports();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
 
     // Simulate fetching data from a service
-    this.fetchBranches();
+    //this.fetchBranches();
+  }
+
+  // Sample data initialization
+  private initializeData(): void {
+    this.loading = false;
+  }
+  
+  // Chargement des polices associés à une assurance
+  loadPolices(): void {
+    this.service.getAllPolices().subscribe((polices: PoliceAssurance[]) => {
+        this.polices = polices;
+    });
+  }
+
+  // Chargement des rapports associés à une assurance
+  loadRapports(): void {
+    this.service.getAllRapports().subscribe((rapports: Rapport[]) => {
+        this.rapports = rapports;
+    });
+  }
+
+  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
+  protected getRequiredFields(): string[] { // Ajoutez le modificateur override
+    return ['nom', 'type'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
-  protected abstract assignColumnValues(): void;
-
-  // Méthode abstraite à implémenter pour initialiser les colonnes de la table
-  protected abstract initColumns(): void;
-
-  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
-  protected abstract getRequiredFields(): string[];
+  protected assignColumnValues(): void { // Ajoutez le modificateur override
+    this.setColumnValues('type', this.insuranceTypes);
+    this.setColumnValues('polices', this.polices);
+    this.setColumnValues('rapports', this.rapports);
+    this.setSubFieldValues('rapports', 'type', this.rapportTypes);
+  }
   
   /**
    * Met à jour les valeurs d'une colonne spécifique.
    * @param field - Le champ de la colonne à mettre à jour.
    * @param values - Les valeurs à assigner à la colonne.
    */
-  private setColumnValues(field: string, values: any[]) {
+  protected setColumnValues(field: string, values: any[]) {
     const column = this.cols.find(col => col.field === field);
     if (column) {
       column.values = values;
     }
   }
 
-  fetchBranches(): void {
+  /**
+   * Met à jour les valeurs d'un sous-champ spécifique dans les colonnes.
+   * @param parentField - Le champ parent contenant le sous-champ.
+   * @param subField - Le sous-champ à mettre à jour.
+   * @param values - Les valeurs à assigner au sous-champ.
+   */
+  protected setSubFieldValues(parentField: string, subField: string, values: any[]) {
+    const parentColumn = this.cols.find(col => col.field === parentField);
+    if (parentColumn && parentColumn.subfield) {
+      const subColumn = parentColumn.subfield.find(sub => sub.field === subField);
+      if (subColumn) {
+        subColumn.values = values;
+      }
+    }
+  }
+
+  protected fetchBranches(): void {
     // Au chargement du composant, récupère tous les éléments via le service
     if(this.isTable) {
       this.service.query().subscribe(data => {
@@ -117,7 +269,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
   }
 
-  private updateBreadcrumb() {
+  protected updateBreadcrumb() {
     // Mettre à jour le breadcrumb en fonction du contexte
     const breadcrumbItems = [
       { label: 'Home', routerLink: '/admin' },
@@ -127,13 +279,105 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.appMain.setBreadcrumbItems(breadcrumbItems); // Call the public method instead
   }
 
+  /**
+   * Ouvre la vue d'un élément spécifique à partir de l'ID et du champ.
+   * @param item - L'objet contenant les informations sur le champ et l'ID.
+   */
+  openItemView(item: { field: string, id: number }) {
+      if (item && item.id != null && item.field) {
+          const { id, field } = item;
+
+          // Trouver la colonne correspondante à partir des colonnes configurées
+          const column = this.cols.find(col => col.field === field);
+
+          if (column) {
+              // Assurer que la colonne a des valeurs à filtrer
+              const values = column.values;
+
+              if (values) {
+                  // Filtrer l'élément en fonction des IDs et du champ clé
+                  const filteredData = this.filterItemById(id, values, 'id');
+
+                  if (filteredData) {
+                      // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
+                      this.selectedItemView = { cols: column.subfield || [], data: filteredData };
+                      this.displayItemDialog = true;
+                  } else {
+                      console.error(`No item found with ID: ${id} in field: ${field}`);
+                  }
+              } else {
+                  console.error(`No values found for field: ${field}`);
+              }
+          } else {
+              console.error(`Column with field: ${field} not found.`);
+          }
+      } else {
+          console.error('Invalid item parameters provided.');
+      }
+  }
+
+  /**
+   * Retourne l'élément correspondant à l'ID fourni.
+   * @param id - ID à rechercher.
+   * @param values - Liste des éléments à filtrer.
+   * @param key - Clé de l'élément à comparer (par exemple, 'id').
+   * @returns - L'élément correspondant à l'ID ou `null` si aucun élément n'est trouvé.
+   */
+  private filterItemById(id: number, values: any[], key: string): any | null {
+      return values.find(item => item[key] === id) || null;
+  }
+
+  /**
+   * Ouvre la vue de la liste des éléments en filtrant selon les IDs fournis.
+   * @param item - L'objet contenant les colonnes et les données de l'élément.
+   */
+  openItemListView(item: { field: string, ids: number[] }) {
+      if (item && item.ids && item.field) {
+          const ids = item.ids; // Liste des IDs à filtrer
+          const field = item.field; // Champ de type 'list'
+
+          // Trouver la colonne correspondante à partir des colonnes configurées
+          const column = this.cols.find(col => col.field === field);
+
+          if (column) {
+              // Assurer que la colonne a des valeurs à filtrer
+              const values = column.values;
+              if (values) {
+                  // Filtrer les éléments en fonction des IDs et du champ clé
+                  const filteredDatas = this.filterItemsByIds(ids, values, 'id');
+                  
+                  // Configurer la vue de la liste avec les colonnes et les données filtrées
+                  this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
+                  this.displayItemListDialog = true;
+              } else {
+                  console.error(`No values found for field: ${field}`);
+              }
+          } else {
+              console.error(`Column with field: ${field} not found.`);
+          }
+      } else {
+          console.error('Invalid item parameters provided.');
+      }
+  }
+
+  /**
+   * Retourne les éléments correspondant aux IDs fournis.
+   * @param ids - Liste des IDs à rechercher.
+   * @param values - Liste des éléments à filtrer.
+   * @param key - Clé de l'élément à comparer (par exemple, 'id').
+   * @returns - Liste des éléments correspondant aux IDs.
+   */
+  private filterItemsByIds(ids: number[], values: any[], key: string): any[] {
+      return values.filter(item => ids.includes(item[key]));
+  }
+
   // Method to calculate the total number of subscriptions for a given branch
-  calculateTotalSubscriptions(branch: EntityByBranch<Entity>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Assurance>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
   // Method to get the severity class based on the subscription status
-  getSeverity(status: string): string {
+  protected getSeverity(status: string): string {
     switch (status) {
       // Cas pour le statut de souscription
       case 'ACTIVE':
@@ -255,7 +499,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
   }
 
-  expandAll() {
+  protected expandAll() {
     this.isExpanded = !this.isExpanded;
 
     if (this.isExpanded) {
@@ -270,11 +514,11 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
   }
 
-  getAllFields() {
+  protected getAllFields() {
     return this.cols.map(col => col.field);
   }
 
-  onFileSelected(event: any): void {
+  protected onFileSelected(event: any): void {
       const file = event.files[0];
       if (file) {
           const reader = new FileReader();
@@ -286,7 +530,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Improved error handling in onFileChange()
-  async onFileChange($event: any) {
+  protected async onFileChange($event: any) {
     try {
       let input = $event.files as FileList;
       if (input.length > 0) {
@@ -310,7 +554,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Helper method for processing Excel data
-  private processExcelData(data: any[]): any[] {
+  protected processExcelData(data: any[]): any[] {
     let listes: any[] = [];
     data.slice(1).forEach(row => {
       let item: any = {};
@@ -322,20 +566,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     return listes;
   }
 
-  // Méthode pour éditer un élément spécifique
-  openItemView(item: { cols: any[], data: any }) {
-      this.selectedItemView = item;
-      this.displayItemDialog = true;
-  }
-
-  // Méthode pour éditer un élément spécifique
-  openItemListView(item: { cols: any[], data: any }) {
-      this.selectedItemListView = item;
-      this.displayItemListDialog = true;
-  }
-
   // Méthode privée pour créer les contrôles de formulaire requis
-  private createFormControls(): { [key: string]: FormControl } {
+  protected createFormControls(): { [key: string]: FormControl } {
       const controls: { [key: string]: FormControl } = {}; // Initialise un objet vide pour les contrôles de formulaire
       const requiredFields = this.getRequiredFields(); // Récupère la liste des champs requis
       console.log(requiredFields);
@@ -394,45 +626,45 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode privée pour mettre à jour les contrôles de formulaire avec les valeurs de l'élément en cours d'édition// Méthode privée pour mettre à jour les contrôles de formulaire lors de l'édition
-  private updateFormControls(): void {
+  protected updateFormControls(): void {
       this.getAllFields().forEach(field => {
           const value = this.selectedItem[field] || '';
           this.formGroup.get(field)?.setValue(value);
       });
   }
 
-  getEnumLabel(enumType: any, value: string) {
+  protected getEnumLabel(enumType: any, value: string) {
     const enumObj = enumType.find((e: any) => e.value === value);
     return enumObj ? enumObj.label : value;
   }
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
-  openNew() {
-    this.selectedItem = {} as Entity; // Initialise un nouvel élément
+  protected openNew() {
+    this.selectedItem = {} as Assurance; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour ouvrir le dialogue de suppression de plusieurs éléments
-  deleteSelectedItems() {
+  protected deleteSelectedItems() {
     this.displayDeleteItemsDialog = true; // Affiche le dialogue de suppression de plusieurs éléments
   }
 
   // Méthode pour éditer un élément spécifique
-  editItem(item: Entity) {
+  protected editItem(item: Assurance) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  deleteItem(item: Entity) {
+  protected deleteItem(item: Assurance) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
 
   // Méthode pour confirmer la suppression de plusieurs éléments sélectionnés
-  confirmDeleteSelected() {
+  protected confirmDeleteSelected() {
     this.displayDeleteItemsDialog = false; // Ferme le dialogue de suppression de plusieurs éléments
     this.selectedItems.forEach(selectedItem => {
       this.service.delete((selectedItem as any).id).subscribe(() => { // Supprime chaque élément sélectionné via le service
@@ -444,24 +676,24 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour confirmer la suppression d'un élément spécifique
-  confirmDelete() {
+  protected confirmDelete() {
     this.displayDeleteDialog = false; // Ferme le dialogue de suppression d'un élément
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Entity; // Réinitialise l'élément
+      this.selectedItem = {} as Assurance; // Réinitialise l'élément
     });
   }
 
   // Méthode pour masquer le dialogue d'ajout/modification
-  hideDialog() {
+  protected hideDialog() {
     this.displayDialog = false; // Masque le dialogue d'ajout/modification
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.formGroup.reset(); // Réinitialise les contrôles de formulaire
   }
 
   // Méthode pour sauvegarder un nouvel élément ou mettre à jour un élément existant
-  saveItem() {
+  protected saveItem() {
     this.submitted = true; // Indique que le formulaire est soumis
 
     if (this.formGroup.valid) { // Vérifie la validité du formulaire
@@ -472,7 +704,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Entity; // Réinitialise l'élément
+          this.selectedItem = {} as Assurance; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -481,7 +713,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Entity; // Réinitialise l'élément
+          this.selectedItem = {} as Assurance; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }
@@ -489,7 +721,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour trouver l'index d'un élément dans le tableau d'éléments par son ID
-  findIndexById(id: string): number {
+  protected findIndexById(id: string): number {
     let index = -1; // Initialise l'index à -1 (non trouvé)
     for (let i = 0; i < this.items.length; i++) { // Parcours tous les éléments du tableau
       if ((this.items[i] as any).id === id) { // Si l'ID de l'élément correspond à celui recherché
@@ -501,25 +733,25 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour appliquer un filtre global sur la table
-  onGlobalFilter(table: Table, event: Event) {
+  protected onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains'); // Applique le filtre global sur la table
   }
 
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
-  hasAccessToPermission(permissionKey: string): boolean {
+  protected hasAccessToPermission(permissionKey: string): boolean {
     return this.accountService.hasAccessToPermission(this.moduleKey, permissionKey);
   }
 
-  exportExcel(){
+  protected exportExcel(){
     this.baseService.generateExcel(this.entityName, this.items);
   }
 
-  printListe() {
+  protected printListe() {
     console.log("call service to print");
     this.baseService.printListe(this.entityName, document.getElementById('toPrint').innerHTML);
   }
 
-  refreshPage(data){
+  protected refreshPage(data){
     if(data){
      this.ngOnInit();
     }

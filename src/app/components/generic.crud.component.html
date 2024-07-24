@@ -137,13 +137,13 @@
 											<span class="p-column-title">{{ col.header }}</span>
 											<button pButton pRipple icon="pi pi-eye"
 												class="p-button-rounded p-button-info"
-												(click)="openItemView({ cols: col.subfield, data: item[col.field] })"></button>
+												(click)="openItemView({ field: col.field, id: item[col.field] })"></button>
 										</ng-container>
 										<ng-container *ngSwitchCase="'list'">
 											<span class="p-column-title">{{ col.header }}</span>
 											<button pButton pRipple icon="pi pi-list"
 												class="p-button-rounded p-button-info"
-												(click)="openItemListView({ cols: col.subfield, data: item[col.field] })"></button>
+												(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button>
 										</ng-container>
 										<ng-container *ngSwitchDefault>
 											<span class="p-column-title">{{ col.header }}</span>
@@ -319,12 +319,12 @@
 									<td style="min-width:5rem" *ngIf="col.type === 'objet'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
-											(click)="openItemView({ cols: col.subfield, data: item[col.field] })"></button>
+											(click)="openItemView({ field: col.field, id: item[col.field] })"></button>
 									</td>
 									<td style="min-width:5rem" *ngIf="col.type === 'list'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info"
-											(click)="openItemListView({ cols: col.subfield, data: item[col.field] })"></button>
+											(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button>
 									</td>
 								</ng-container>
 								<td style="min-width:15rem">
@@ -551,14 +551,14 @@
                                         <ng-container *ngSwitchCase="'objet'">
                                             <span class="p-column-title">{{ col.header }}</span>
                                             <button pButton pRipple icon="pi pi-board" class="p-button-primary mr-2"
-                                                (click)="openItemView({ cols: col.subfield, data: item[col.field] })">
+                                                (click)="openItemView({ field: col.field, id: item[col.field] })">
                                                 {{ col.header }}
                                             </button>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'list'">
                                             <span class="p-column-title">{{ col.header }}</span>
                                             <button pButton pRipple icon="pi pi-board" class="p-button-primary mr-2"
-                                                (click)="openItemListView({ cols: col.subfield, data: item[col.field] })">
+                                                (click)="openItemListView({ field: col.field, ids: item[col.field] })">
                                                 {{ col.header }}
                                             </button>
                                         </ng-container>
@@ -578,7 +578,7 @@
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <div class="flex align-items-center justify-content-center">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span>Are you sure you want to delete <b>{{ selectedItem?.name }}</b>?</span>
+                    <span>Etes-vous sûr que vous voulez supprimer <b>{{ entityName }}</b>?</span>
                 </div>
                 <p-footer class="align-right">
                     <div class="button-wrapper">
@@ -596,7 +596,7 @@
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <div class="flex align-items-center justify-content-center">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span>Are you sure you want to delete the selected items?</span>
+                    <span>Etes-vous sûr de vouloir supprimer les éléments sélectionnés ?</span>
                 </div>
                 <p-footer class="align-right">
                     <div class="button-wrapper">

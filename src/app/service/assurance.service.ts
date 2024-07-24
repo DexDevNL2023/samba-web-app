@@ -14,12 +14,12 @@ export class AssuranceService extends GenericCrudService<Assurance> {
   }
 
   // Méthode pour récupérer toutes les polices associées à une assurance
-  getAllPolices(assuranceId: number): Observable<PoliceAssurance[]> {
-      return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/${assuranceId}/polices`);
+  getAllPolices(): Observable<PoliceAssurance[]> {
+      return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/all/polices`);
   }
 
   // Méthode pour récupérer tous les rapports générés pour une assurance
-  getAllRapports(assuranceId: number): Observable<Rapport[]> {
-      return this.http.get<Rapport[]>(`${this.baseUrl}/${this.endpoint}/${assuranceId}/rapports`);
+  getAllRapports(): Observable<Rapport[]> {
+      return this.http.get<Rapport[]>(`${this.baseUrl}/${this.endpoint}/all/rapports`);
   }
 }
