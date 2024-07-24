@@ -13,7 +13,7 @@ export class BrancheService extends GenericCrudService<Branche> {
   }
 
   // Méthode pour récupérer toutes les partenaires associées à une branche
-  getAllPartners(branchId: number): Observable<Fournisseur[]> {
-      return this.http.get<Fournisseur[]>(`${this.baseUrl}/${this.endpoint}/${branchId}/partners`);
+  getAllPartners(): Observable<Fournisseur[]> {
+      return this.http.get<Fournisseur[]>(`${this.baseUrl}/${this.endpoint}/all/partners`);
   }
 }

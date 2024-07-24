@@ -11,7 +11,7 @@ export interface Fournisseur extends BaseEntity {
   ville?: string | null;
   pays?: string | null;
   servicesFournis?: string | null;
-  prestations?: Pick<PrestationSoin, 'id'>[] | null;
-  sinistres?: Pick<Sinistre, 'id'> | null;
-  branches?: Pick<Branche, 'id'>[] | null;
+  prestations?: number[] | null;
+  sinistres?: number | null;
+  branches?: number[] | null;
 }

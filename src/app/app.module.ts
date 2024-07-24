@@ -144,6 +144,7 @@ import { AppConfigComponent } from './app.config.component';
 import { DashboardService } from './service/dashboard.service';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { PortraitComponent } from './shared/portrait/portrait.demo.component';
+import { BrancheCrudComponent } from './components/branche/branche.crud.component';
 
 @NgModule({
     imports: [
@@ -254,6 +255,7 @@ import { PortraitComponent } from './shared/portrait/portrait.demo.component';
         ChatNotificationComponent,
         AppBreadcrumbComponent,
         AssuranceCrudComponent,
+        BrancheCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
