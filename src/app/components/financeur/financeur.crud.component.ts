@@ -53,8 +53,8 @@ export class FinanceurCrudComponent implements OnInit {
     { field: 'email', header: 'Email', type: 'text' },
     { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'label', header: 'Intitule', type: 'text' },,
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' }
+        { field: 'label', header: 'Intitule', type: 'text' },
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
         { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
         { field: 'montant', header: 'Montant', type: 'currency' }
       ]
@@ -123,7 +123,7 @@ export class FinanceurCrudComponent implements OnInit {
       status: PrestationStatus.REMBOURSE,
       fournisseur: 1,
       financeurs: [1],
-      sinistres: [1]
+      sinistre: 1
     },
     {
       id: 2,
@@ -134,7 +134,7 @@ export class FinanceurCrudComponent implements OnInit {
       status: PrestationStatus.EN_ATTENTE,
       fournisseur: 2,
       financeurs: [1, 2],
-      sinistres: [2]
+      sinistre: 2
     },
     {
       id: 3,
@@ -145,7 +145,7 @@ export class FinanceurCrudComponent implements OnInit {
       status: PrestationStatus.NON_REMBOURSE,
       fournisseur: 3,
       financeurs: [2],
-      sinistres: [3]
+      sinistre: 3
     },
     {
       id: 4,
@@ -156,7 +156,7 @@ export class FinanceurCrudComponent implements OnInit {
       status: PrestationStatus.REMBOURSE,
       fournisseur: 4,
       financeurs: [1],
-      sinistres: [1, 2]
+      sinistre: 3
     }
   ];
   
@@ -186,18 +186,17 @@ prestationStatus = [
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'FinanceurSoin';
-    this.componentLink = '/admin/financeurs/soins';
-    this.importLink = '/import-financeur-soin';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.entityName = 'Financeur';
+    this.componentLink = '/admin/financeurs';
+    this.importLink = '/import-financeur';
+    this.moduleKey = 'FINANCEUR_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadPolices();
-    //this.loadRapports();
+    //this.loadPrestations();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -211,8 +210,8 @@ prestationStatus = [
     this.loading = false;
   }
   
-  // Chargement des polices associés à une financeur-soin
-  loadPolices(): void {
+  // Chargement des prestations associés à une financeur-soin
+  loadPrestations(): void {
     this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
         this.prestations = prestations;
     });
@@ -220,7 +219,7 @@ prestationStatus = [
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['nom', 'type'];
+    return ['nom', 'type', 'email'];
   }
 
   /**

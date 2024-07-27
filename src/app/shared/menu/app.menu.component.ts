@@ -97,19 +97,25 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
-            { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
-            { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
-            { moduleKey: 'PARTNERS_MODULE', label: 'Gestions des Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/partenaires'] },
+            {
+                label: 'Gestions des partenaires',
+                icon: 'pi pi-fw pi-sitemap',
+                items: [
+                    { moduleKey: 'PARTNERS_MODULE', label: 'Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/partenaires'] },
+                    { moduleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
+                    { moduleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
+                ]
+            },
             {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'PRESTATION_SOIN_MODULE', label: 'Prestations de soins', icon: 'pi pi-fw pi-heart', routerLink: ['/admin/prestations/soins'] },
                     { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
-                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] },
-                    { moduleKey: 'FINANCEUR_SOIN_MODULE', label: 'Finanseurs de soins', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs/soins'] }
+                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] }
                 ]
             },
+            { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
             {
                 label: 'Paramètres',
                 icon: 'pi pi-fw pi-cog',
@@ -121,13 +127,34 @@ export class AppMenuComponent implements OnInit {
             }
         ];
         
-        // Menu pour le Fournisseur de Soins :
+        // Menu pour le Fournisseur de Services :
         this.fournisseurMenu = [
             { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
-            { moduleKey: 'PRESTATION_SOIN_MODULE', label: 'Prestations de soins', icon: 'pi pi-fw pi-heart', routerLink: ['/admin/prestations/soins'] },
-            { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
-            { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] },
-            { moduleKey: 'FINANCEUR_SOIN_MODULE', label: 'Finanseurs de soins', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs/soins'] }
+            {
+                label: 'Gestion des sinistres',
+                icon: 'pi pi-fw pi-exclamation-triangle',
+                items: [
+                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
+                    { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
+                ]
+            },
+            {
+                label: 'Gestions des partenaires',
+                icon: 'pi pi-fw pi-sitemap',
+                items: [
+                    { moduleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
+                    { moduleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
+                ]
+            },
+            {
+                label: 'Partie santé',
+                icon: 'pi pi-fw pi-heart',
+                items: [
+                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
+                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] }
+                ]
+            }
         ];
 
         // Construire le menu

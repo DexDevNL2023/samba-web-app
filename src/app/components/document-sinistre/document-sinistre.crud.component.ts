@@ -56,7 +56,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
         { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
         { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
         { field: 'montantSinistre', header: 'Montant du sinistre', type: 'currency' },
-        { field: 'montantApprouve', header: 'Montant approuve', type: 'currency' }
+        { field: 'montantAssure', header: 'Montant assuré', type: 'currency' }
       ]
     }
   ];
@@ -124,10 +124,9 @@ export class DocumentSinistreCrudComponent implements OnInit {
       dateTraitement: new Date('2023-01-10'),
       status: ClaimStatus.EN_ATTENTE,
       montantSinistre: 10000,
-      montantApprouve: 8000,
+      montantAssure: 8000,
       souscription: 1,
-      fournisseur: 1,
-      prestationSoin: 1,
+      prestations: [1, 2],
       reclamations: [1, 2],
       documents: [1, 2]
     },
@@ -139,10 +138,9 @@ export class DocumentSinistreCrudComponent implements OnInit {
       dateTraitement: new Date('2023-02-15'),
       status: ClaimStatus.APPROUVE,
       montantSinistre: 20000,
-      montantApprouve: 15000,
+      montantAssure: 15000,
       souscription: 2,
-      fournisseur: 2,
-      prestationSoin: 2,
+      prestations: [3],
       reclamations: [3, 4],
       documents: [3, 4]
     }
@@ -175,7 +173,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadPartenaires();
+    //this.loadSinistres();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial

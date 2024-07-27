@@ -97,29 +97,29 @@ export class BrancheCrudComponent implements OnInit {
   partenaires: Fournisseur[] = [
     {
       id: 1,
-      nom: 'Fournisseur 1',
+      nom: 'Clinique Santé Plus',
       telephone: '123456789',
-      email: 'fournisseur1@example.com',
-      adresse: '123 Rue A',
-      ville: 'Ville A',
-      pays: 'Pays A',
-      servicesFournis: 'Service 1, Service 2',
+      email: 'contact@santeplus.com',
+      adresse: '123 Rue de la Santé',
+      ville: 'Libreville',
+      pays: 'Gabon',
+      servicesFournis: 'Consultations, Soins Paramédicaux',
       prestations: [1, 2],
       branches: [1]
     },
     {
       id: 2,
-      nom: 'Fournisseur 2',
+      nom: 'Centre Médical Bongo',
       telephone: '987654321',
-      email: 'fournisseur2@example.com',
-      adresse: '456 Rue B',
-      ville: 'Ville B',
-      pays: 'Pays B',
-      servicesFournis: 'Service 3, Service 4',
+      email: 'info@cmbongo.com',
+      adresse: '456 Rue de la Médecine',
+      ville: 'Port-Gentil',
+      pays: 'Gabon',
+      servicesFournis: 'Radiologie, Analyses de Laboratoire',
       prestations: [3, 4],
-      branches: [2, 3]
+      branches: [2]
     }
-  ];  
+  ];   
 
   constructor(
     private messageService: MessageService,

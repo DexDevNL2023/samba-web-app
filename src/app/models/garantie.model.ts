@@ -1,19 +1,20 @@
 import { BaseEntity } from "./base-entity.model";
-import { PoliceAssurance } from "./police-assurance.model";
 
 export enum GarantieStatus {
-  ACTIVE = 'ACTIVE',
+  ACTIVEE = 'ACTIVEE',
   EXPIREE = 'EXPIREE',
   SUSPENDUE = 'SUSPENDUE'
 }
   
 export interface Garantie extends BaseEntity {
-  description?: string | null;
-  montantAssure?: number | null;
+  numeroGarantie?: string | null;
+  label?: string | null;
+  percentage: number | null;
+  termes?: string | null;
   plafondAssure?: number | null;
   dateDebut?: Date | null;
   dateFin?: Date | null;
   status?: keyof typeof GarantieStatus | null;
-  polices?: Pick<PoliceAssurance, 'id'>[] | null;
+  polices?: number[] | null;
 }
   

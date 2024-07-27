@@ -8,16 +8,16 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Assurance, InsuranceType } from '../../models/assurance.model';
-import { PoliceAssurance } from '../../models/police-assurance.model';
-import { AssuranceService } from '../../service/assurance.service';
+import { Garantie, GarantieStatus } from '../../models/garantie.model';
+import { GarantieService } from '../../service/garantie.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
+import { PoliceAssurance } from '../../models/police-assurance.model';
 
 @Component({
-  selector: 'app-assurance-crud',
+  selector: 'app-garantie-soin-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class AssuranceCrudComponent implements OnInit {
+export class GarantieCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -28,8 +28,8 @@ export class AssuranceCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Assurance; // Élément de type Assurance actuellement sélectionné ou en cours de modification
-  selectedItems: Assurance[] = []; // Tableau d'éléments de type Assurance sélectionnés
+  selectedItem: Garantie; // Élément de type GarantieSoin actuellement sélectionné ou en cours de modification
+  selectedItems: Garantie[] = []; // Tableau d'éléments de type GarantieSoin sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -45,84 +45,62 @@ export class AssuranceCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'nom', header: 'Name', type: 'text' },
-    { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'description', header: 'Description', type: 'textarea' },
-    { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'numeroPolice', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroPolice', header: 'Num Police', type: 'text' },
-        { field: 'label', header: 'Libelle', type: 'text' },
-        { field: 'montantSouscription', header: 'Coût', type: 'currency' }
+    { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
+    { field: 'label', header: 'Label', type: 'text' },
+    { field: 'percentage', header: 'Pourcentage', type: 'currency' },
+    { field: 'termes', header: 'Termes', type: 'textarea' },
+    { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency' },
+    { field: 'dateDebut', header: 'Date de début', type: 'date' },
+    { field: 'dateFin', header: 'Date de fin', type: 'date' },
+    { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
+      { field: 'id', header: 'ID', type: 'id' },
+      { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+      { field: 'label', header: 'Libelle', type: 'text' },
+      { field: 'montantSouscription', header: 'Coût', type: 'currency' }
       ]
     }
   ];
   
-  items: Assurance[] = [
-    // Assurances Santé
+  items: Garantie[] = [
     {
       id: 1,
-      nom: 'Assurance Maladie Complémentaire',
-      description: 'Couverture complémentaire pour les frais médicaux non pris en charge par la sécurité sociale.',
-      type: InsuranceType.SANTE,
-      polices: [1]
+      numeroGarantie: 'GAR-001',
+      label: 'Assurance Santé Avenir',
+      percentage: 80,
+      termes: 'Couvre 80% des frais médicaux avec un plafond de 100,000 XAF par an.',
+      plafondAssure: 100000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [1, 2, 3]
     },
     {
       id: 2,
-      nom: 'Assurance Hospitalisation',
-      description: 'Prise en charge des frais d\'hospitalisation en cas de maladie ou d\'accident.',
-      type: InsuranceType.SANTE,
-      polices: [2]
+      numeroGarantie: 'GAR-002',
+      label: 'Mutuelle Bien-Être',
+      percentage: 70,
+      termes: 'Couvre 70% des frais de soins paramédicaux avec un plafond de 50,000 XAF par an.',
+      plafondAssure: 50000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [4, 8]
     },
-  
-    // Assurances Automobile
     {
       id: 3,
-      nom: 'Assurance Responsabilité Civile Auto',
-      description: 'Couverture pour les dommages causés à des tiers en cas d\'accident de voiture.',
-      type: InsuranceType.BIEN,
-      polices: [3]
-    },
-    {
-      id: 4,
-      nom: 'Assurance Tous Risques Auto',
-      description: 'Couverture complète incluant les dommages au véhicule assuré, qu\'ils soient de votre faute ou non.',
-      type: InsuranceType.BIEN,
-      polices: [4]
-    },
-  
-    // Assurances Agricole
-    {
-      id: 5,
-      nom: 'Assurance Récoltes',
-      description: 'Couverture contre les pertes de récoltes dues à des conditions climatiques extrêmes ou des catastrophes naturelles.',
-      type: InsuranceType.AGRICOLE,
-      polices: [5]
-    },
-    {
-      id: 6,
-      nom: 'Assurance Bétail',
-      description: 'Protection contre les pertes dues à des maladies du bétail ou des accidents.',
-      type: InsuranceType.AGRICOLE,
-      polices: [6]
-    },
-  
-    // Assurances Personne
-    {
-      id: 7,
-      nom: 'Assurance Vie',
-      description: 'Protection financière pour les bénéficiaires en cas de décès de l\'assuré.',
-      type: InsuranceType.PERSONNE,
-      polices: [7]
-    },
-    {
-      id: 8,
-      nom: 'Assurance Invalidité',
-      description: 'Couverture pour la perte de revenus en cas d\'incapacité de travail due à une maladie ou un accident.',
-      type: InsuranceType.PERSONNE,
-      polices: [8]
+      numeroGarantie: 'GAR-003',
+      label: 'Caisse Nationale de Sécurité Sociale',
+      percentage: 100,
+      termes: 'Couvre 100% des frais médicaux pour les travailleurs enregistrés.',
+      plafondAssure: 200000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [5, 6, 7]
     }
-  ];  
-  branches: EntityByBranch<Assurance>[] = [
+  ];
+  branches: EntityByBranch<Garantie>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -231,29 +209,30 @@ export class AssuranceCrudComponent implements OnInit {
       souscriptions: [16, 17]
     }
   ];
+  
 
-  // Liste pour InsuranceType
-  insuranceTypes = [
-    { label: 'Personne', value: InsuranceType.PERSONNE },
-    { label: 'Bien', value: InsuranceType.BIEN },
-    { label: 'Agricole', value: InsuranceType.AGRICOLE },
-    { label: 'Agricole', value: InsuranceType.SANTE }
+  // Liste pour GarantieStatus
+  garantieStatus = [
+    { label: 'Activée', value: GarantieStatus.ACTIVEE },
+    { label: 'Expirée', value: GarantieStatus.EXPIREE },
+    { label: 'Suspendue', value: GarantieStatus.SUSPENDUE }
   ];
+
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: AssuranceService, // Service pour les opérations CRUD génériques
+    private service: GarantieService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Assurance';
-    this.componentLink = '/admin/assurances';
-    this.importLink = '/import-assurance';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.entityName = 'Garantie';
+    this.componentLink = '/admin/garanties';
+    this.importLink = '/import-garantie';
+    this.moduleKey = 'GARANTIE_MODULE';
     this.isTable = true;
   }
 
@@ -274,7 +253,7 @@ export class AssuranceCrudComponent implements OnInit {
     this.loading = false;
   }
   
-  // Chargement des polices associés à une assurance
+  // Chargement des polices associés à une garantie-soin
   loadPolices(): void {
     this.service.getAllPolices().subscribe((polices: PoliceAssurance[]) => {
         this.polices = polices;
@@ -283,14 +262,14 @@ export class AssuranceCrudComponent implements OnInit {
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['nom', 'type'];
+    return ['numeroGarantie', 'label', 'status'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('type', this.insuranceTypes);
+    this.setColumnValues('status', this.garantieStatus);
     this.setColumnValues('polices', this.polices);
   }
   
@@ -441,7 +420,7 @@ export class AssuranceCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Assurance>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Garantie>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -686,7 +665,7 @@ export class AssuranceCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Assurance; // Initialise un nouvel élément
+    this.selectedItem = {} as Garantie; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -697,14 +676,14 @@ export class AssuranceCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Assurance) {
+  protected editItem(item: Garantie) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Assurance) {
+  protected deleteItem(item: Garantie) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -727,7 +706,7 @@ export class AssuranceCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Assurance; // Réinitialise l'élément
+      this.selectedItem = {} as Garantie; // Réinitialise l'élément
     });
   }
 
@@ -750,7 +729,7 @@ export class AssuranceCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assurance; // Réinitialise l'élément
+          this.selectedItem = {} as Garantie; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -759,7 +738,7 @@ export class AssuranceCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assurance; // Réinitialise l'élément
+          this.selectedItem = {} as Garantie; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

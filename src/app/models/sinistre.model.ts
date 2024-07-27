@@ -1,6 +1,5 @@
 import { BaseEntity } from "./base-entity.model";
-import { Fournisseur } from "./fournisseur.model";
-import { PrestationSoin } from "./prestation.model";
+import { Prestation } from "./prestation.model";
 import { Reclamation } from "./reclamation.model";
 import { Souscription } from "./souscription.model";
 import { DocumentSinistre } from './document-sinistre.model';
@@ -18,10 +17,9 @@ export interface Sinistre extends BaseEntity {
   dateTraitement?: Date | null;
   status?: keyof typeof ClaimStatus | null;
   montantSinistre?: number | null;
-  montantApprouve?: number | null;
+  montantAssure?: number | null;
   souscription?: number | null;
-  fournisseur?: number | null;
-  prestationSoin?: number | null;
+  prestations?: number[] | null;
   reclamations?: number[] | null;
   documents?: number[] | null;
 }

@@ -29,7 +29,7 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
                     { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'branches', component: BrancheCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR'] } },
                     { path: 'documents/sinistres', component: DocumentSinistreCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
-                    { path: 'financeurs/soins', component: FinanceurCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_PROVIDER'] } },
+                    { path: 'financeurs', component: FinanceurCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_PROVIDER'] } },
                     { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },

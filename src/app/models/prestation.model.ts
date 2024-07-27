@@ -38,5 +38,5 @@ export interface Prestation extends BaseEntity {
   status?: keyof typeof PrestationStatus | null;
   fournisseur?: number | null;
   financeurs?: number[] | null;
-  sinistres?: number[] | null;
+  sinistre?: number | null;
 }

@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Fournisseur } from '../models/fournisseur.model';
-import { PrestationSoin } from '../models/prestation.model';
+import { Prestation } from '../models/prestation.model';
 import { Sinistre } from '../models/sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
+import { Branche } from '../models/branche.model';
 
 @Injectable({ providedIn: 'root' })
 export class FournisseurService extends GenericCrudService<Fournisseur> {
@@ -14,12 +15,12 @@ export class FournisseurService extends GenericCrudService<Fournisseur> {
     }
 
     // Méthode pour récupérer les prestations associées à un fournisseur spécifique
-    getPrestations(fournisseurId: number): Observable<PrestationSoin[]> {
-        return this.http.get<PrestationSoin[]>(`${this.baseUrl}/${this.endpoint}/${fournisseurId}/prestations`);
+    getAllPrestations(): Observable<Prestation[]> {
+        return this.http.get<Prestation[]>(`${this.baseUrl}/${this.endpoint}/all/prestations`);
     }
 
-    // Méthode pour récupérer les sinistres associés à un fournisseur spécifique
-    getSinistres(fournisseurId: number): Observable<Sinistre[]> {
-        return this.http.get<Sinistre[]>(`${this.baseUrl}/${this.endpoint}/${fournisseurId}/sinistres`);
+    // Méthode pour récupérer les branches associés à un fournisseur spécifique
+    getAllBranches(): Observable<Branche[]> {
+        return this.http.get<Branche[]>(`${this.baseUrl}/${this.endpoint}/all/sinistres`);
     }
 }

@@ -13,7 +13,7 @@ export class GarantieService extends GenericCrudService<Garantie> {
     }
 
     // Méthode pour récupérer les polices d'assurance associées à une garantie spécifique
-    getPolices(garantieId: number): Observable<PoliceAssurance[]> {
-        return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/${garantieId}/polices`);
+    getAllPolices(): Observable<PoliceAssurance[]> {
+        return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/all/polices`);
     }
 }
