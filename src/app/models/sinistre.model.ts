@@ -1,6 +1,6 @@
 import { BaseEntity } from "./base-entity.model";
 import { Fournisseur } from "./fournisseur.model";
-import { PrestationSoin } from "./prestation-soin.model";
+import { PrestationSoin } from "./prestation.model";
 import { Reclamation } from "./reclamation.model";
 import { Souscription } from "./souscription.model";
 import { DocumentSinistre } from './document-sinistre.model';

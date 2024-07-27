@@ -8,16 +8,16 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Branche } from '../../models/branche.model';
-import { BrancheService } from '../../service/branche.service';
+import { Financeur, FinanceurType } from '../../models/financeur.model';
+import { FinanceurService } from '../../service/financeur.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Fournisseur } from '../../models/fournisseur.model';
+import { Prestation, PrestationStatus } from '../../models/prestation.model';
 
 @Component({
-  selector: 'app-branche-crud',
+  selector: 'app-financeur-soin-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class BrancheCrudComponent implements OnInit {
+export class FinanceurCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -28,8 +28,8 @@ export class BrancheCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Branche; // Élément de type Branche actuellement sélectionné ou en cours de modification
-  selectedItems: Branche[] = []; // Tableau d'éléments de type Branche sélectionnés
+  selectedItem: Financeur; // Élément de type FinanceurSoin actuellement sélectionné ou en cours de modification
+  selectedItems: Financeur[] = []; // Tableau d'éléments de type FinanceurSoin sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -45,36 +45,55 @@ export class BrancheCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'code', header: 'Code', type: 'text' },
-    { field: 'ville', header: 'Ville', type: 'text' },
-    { field: 'isDefaut', header: 'Par defaut', type: 'boolean' },
-    { field: 'partenaires', header: 'Partenaires', type: 'list', values: [], label: 'nom', key: 'id', subfield: [
+    { field: 'nom', header: 'Name', type: 'text' },
+    { field: 'description', header: 'Description', type: 'textarea' },
+    { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'adresse', header: 'Adresse', type: 'text' },
+    { field: 'telephone', header: 'Telephone', type: 'text' },
+    { field: 'email', header: 'Email', type: 'text' },
+    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'nom', header: 'Nom', type: 'text' },
-        { field: 'telephone', header: 'Telephone', type: 'text' },
-        { field: 'ville', header: 'Ville', type: 'text' },
-        { field: 'pays', header: 'Pays', type: 'text' }
+        { field: 'label', header: 'Intitule', type: 'text' },,
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' }
+        { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
+        { field: 'montant', header: 'Montant', type: 'currency' }
       ]
     }
   ];
   
-  items: Branche[] = [
+  items: Financeur[] = [
     {
       id: 1,
-      code: 'DLA',
-      ville: 'Branche Douala',
-      isDefaut: false,
-      partenaires: [1,4,5]
+      nom: 'Assurance Santé Avenir',
+      description: 'Assurance offrant des couvertures complètes pour les soins médicaux.',
+      type: FinanceurType.ASSUREUR,
+      adresse: '123 Avenue de la Santé, Ville A',
+      telephone: '0123456789',
+      email: 'contact@assurancesanteavenir.com',
+      prestations: [1, 2, 4]
     },
     {
       id: 2,
-      code: 'YAE',
-      ville: 'Branche Yaounde',
-      isDefaut: true,
-      partenaires: [2,3]
+      nom: 'Mutuelle Bien-Être',
+      description: 'Mutuelle spécialisée dans les soins paramédicaux et la prévention.',
+      type: FinanceurType.MUTUELLE,
+      adresse: '456 Rue de la Mutuelle, Ville B',
+      telephone: '0987654321',
+      email: 'info@mutuellebienetre.com',
+      prestations: [1, 3]
+    },
+    {
+      id: 3,
+      nom: 'Caisse Nationale de Sécurité Sociale',
+      description: 'Organisme public offrant des prestations de santé aux travailleurs.',
+      type: FinanceurType.ORGANISME_PUBLIC,
+      adresse: '789 Boulevard de la Sécurité, Capitale C',
+      telephone: '0223344556',
+      email: 'cnss@securitesociale.gouv',
+      prestations: [2, 3, 4]
     }
   ];
-  branches: EntityByBranch<Branche>[] = [
+  branches: EntityByBranch<Financeur>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -94,54 +113,91 @@ export class BrancheCrudComponent implements OnInit {
           ]
       }
   ];
-  partenaires: Fournisseur[] = [
+  prestations: Prestation[] = [
     {
       id: 1,
-      nom: 'Fournisseur 1',
-      telephone: '123456789',
-      email: 'fournisseur1@example.com',
-      adresse: '123 Rue A',
-      ville: 'Ville A',
-      pays: 'Pays A',
-      servicesFournis: 'Service 1, Service 2',
-      prestations: [1, 2],
-      branches: [1]
+      label: 'Consultation Médicale Générale',
+      datePrestation: new Date('2024-01-15'),
+      description: 'Consultation avec un médecin généraliste.',
+      montant: 5000,
+      status: PrestationStatus.REMBOURSE,
+      fournisseur: 1,
+      financeurs: [1],
+      sinistres: [1]
     },
     {
       id: 2,
-      nom: 'Fournisseur 2',
-      telephone: '987654321',
-      email: 'fournisseur2@example.com',
-      adresse: '456 Rue B',
-      ville: 'Ville B',
-      pays: 'Pays B',
-      servicesFournis: 'Service 3, Service 4',
-      prestations: [3, 4],
-      branches: [2, 3]
+      label: 'Hospitalisation Chirurgicale',
+      datePrestation: new Date('2024-02-20'),
+      description: 'Hospitalisation pour une intervention chirurgicale.',
+      montant: 120000,
+      status: PrestationStatus.EN_ATTENTE,
+      fournisseur: 2,
+      financeurs: [1, 2],
+      sinistres: [2]
+    },
+    {
+      id: 3,
+      label: 'Radiologie',
+      datePrestation: new Date('2024-03-10'),
+      description: 'Radiographie thoracique.',
+      montant: 20000,
+      status: PrestationStatus.NON_REMBOURSE,
+      fournisseur: 3,
+      financeurs: [2],
+      sinistres: [3]
+    },
+    {
+      id: 4,
+      label: 'Soins Dentaires',
+      datePrestation: new Date('2024-04-05'),
+      description: 'Traitement de caries et nettoyage dentaire.',
+      montant: 15000,
+      status: PrestationStatus.REMBOURSE,
+      fournisseur: 4,
+      financeurs: [1],
+      sinistres: [1, 2]
     }
-  ];  
+  ];
+  
+
+  // Liste pour FinanceurType
+  financeurTypes = [
+    { label: 'Assureur', value: FinanceurType.ASSUREUR },
+    { label: 'Mutuelle', value: FinanceurType.MUTUELLE },
+    { label: 'Organisme public', value: FinanceurType.ORGANISME_PUBLIC }
+  ];
+
+// Liste pour PrestationStatus
+prestationStatus = [
+  { label: 'Non Remboursé', value: PrestationStatus.NON_REMBOURSE },
+  { label: 'En Attente', value: PrestationStatus.EN_ATTENTE },
+  { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
+];
+
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: BrancheService, // Service pour les opérations CRUD génériques
+    private service: FinanceurService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Branche';
-    this.componentLink = '/admin/branches';
-    this.importLink = '/import-branche';
-    this.moduleKey = 'BRANCHE_MODULE';
+    this.entityName = 'FinanceurSoin';
+    this.componentLink = '/admin/financeurs/soins';
+    this.importLink = '/import-financeur-soin';
+    this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadPartenaires();
+    //this.loadPolices();
+    //this.loadRapports();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -155,23 +211,25 @@ export class BrancheCrudComponent implements OnInit {
     this.loading = false;
   }
   
-  // Chargement des polices associés à une branche
-  loadPartenaires(): void {
-    this.service.getAllPartners().subscribe((partenaires: Fournisseur[]) => {
-        this.partenaires = partenaires;
+  // Chargement des polices associés à une financeur-soin
+  loadPolices(): void {
+    this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
+        this.prestations = prestations;
     });
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['code', 'ville'];
+    return ['nom', 'type'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('partenaires', this.partenaires);
+    this.setColumnValues('type', this.financeurTypes);
+    this.setColumnValues('prestations', this.prestations);
+    this.setSubFieldValues('prestations', 'status', this.prestationStatus);
   }
   
   /**
@@ -321,7 +379,7 @@ export class BrancheCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Branche>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Financeur>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -566,7 +624,7 @@ export class BrancheCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Branche; // Initialise un nouvel élément
+    this.selectedItem = {} as Financeur; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -577,14 +635,14 @@ export class BrancheCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Branche) {
+  protected editItem(item: Financeur) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Branche) {
+  protected deleteItem(item: Financeur) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -607,7 +665,7 @@ export class BrancheCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Branche; // Réinitialise l'élément
+      this.selectedItem = {} as Financeur; // Réinitialise l'élément
     });
   }
 
@@ -630,7 +688,7 @@ export class BrancheCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Branche; // Réinitialise l'élément
+          this.selectedItem = {} as Financeur; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -639,7 +697,7 @@ export class BrancheCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Branche; // Réinitialise l'élément
+          this.selectedItem = {} as Financeur; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

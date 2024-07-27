@@ -12,5 +12,4 @@ export interface Rapport extends BaseEntity {
   type?: keyof typeof RapportType | null;
   dateGeneration?: Date | null;
   url?: string | null;
-  assurance?: number | null;
 }

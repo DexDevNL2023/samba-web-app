@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Sinistre } from '../models/sinistre.model';
 import { Souscription } from '../models/souscription.model';
 import { Fournisseur } from '../models/fournisseur.model';
-import { PrestationSoin } from '../models/prestation-soin.model';
+import { Prestation } from '../models/prestation.model';
 import { Reclamation } from '../models/reclamation.model';
 import { DocumentSinistre } from '../models/document-sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
@@ -27,8 +27,8 @@ export class SinistreService extends GenericCrudService<Sinistre> {
     }
 
     // Méthode pour récupérer la prestation de soin associée à un sinistre spécifique
-    getPrestationSoin(sinistreId: number): Observable<PrestationSoin> {
-        return this.http.get<PrestationSoin>(`${this.baseUrl}/${this.endpoint}/${sinistreId}/prestation-soin`);
+    getPrestations(sinistreId: number): Observable<Prestation[]> {
+        return this.http.get<Prestation[]>(`${this.baseUrl}/${this.endpoint}/${sinistreId}/prestations`);
     }
 
     // Méthode pour récupérer les réclamations associées à un sinistre spécifique

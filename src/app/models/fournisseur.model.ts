@@ -1,6 +1,6 @@
 import { BaseEntity } from "./base-entity.model";
 import { Branche } from "./branche.model";
-import { PrestationSoin } from "./prestation-soin.model";
+import { PrestationSoin } from "./prestation.model";
 import { Sinistre } from "./sinistre.model";
 
 export interface Fournisseur extends BaseEntity {
@@ -12,6 +12,5 @@ export interface Fournisseur extends BaseEntity {
   pays?: string | null;
   servicesFournis?: string | null;
   prestations?: number[] | null;
-  sinistres?: number | null;
   branches?: number[] | null;
 }

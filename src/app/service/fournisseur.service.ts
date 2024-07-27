@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Fournisseur } from '../models/fournisseur.model';
-import { PrestationSoin } from '../models/prestation-soin.model';
+import { PrestationSoin } from '../models/prestation.model';
 import { Sinistre } from '../models/sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
 

@@ -100,7 +100,7 @@ import {DashboardComponent} from './shared/dashboard/dashboard.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssuranceService } from './service/assurance.service';
 import { DocumentSinistreService } from './service/document-sinistre.service';
-import { FinanceurSoinService } from './service/financeur-soin.service';
+import { FinanceurService } from './service/financeur.service';
 import { FournisseurService } from './service/fournisseur.service';
 import { GarantieService } from './service/garantie.service';
 import { MedicalRecordService } from './service/medical-record.service';
@@ -108,7 +108,7 @@ import { MedicalDocumentService } from './service/medical-document.service';
 import { NotificationService } from './service/notification.service';
 import { PaiementService } from './service/paiement.service';
 import { PoliceAssuranceService } from './service/police.service';
-import { PrestationSoinService } from './service/prestation-soin.service';
+import { PrestationService } from './service/prestation.service';
 import { RapportService } from './service/rapport.service';
 import { ReclamationService } from './service/reclamation.service';
 import { SinistreService } from './service/sinistre.service';
@@ -146,6 +146,7 @@ import { AssuranceCrudComponent } from './components/assurance/assurance.crud.co
 import { PortraitComponent } from './shared/portrait/portrait.demo.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
 import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
+import { FinanceurCrudComponent } from './components/financeur/financeur.crud.component';
 
 @NgModule({
     imports: [
@@ -258,14 +259,15 @@ import { DocumentSinistreCrudComponent } from './components/document-sinistre/do
         AssuranceCrudComponent,
         BrancheCrudComponent,
         DocumentSinistreCrudComponent,
+        FinanceurCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentSinistreService, UserRouteAccessService,
-        FinanceurSoinService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
-        MedicalDocumentService, NotificationService, PaiementService, PoliceAssuranceService, PrestationSoinService, 
+        FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
+        MedicalDocumentService, NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
         RapportService, ReclamationService, SinistreService, SouscriptionService, UserExtraService, LoginService,
         PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
         RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,

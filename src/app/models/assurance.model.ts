@@ -3,7 +3,8 @@ import { BaseEntity } from "./base-entity.model";
 export enum InsuranceType {
   PERSONNE = 'PERSONNE',
   BIEN = 'BIEN',
-  AGRICOLE = 'AGRICOLE'
+  AGRICOLE = 'AGRICOLE',
+  SANTE = 'SANTE'
 }
   
 export interface Assurance extends BaseEntity {
@@ -11,5 +12,4 @@ export interface Assurance extends BaseEntity {
   description?: string | null;
   type?: keyof typeof InsuranceType | null;
   polices?: number[] | null;
-  rapports?: number[] | null;
 }

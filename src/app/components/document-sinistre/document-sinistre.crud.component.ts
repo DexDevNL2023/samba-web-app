@@ -166,7 +166,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
     this.entityName = 'DocumentSinistre';
-    this.componentLink = '/admin/document-sinistres';
+    this.componentLink = '/admin/documents/sinistres';
     this.importLink = '/import-document-sinistre';
     this.moduleKey = 'DOCUMENT_SINISTRE_MODULE';
     this.isTable = true;
@@ -414,29 +414,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
           return 'success';
       case 'FAILED':
           return 'danger';
-
-      // Cas pour PrestationType
-      case 'CONSULTATION':
-      case 'HOSPITALISATION':
-      case 'SOINS_PARAMEDICAUX':
-      case 'RADIOLOGIE':
-      case 'ANALYSES_LABORATOIRE':
-      case 'PHARMACIE':
-      case 'CHIRURGIE':
-      case 'URGENCES':
-      case 'SOINS_DENTAIRES':
-      case 'SOINS_OCULAIRES':
-      case 'MATERNITE':
-      case 'REEDUCATION':
-      case 'PSYCHOTHERAPIE':
-      case 'SOINS_A_DOMICILE':
-      case 'AMBULANCE':
-      case 'VACCINATION':
-      case 'TELEMEDECINE':
-      case 'NUTRITION':
-      case 'PHYSIOTHERAPIE':
-      case 'AUTRES':
-          return 'info';
 
       // Cas pour PrestationStatus
       case 'NON_REMBOURSE':

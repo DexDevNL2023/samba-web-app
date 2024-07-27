@@ -10,7 +10,6 @@ import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
 import { Assurance, InsuranceType } from '../../models/assurance.model';
 import { PoliceAssurance } from '../../models/police-assurance.model';
-import { Rapport, RapportType } from '../../models/rapport.model';
 import { AssuranceService } from '../../service/assurance.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
 
@@ -55,34 +54,74 @@ export class AssuranceCrudComponent implements OnInit {
         { field: 'label', header: 'Libelle', type: 'text' },
         { field: 'montantSouscription', header: 'Cout', type: 'currency' }
       ]
-    },
-    { field: 'rapports', header: 'Rapports', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'titre', header: 'Intitule', type: 'text' },
-        { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'dateGeneration', header: 'Gener le', type: 'date' }
-      ]
     }
   ];
   
   items: Assurance[] = [
+    // Assurances Santé
     {
       id: 1,
-      nom: 'Assurance Santé',
-      description: 'Assurance pour les soins médicaux',
-      type: InsuranceType.PERSONNE,
-      polices: [1,4,5],
-      rapports: [1,2]
+      nom: 'Assurance Maladie Complémentaire',
+      description: 'Couverture complémentaire pour les frais médicaux non pris en charge par la sécurité sociale.',
+      type: InsuranceType.SANTE,
+      polices: [1]
     },
     {
       id: 2,
-      nom: 'Assurance Automobile',
-      description: 'Assurance pour les véhicules',
+      nom: 'Assurance Hospitalisation',
+      description: 'Prise en charge des frais d\'hospitalisation en cas de maladie ou d\'accident.',
+      type: InsuranceType.SANTE,
+      polices: [2]
+    },
+  
+    // Assurances Automobile
+    {
+      id: 3,
+      nom: 'Assurance Responsabilité Civile Auto',
+      description: 'Couverture pour les dommages causés à des tiers en cas d\'accident de voiture.',
       type: InsuranceType.BIEN,
-      polices: [2,5],
-      rapports: [2]
+      polices: [3]
+    },
+    {
+      id: 4,
+      nom: 'Assurance Tous Risques Auto',
+      description: 'Couverture complète incluant les dommages au véhicule assuré, qu\'ils soient de votre faute ou non.',
+      type: InsuranceType.BIEN,
+      polices: [4]
+    },
+  
+    // Assurances Agricole
+    {
+      id: 5,
+      nom: 'Assurance Récoltes',
+      description: 'Couverture contre les pertes de récoltes dues à des conditions climatiques extrêmes ou des catastrophes naturelles.',
+      type: InsuranceType.AGRICOLE,
+      polices: [5]
+    },
+    {
+      id: 6,
+      nom: 'Assurance Bétail',
+      description: 'Protection contre les pertes dues à des maladies du bétail ou des accidents.',
+      type: InsuranceType.AGRICOLE,
+      polices: [6]
+    },
+  
+    // Assurances Personne
+    {
+      id: 7,
+      nom: 'Assurance Vie',
+      description: 'Protection financière pour les bénéficiaires en cas de décès de l\'assuré.',
+      type: InsuranceType.PERSONNE,
+      polices: [7]
+    },
+    {
+      id: 8,
+      nom: 'Assurance Invalidité',
+      description: 'Couverture pour la perte de revenus en cas d\'incapacité de travail due à une maladie ou un accident.',
+      type: InsuranceType.PERSONNE,
+      polices: [8]
     }
-  ];
+  ];  
   branches: EntityByBranch<Assurance>[] = [
       {
           name: 'Branch A',
@@ -104,64 +143,109 @@ export class AssuranceCrudComponent implements OnInit {
       }
   ];
   polices: PoliceAssurance[] = [
+    // Polices pour Assurance Santé
     {
       id: 1,
-      numeroPolice: 'P001',
-      label: 'Police Assurance Santé',
-      estDeTypeSante: true,
-      conditions: 'Condition 1',
-      percentage: 80,
-      montantSouscription: 50000,
+      numeroPolice: 'S001',
+      label: 'Police Assurance Maladie Complémentaire',
+      conditions: 'Couverture complémentaire pour les frais médicaux non pris en charge par la sécurité sociale.',
+      percentage: 85,
+      montantSouscription: 60000,
       assurance: 1,
-      garanties: [1],
-      souscriptions: [1,2]
+      garanties: [1, 2],
+      souscriptions: [1, 2, 3]
     },
     {
       id: 2,
-      numeroPolice: 'P002',
-      label: 'Police Assurance Automobile',
-      estDeTypeSante: false,
-      conditions: 'Condition 2',
-      percentage: 70,
-      montantSouscription: 30000,
+      numeroPolice: 'S002',
+      label: 'Police Assurance Hospitalisation',
+      conditions: 'Prise en charge des frais d\'hospitalisation en cas de maladie ou d\'accident.',
+      percentage: 90,
+      montantSouscription: 70000,
+      assurance: 1,
+      garanties: [3, 4],
+      souscriptions: [4, 5]
+    },
+  
+    // Polices pour Assurance Automobile
+    {
+      id: 3,
+      numeroPolice: 'A001',
+      label: 'Police Responsabilité Civile Auto',
+      conditions: 'Couverture pour les dommages causés à des tiers en cas d\'accident de voiture.',
+      percentage: 75,
+      montantSouscription: 25000,
       assurance: 2,
-      garanties: [2,3],
-      souscriptions: [2,3,4]
-    }
-  ];
-  rapports: Rapport[] = [
-    {
-      id: 1,
-      titre: 'Rapport de Performance',
-      description: 'Description du rapport de performance',
-      type: RapportType.PERFORMANCE,
-      dateGeneration: new Date(),
-      url: 'http://example.com/performance',
-      assurance: 1
+      garanties: [5],
+      souscriptions: [6, 7]
     },
     {
-      id: 2,
-      titre: 'Rapport de Paiement',
-      description: 'Description du rapport de paiement',
-      type: RapportType.PAIEMENT,
-      dateGeneration: new Date(),
-      url: 'http://example.com/paiement',
-      assurance: 2
+      id: 4,
+      numeroPolice: 'A002',
+      label: 'Police Tous Risques Auto',
+      conditions: 'Couverture complète incluant les dommages au véhicule assuré, qu\'ils soient de votre faute ou non.',
+      percentage: 80,
+      montantSouscription: 35000,
+      assurance: 2,
+      garanties: [6, 7],
+      souscriptions: [8, 9]
+    },
+  
+    // Polices pour Assurance Agricole
+    {
+      id: 5,
+      numeroPolice: 'AG001',
+      label: 'Police Assurance Récoltes',
+      conditions: 'Couverture contre les pertes de récoltes dues à des conditions climatiques extrêmes ou des catastrophes naturelles.',
+      percentage: 70,
+      montantSouscription: 40000,
+      assurance: 3,
+      garanties: [8, 9],
+      souscriptions: [10, 11]
+    },
+    {
+      id: 6,
+      numeroPolice: 'AG002',
+      label: 'Police Assurance Bétail',
+      conditions: 'Protection contre les pertes dues à des maladies du bétail ou des accidents.',
+      percentage: 75,
+      montantSouscription: 50000,
+      assurance: 3,
+      garanties: [10],
+      souscriptions: [12, 13]
+    },
+  
+    // Polices pour Assurance Personne
+    {
+      id: 7,
+      numeroPolice: 'P001',
+      label: 'Police Assurance Vie',
+      conditions: 'Protection financière pour les bénéficiaires en cas de décès de l\'assuré.',
+      percentage: 100,
+      montantSouscription: 200000,
+      assurance: 4,
+      garanties: [11],
+      souscriptions: [14, 15]
+    },
+    {
+      id: 8,
+      numeroPolice: 'P002',
+      label: 'Police Assurance Invalidité',
+      conditions: 'Couverture pour la perte de revenus en cas d\'incapacité de travail due à une maladie ou un accident.',
+      percentage: 85,
+      montantSouscription: 120000,
+      assurance: 4,
+      garanties: [12],
+      souscriptions: [16, 17]
     }
-  ];
+  ];  
 
   // Liste pour InsuranceType
   insuranceTypes = [
     { label: 'Personne', value: InsuranceType.PERSONNE },
     { label: 'Bien', value: InsuranceType.BIEN },
-    { label: 'Agricole', value: InsuranceType.AGRICOLE }
-  ];
-
-  // Liste pour RapportType
-  rapportTypes = [
-    { label: 'Performance', value: RapportType.PERFORMANCE },
-    { label: 'Paiement', value: RapportType.PAIEMENT },
-    { label: 'Sinistre', value: RapportType.SINISTRE }
+    { label: 'Agricole', value: InsuranceType.AGRICOLE },
+    { label: 'Agricole', value: InsuranceType.SANTE }
   ];
 
   constructor(
@@ -185,7 +269,6 @@ export class AssuranceCrudComponent implements OnInit {
     this.initializeData();
     // Initialise les colonnes de la table
     //this.loadPolices();
-    //this.loadRapports();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -206,13 +289,6 @@ export class AssuranceCrudComponent implements OnInit {
     });
   }
 
-  // Chargement des rapports associés à une assurance
-  loadRapports(): void {
-    this.service.getAllRapports().subscribe((rapports: Rapport[]) => {
-        this.rapports = rapports;
-    });
-  }
-
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['nom', 'type'];
@@ -224,8 +300,6 @@ export class AssuranceCrudComponent implements OnInit {
   protected assignColumnValues(): void { // Ajoutez le modificateur override
     this.setColumnValues('type', this.insuranceTypes);
     this.setColumnValues('polices', this.polices);
-    this.setColumnValues('rapports', this.rapports);
-    this.setSubFieldValues('rapports', 'type', this.rapportTypes);
   }
   
   /**
@@ -433,29 +507,6 @@ export class AssuranceCrudComponent implements OnInit {
           return 'success';
       case 'FAILED':
           return 'danger';
-
-      // Cas pour PrestationType
-      case 'CONSULTATION':
-      case 'HOSPITALISATION':
-      case 'SOINS_PARAMEDICAUX':
-      case 'RADIOLOGIE':
-      case 'ANALYSES_LABORATOIRE':
-      case 'PHARMACIE':
-      case 'CHIRURGIE':
-      case 'URGENCES':
-      case 'SOINS_DENTAIRES':
-      case 'SOINS_OCULAIRES':
-      case 'MATERNITE':
-      case 'REEDUCATION':
-      case 'PSYCHOTHERAPIE':
-      case 'SOINS_A_DOMICILE':
-      case 'AMBULANCE':
-      case 'VACCINATION':
-      case 'TELEMEDECINE':
-      case 'NUTRITION':
-      case 'PHYSIOTHERAPIE':
-      case 'AUTRES':
-          return 'info';
 
       // Cas pour PrestationStatus
       case 'NON_REMBOURSE':
