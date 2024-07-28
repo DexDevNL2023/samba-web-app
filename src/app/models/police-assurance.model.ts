@@ -7,5 +7,5 @@ export interface PoliceAssurance extends BaseEntity {
   montantSouscription: number | null;
   assurance?: number | null;
   garanties?: number[] | null;
-  souscriptions?: number[] | null;
+  souscriptions?: number[] | null; 
 }

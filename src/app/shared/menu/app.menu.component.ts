@@ -32,7 +32,7 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-shield',
                 items: [
                     { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices'] },
+                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices/assurances'] },
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties d\'assurance', icon: 'pi pi-fw pi-calendar-clock', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'ASSURE_MODULE', label: 'Gestion des assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] }
@@ -58,7 +58,7 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-shield',
                 items: [
                     { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices'] },
+                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices/assurances'] },
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties d\'assurance', icon: 'pi pi-fw pi-calendar-clock', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'ASSURE_MODULE', label: 'Gestion des assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] }

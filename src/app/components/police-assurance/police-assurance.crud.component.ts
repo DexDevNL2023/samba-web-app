@@ -8,20 +8,18 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Assure, Gender } from '../../models/assure.model';
-import { AssureService } from '../../service/assure.service';
+import { PoliceAssurance } from '../../models/police-assurance.model';
+import { PoliceAssuranceService } from '../../service/police-assurance.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { LiteRegistrant } from '../../models/lite.registrant.model';
-import { DossierMedical } from '../../models/medical-record.model';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
-import { Fournisseur } from '../../models/fournisseur.model';
-import { Branche } from '../../models/branche.model';
+import { Garantie, GarantieStatus } from '../../models/garantie.model';
+import { Assurance, InsuranceType } from '../../models/assurance.model';
 
 @Component({
-  selector: 'app-assure-crud',
+  selector: 'app-police-assurance-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class AssureCrudComponent implements OnInit {
+export class PoliceAssuranceCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -32,8 +30,8 @@ export class AssureCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Assure; // Élément de type Assure actuellement sélectionné ou en cours de modification
-  selectedItems: Assure[] = []; // Tableau d'éléments de type Assure sélectionnés
+  selectedItem: PoliceAssurance; // Élément de type PoliceAssurance actuellement sélectionné ou en cours de modification
+  selectedItems: PoliceAssurance[] = []; // Tableau d'éléments de type PoliceAssurance sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -49,26 +47,23 @@ export class AssureCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'numNiu', header: 'Niu', type: 'text' },
-    { field: 'firstName', header: 'Nom', type: 'text' },
-    { field: 'lastName', header: 'Prénom', type: 'text' },
-    { field: 'dateNaissance', header: 'Né(e) le', type: 'date' },
-    { field: 'numCni', header: 'CNI', type: 'text' },
-    { field: 'sexe', header: 'Sexe', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'email', header: 'Email', type: 'text' },
-    { field: 'telephone', header: 'Telephone', type: 'text' },
-    { field: 'addresse', header: 'Addresse', type: 'textarea' },
-    { field: 'signature', header: 'Signature', type: 'image' },
-    { field: 'registrant', header: 'Registrant', type: 'objet', values: [], label: 'numeroRegistrant', key: 'id', subfield: [
+    { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+    { field: 'label', header: 'Libellé', type: 'text' },
+    { field: 'conditions', header: 'Conditions', type: 'textarea' },
+    { field: 'montantSouscription', header: 'Montant', type: 'currency' },
+    { field: 'assurance', header: 'Assurance', type: 'objet', values: [], label: 'nom', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'branche', header: 'Branche', type: 'objet', values: [], label: 'ville', key: 'id' },
-        { field: 'partenaire', header: 'Partenaire', type: 'objet', values: [], label: 'nom', key: 'id' }
+        { field: 'nom', header: 'Name', type: 'text' },
+        { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' }
       ]
     },
-    { field: 'dossiers', header: 'Dossiers médicaux', type: 'list', values: [], label: 'numDossierMedical', key: 'id', subfield: [
+    { field: 'garanties', header: 'Garanties', type: 'list', values: [], label: 'numeroGarantie', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numDossierMedical', header: 'Num Dossier medical', type: 'text' },
-        { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },
+        { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
+        { field: 'label', header: 'Label', type: 'text' },
+        { field: 'percentage', header: 'Pourcentage', type: 'currency' },
+        { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency' },
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' }
       ]
     },
     { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], label: 'numeroSouscription', key: 'id', subfield: [
@@ -81,74 +76,97 @@ export class AssureCrudComponent implements OnInit {
       ]
     }
   ];
-
-  items: Assure[] = [
+  
+  items: PoliceAssurance[] = [
+    // Polices pour Assurance Santé
     {
       id: 1,
-      numNiu: 'NIU123456789',
-      lastName: 'Doe',
-      firstName: 'John',
-      dateNaissance: new Date('1985-01-15'),
-      numCni: 'CNI12345678',
-      sexe: Gender.MALE,
-      email: 'john.doe@example.com',
-      telephone: '1234567890',
-      addresse: '123 Main St, Douala',
-      signature: 'john_doe_signature.png',
-      registrant: 1,
-      dossiers: [1],
-      souscriptions: [4]
-    },
-    {
-      id: 2,
-      numNiu: 'NIU987654321',
-      lastName: 'Smith',
-      firstName: 'Jane',
-      dateNaissance: new Date('1990-07-22'),
-      numCni: 'CNI87654321',
-      sexe: Gender.FEMALE,
-      email: 'jane.smith@example.com',
-      telephone: '0987654321',
-      addresse: '456 Elm St, Yaoundé',
-      signature: 'jane_smith_signature.png',
-      registrant: 2,
-      dossiers: [2],
+      numeroPolice: 'S001',
+      label: 'Police Assurance Maladie Complémentaire',
+      conditions: 'Couverture complémentaire pour les frais médicaux non pris en charge par la sécurité sociale.',
+      montantSouscription: 60000,
+      assurance: 1,
+      garanties: [2],
       souscriptions: [1]
     },
     {
+      id: 2,
+      numeroPolice: 'S002',
+      label: 'Police Assurance Hospitalisation',
+      conditions: 'Prise en charge des frais d\'hospitalisation en cas de maladie ou d\'accident.',
+      montantSouscription: 70000,
+      assurance: 2,
+      garanties: [3],
+      souscriptions: [2]
+    },
+  
+    // Polices pour Assurance Automobile
+    {
       id: 3,
-      numNiu: 'NIU555555555',
-      lastName: 'Nguyen',
-      firstName: 'Thi',
-      dateNaissance: new Date('1988-03-12'),
-      numCni: 'CNI55555555',
-      sexe: Gender.FEMALE,
-      email: 'thi.nguyen@example.com',
-      telephone: '5555555555',
-      addresse: '789 Maple St, Bafoussam',
-      signature: 'thi_nguyen_signature.png',
-      registrant: 1,
-      dossiers: [3],
+      numeroPolice: 'A001',
+      label: 'Police Responsabilité Civile Auto',
+      conditions: 'Couverture pour les dommages causés à des tiers en cas d\'accident de voiture.',
+      montantSouscription: 25000,
+      assurance: 3,
+      garanties: [1],
       souscriptions: [3]
     },
     {
       id: 4,
-      numNiu: 'NIU333333333',
-      lastName: 'Johnson',
-      firstName: 'Chris',
-      dateNaissance: new Date('1995-09-25'),
-      numCni: 'CNI33333333',
-      sexe: Gender.OTHER,
-      email: 'chris.johnson@example.com',
-      telephone: '3333333333',
-      addresse: '321 Oak St, Garoua',
-      signature: 'chris_johnson_signature.png',
-      registrant: 2,
-      dossiers: [4],
+      numeroPolice: 'A002',
+      label: 'Police Tous Risques Auto',
+      conditions: 'Couverture complète incluant les dommages au véhicule assuré, qu\'ils soient de votre faute ou non.',
+      montantSouscription: 35000,
+      assurance: 4,
+      garanties: [2],
+      souscriptions: [4]
+    },
+  
+    // Polices pour Assurance Agricole
+    {
+      id: 5,
+      numeroPolice: 'AG001',
+      label: 'Police Assurance Récoltes',
+      conditions: 'Couverture contre les pertes de récoltes dues à des conditions climatiques extrêmes ou des catastrophes naturelles.',
+      montantSouscription: 40000,
+      assurance: 5,
+      garanties: [3],
+      souscriptions: [1]
+    },
+    {
+      id: 6,
+      numeroPolice: 'AG002',
+      label: 'Police Assurance Bétail',
+      conditions: 'Protection contre les pertes dues à des maladies du bétail ou des accidents.',
+      montantSouscription: 50000,
+      assurance: 6,
+      garanties: [1],
       souscriptions: [2]
+    },
+  
+    // Polices pour Assurance Personne
+    {
+      id: 7,
+      numeroPolice: 'P001',
+      label: 'Police Assurance Vie',
+      conditions: 'Protection financière pour les bénéficiaires en cas de décès de l\'assuré.',
+      montantSouscription: 200000,
+      assurance: 7,
+      garanties: [2],
+      souscriptions: [3]
+    },
+    {
+      id: 8,
+      numeroPolice: 'P002',
+      label: 'Police Assurance Invalidité',
+      conditions: 'Couverture pour la perte de revenus en cas d\'incapacité de travail due à une maladie ou un accident.',
+      montantSouscription: 120000,
+      assurance: 8,
+      garanties: [3],
+      souscriptions: [4]
     }
-  ];
-  branches: EntityByBranch<Assure>[] = [
+  ];  
+  branches: EntityByBranch<PoliceAssurance>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -167,106 +185,6 @@ export class AssureCrudComponent implements OnInit {
               }
           ]
       }
-  ];
-  registrants: LiteRegistrant[] = [
-    {
-      id: 1,
-      numeroRegistrant: 'S001',
-      branche: 1,
-      partenaire: 2
-    },
-    {
-      id: 2,
-      numeroRegistrant: 'S002',
-      branche: 2,
-      partenaire: 1
-    }
-  ];
-  dossiers: DossierMedical[] = [
-    {
-      id: 1,
-      numDossierMedical: 'DM001',
-      patient: 1,
-      dateUpdated: new Date('2024-07-01'),
-      maladiesChroniques: 'Hypertension, Diabète',
-      maladiesHereditaires: 'Cardiopathie',
-      interventionsChirurgicales: 'Appendicectomie en 2010',
-      hospitalisations: 'Hospitalisation pour fracture en 2018',
-      allergies: 'Allergie aux arachides',
-      vaccins: 'Vaccin contre la grippe en 2023',
-      habitudesAlimentaires: 'Régime pauvre en sel',
-      consommationAlcool: 'Occasionnelle',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Modéré',
-      revenusAnnuels: 5000000,
-      chargesFinancieres: 2000000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 2,
-      numDossierMedical: 'DM002',
-      patient: 2,
-      dateUpdated: new Date('2024-07-02'),
-      maladiesChroniques: 'Asthme',
-      maladiesHereditaires: 'Aucune',
-      interventionsChirurgicales: 'Chirurgie des amygdales en 2015',
-      hospitalisations: 'Aucune',
-      allergies: 'Aucune',
-      vaccins: 'Vaccin contre la grippe en 2022',
-      habitudesAlimentaires: 'Alimentation équilibrée',
-      consommationAlcool: 'Jamais',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Élevé',
-      revenusAnnuels: 6000000,
-      chargesFinancieres: 2500000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 3,
-      numDossierMedical: 'DM003',
-      patient: 3,
-      dateUpdated: new Date('2024-07-03'),
-      maladiesChroniques: 'Aucune',
-      maladiesHereditaires: 'Diabète',
-      interventionsChirurgicales: 'Aucune',
-      hospitalisations: 'Hospitalisation pour grippe sévère en 2019',
-      allergies: 'Allergie au pollen',
-      vaccins: 'Vaccin contre la grippe en 2021',
-      habitudesAlimentaires: 'Végétarien',
-      consommationAlcool: 'Modérée',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Faible',
-      revenusAnnuels: 4000000,
-      chargesFinancieres: 1500000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 4,
-      numDossierMedical: 'DM004',
-      patient: 4,
-      dateUpdated: new Date('2024-07-04'),
-      maladiesChroniques: 'Aucune',
-      maladiesHereditaires: 'Hypertension',
-      interventionsChirurgicales: 'Chirurgie du genou en 2020',
-      hospitalisations: 'Aucune',
-      allergies: 'Aucune',
-      vaccins: 'Vaccin contre la grippe en 2020',
-      habitudesAlimentaires: 'Régime riche en fibres',
-      consommationAlcool: 'Occasionnelle',
-      consommationTabac: 'Fumeur occasionnel',
-      niveauActivitePhysique: 'Modéré',
-      revenusAnnuels: 7000000,
-      chargesFinancieres: 3000000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    }
   ];
   souscriptions: Souscription[] = [
     {
@@ -318,50 +236,121 @@ export class AssureCrudComponent implements OnInit {
       sinistres: [4]
     }
   ];
-  allBranches: Branche[] = [
+  garanties: Garantie[] = [
     {
       id: 1,
-      code: 'DLA',
-      ville: 'Branche Douala',
-      isDefaut: false,
-      partenaires: [1,4,5]
+      numeroGarantie: 'GAR-001',
+      label: 'Assurance Santé Avenir',
+      percentage: 80,
+      termes: 'Couvre 80% des frais médicaux avec un plafond de 100,000 XAF par an.',
+      plafondAssure: 100000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [1, 2, 3]
     },
     {
       id: 2,
-      code: 'YAE',
-      ville: 'Branche Yaounde',
-      isDefaut: true,
-      partenaires: [2,3]
+      numeroGarantie: 'GAR-002',
+      label: 'Mutuelle Bien-Être',
+      percentage: 70,
+      termes: 'Couvre 70% des frais de soins paramédicaux avec un plafond de 50,000 XAF par an.',
+      plafondAssure: 50000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [4, 8]
+    },
+    {
+      id: 3,
+      numeroGarantie: 'GAR-003',
+      label: 'Caisse Nationale de Sécurité Sociale',
+      percentage: 100,
+      termes: 'Couvre 100% des frais médicaux pour les travailleurs enregistrés.',
+      plafondAssure: 200000,
+      dateDebut: new Date('2023-01-01'),
+      dateFin: new Date('2023-12-31'),
+      status: GarantieStatus.ACTIVEE,
+      polices: [5, 6, 7]
     }
   ];
-  partenaires: Fournisseur[] = [
+  assurances: Assurance[] = [
+    // Assurances Santé
     {
       id: 1,
-      nom: 'Clinique Santé Plus',
-      telephone: '123456789',
-      email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux',
-      prestations: [1, 2],
-      branches: [1]
+      nom: 'Assurance Maladie Complémentaire',
+      description: 'Couverture complémentaire pour les frais médicaux non pris en charge par la sécurité sociale.',
+      type: InsuranceType.SANTE,
+      polices: [1]
     },
     {
       id: 2,
-      nom: 'Centre Médical Bongo',
-      telephone: '987654321',
-      email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
-      servicesFournis: 'Radiologie, Analyses de Laboratoire',
-      prestations: [3, 4],
-      branches: [2]
+      nom: 'Assurance Hospitalisation',
+      description: 'Prise en charge des frais d\'hospitalisation en cas de maladie ou d\'accident.',
+      type: InsuranceType.SANTE,
+      polices: [2]
+    },
+  
+    // Assurances Automobile
+    {
+      id: 3,
+      nom: 'Assurance Responsabilité Civile Auto',
+      description: 'Couverture pour les dommages causés à des tiers en cas d\'accident de voiture.',
+      type: InsuranceType.BIEN,
+      polices: [3]
+    },
+    {
+      id: 4,
+      nom: 'Assurance Tous Risques Auto',
+      description: 'Couverture complète incluant les dommages au véhicule assuré, qu\'ils soient de votre faute ou non.',
+      type: InsuranceType.BIEN,
+      polices: [4]
+    },
+  
+    // Assurances Agricole
+    {
+      id: 5,
+      nom: 'Assurance Récoltes',
+      description: 'Couverture contre les pertes de récoltes dues à des conditions climatiques extrêmes ou des catastrophes naturelles.',
+      type: InsuranceType.AGRICOLE,
+      polices: [5]
+    },
+    {
+      id: 6,
+      nom: 'Assurance Bétail',
+      description: 'Protection contre les pertes dues à des maladies du bétail ou des accidents.',
+      type: InsuranceType.AGRICOLE,
+      polices: [6]
+    },
+  
+    // Assurances Personne
+    {
+      id: 7,
+      nom: 'Assurance Vie',
+      description: 'Protection financière pour les bénéficiaires en cas de décès de l\'assuré.',
+      type: InsuranceType.PERSONNE,
+      polices: [7]
+    },
+    {
+      id: 8,
+      nom: 'Assurance Invalidité',
+      description: 'Couverture pour la perte de revenus en cas d\'incapacité de travail due à une maladie ou un accident.',
+      type: InsuranceType.PERSONNE,
+      polices: [8]
     }
-  ]; 
+  ];  
 
-  // Liste pour Gender
-  genders = [
-    { label: 'Male', value: 'MALE' },
-    { label: 'Female', value: 'FEMALE' },
-    { label: 'Other', value: 'OTHER' }
+  // Liste pour InsuranceType
+  insuranceTypes = [
+    { label: 'Personne', value: InsuranceType.PERSONNE },
+    { label: 'Bien', value: InsuranceType.BIEN },
+    { label: 'Agricole', value: InsuranceType.AGRICOLE },
+    { label: 'Agricole', value: InsuranceType.SANTE }
+  ];
+  garantieStatus = [
+    { label: 'Activée', value: GarantieStatus.ACTIVEE },
+    { label: 'Expirée', value: GarantieStatus.EXPIREE },
+    { label: 'Suspendue', value: GarantieStatus.SUSPENDUE }
   ];
   frequencies = [
     { label: 'Annuel', value: PaymentFrequency.ANNUEL },
@@ -381,14 +370,14 @@ export class AssureCrudComponent implements OnInit {
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: AssureService, // Service pour les opérations CRUD génériques
+    private service: PoliceAssuranceService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Assure';
-    this.componentLink = '/admin/assures';
-    this.importLink = '/import-assure';
+    this.entityName = 'PoliceAssurance';
+    this.componentLink = '/admin/polices/assurances';
+    this.importLink = '/import-police-assurance';
     this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }
@@ -396,11 +385,9 @@ export class AssureCrudComponent implements OnInit {
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadRegistrants();
+    //this.loadAssurances();
+    //this.loadGarantie();
     //this.loadSouscriptions();
-    //this.loadDossiers();
-    //this.loadBranches();
-    //this.loadPartenaires();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -413,56 +400,40 @@ export class AssureCrudComponent implements OnInit {
   private initializeData(): void {
     this.loading = false;
   }
-
-  // Chargement aux registrants associés à une assure
-  loadRegistrants(): void {
-    this.service.getAllRegistrants().subscribe((registrants: LiteRegistrant[]) => {
-        this.registrants = registrants;
+  
+  // Chargement des assurances associés à une police-assurance
+  loadAssurances(): void {
+    this.service.getAllAssurances().subscribe((assurances: Assurance[]) => {
+        this.assurances = assurances;
     });
   }
-
-  // Chargement des souscriptions associés à une assure
+  
+  // Chargement des garanties associés à une police-assurance
+  loadGarantie(): void {
+    this.service.getAllGaranties().subscribe((garanties: Garantie[]) => {
+        this.garanties = garanties;
+    });
+  }
+  
+  // Chargement des souscriptions associés à une police-assurance
   loadSouscriptions(): void {
     this.service.getAllSouscriptions().subscribe((souscriptions: Souscription[]) => {
         this.souscriptions = souscriptions;
     });
   }
-  
-  // Chargement des dossiers médicaux associés à une assure
-  loadDossiers(): void {
-    this.service.getAllDossiers().subscribe((dossiers: DossierMedical[]) => {
-        this.dossiers = dossiers;
-    });
-  }
-
-  // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): void {
-    this.service.getAllBranches().subscribe((branches: Branche[]) => {
-        this.allBranches = branches;
-    });
-  }
-  
-  // Chargement des polices associés à une branche
-  loadPartenaires(): void {
-    this.service.getAllPartners().subscribe((partenaires: Fournisseur[]) => {
-        this.partenaires = partenaires;
-    });
-  }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['numNiu', 'lastName', 'dateNaissance', 'numCni', 'email'];
+    return ['numeroPolice', 'label', 'conditions'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('registrant', this.registrants);
-    this.setColumnValues('dossiers', this.dossiers);
+    this.setSubFieldValues('assurance', 'type', this.insuranceTypes);
+    this.setSubFieldValues('garanties', 'status', this.garantieStatus);
     this.setColumnValues('souscriptions', this.souscriptions);
-    this.setSubFieldValues('registrant', 'branche', this.allBranches);
-    this.setSubFieldValues('registrant', 'partenaire', this.partenaires);
     this.setSubFieldValues('souscriptions', 'status', this.status);
     this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
   }
@@ -614,7 +585,7 @@ export class AssureCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Assure>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<PoliceAssurance>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -859,7 +830,7 @@ export class AssureCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Assure; // Initialise un nouvel élément
+    this.selectedItem = {} as PoliceAssurance; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -870,14 +841,14 @@ export class AssureCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Assure) {
+  protected editItem(item: PoliceAssurance) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Assure) {
+  protected deleteItem(item: PoliceAssurance) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -900,7 +871,7 @@ export class AssureCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Assure; // Réinitialise l'élément
+      this.selectedItem = {} as PoliceAssurance; // Réinitialise l'élément
     });
   }
 
@@ -923,7 +894,7 @@ export class AssureCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assure; // Réinitialise l'élément
+          this.selectedItem = {} as PoliceAssurance; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -932,7 +903,7 @@ export class AssureCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assure; // Réinitialise l'élément
+          this.selectedItem = {} as PoliceAssurance; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

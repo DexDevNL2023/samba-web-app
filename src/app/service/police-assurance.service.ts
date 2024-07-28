@@ -15,17 +15,17 @@ export class PoliceAssuranceService extends GenericCrudService<PoliceAssurance> 
     }
 
     // Méthode pour récupérer l'assurance associée à une police d'assurance spécifique
-    getAssurance(policeId: number): Observable<Assurance> {
-        return this.http.get<Assurance>(`${this.baseUrl}/${this.endpoint}/${policeId}/assurance`);
+    getAllAssurances(): Observable<Assurance[]> {
+        return this.http.get<Assurance[]>(`${this.baseUrl}/${this.endpoint}/all/assurances`);
     }
 
     // Méthode pour récupérer toutes les garanties associées à une police d'assurance
-    getGaranties(policeId: number): Observable<Garantie[]> {
-        return this.http.get<Garantie[]>(`${this.baseUrl}/${this.endpoint}/${policeId}/garanties`);
+    getAllGaranties(): Observable<Garantie[]> {
+        return this.http.get<Garantie[]>(`${this.baseUrl}/${this.endpoint}/all/garanties`);
     }
 
     // Méthode pour récupérer toutes les souscriptions associées à une police d'assurance
-    getSouscriptions(policeId: number): Observable<Souscription[]> {
-        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/${policeId}/souscriptions`);
+    getAllSouscriptions(): Observable<Souscription[]> {
+        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/all/souscriptions`);
     }
 }

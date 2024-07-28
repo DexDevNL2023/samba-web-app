@@ -106,7 +106,7 @@ import { GarantieService } from './service/garantie.service';
 import { MedicalRecordService } from './service/medical-record.service';
 import { NotificationService } from './service/notification.service';
 import { PaiementService } from './service/paiement.service';
-import { PoliceAssuranceService } from './service/police.service';
+import { PoliceAssuranceService } from './service/police-assurance.service';
 import { PrestationService } from './service/prestation.service';
 import { RapportService } from './service/rapport.service';
 import { ReclamationService } from './service/reclamation.service';
@@ -151,6 +151,7 @@ import { GarantieCrudComponent } from './components/garantie/garantie.crud.compo
 import { NotificationCrudComponent } from './components/notification/notification.crud.component';
 import { AssureCrudComponent } from './components/assure/assure.crud.component';
 import { PaiementCrudComponent } from './components/paiement/paiement.crud.component';
+import { PoliceAssuranceCrudComponent } from './components/police-assurance/police-assurance.crud.component';
 
 @NgModule({
     imports: [
@@ -269,6 +270,7 @@ import { PaiementCrudComponent } from './components/paiement/paiement.crud.compo
         GarantieCrudComponent,
         NotificationCrudComponent,
         PaiementCrudComponent,
+        PoliceAssuranceCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
