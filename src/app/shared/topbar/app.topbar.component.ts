@@ -21,9 +21,9 @@ export class AppTopBarComponent implements OnInit {
       message: 'Bienvenue chez SAMB\'A Assurances! Nous sommes ravis de vous compter parmi nos assurés.',
       dateEnvoi: new Date('2023-01-01T10:00:00Z'),
       lu: false,
-      typeNotification: TypeNotification.INFO,
-      destinataireId: 1,
-      envoyeurId: 0
+      type: TypeNotification.INFO,
+      destinataire: 1,
+      emetteur: 0
     },
     {
       id: 2,
@@ -31,9 +31,9 @@ export class AppTopBarComponent implements OnInit {
       message: 'Nous avons bien reçu votre paiement de 5000 FCFA pour votre assurance santé.',
       dateEnvoi: new Date('2023-02-15T14:30:00Z'),
       lu: true,
-      typeNotification: TypeNotification.PAYMENT,
-      destinataireId: 1,
-      envoyeurId: 0
+      type: TypeNotification.PAYMENT,
+      destinataire: 1,
+      emetteur: 0
     },
     {
       id: 3,
@@ -41,9 +41,9 @@ export class AppTopBarComponent implements OnInit {
       message: 'Votre assurance arrive à expiration le 2023-12-31. Veuillez la renouveler pour continuer à bénéficier de nos services.',
       dateEnvoi: new Date('2023-11-01T08:00:00Z'),
       lu: false,
-      typeNotification: TypeNotification.REMINDER,
-      destinataireId: 1,
-      envoyeurId: 0
+      type: TypeNotification.REMINDER,
+      destinataire: 1,
+      emetteur: 0
     },
     {
       id: 4,
@@ -51,9 +51,9 @@ export class AppTopBarComponent implements OnInit {
       message: 'Votre réclamation pour le sinistre numéro S002 a été reçue et est en cours de traitement.',
       dateEnvoi: new Date('2023-03-22T09:45:00Z'),
       lu: true,
-      typeNotification: TypeNotification.CLAIM,
-      destinataireId: 1,
-      envoyeurId: 0
+      type: TypeNotification.CLAIM,
+      destinataire: 1,
+      emetteur: 0
     },
     {
       id: 5,
@@ -61,9 +61,9 @@ export class AppTopBarComponent implements OnInit {
       message: 'Vos informations de profil ont été mises à jour avec succès.',
       dateEnvoi: new Date('2023-05-10T12:00:00Z'),
       lu: true,
-      typeNotification: TypeNotification.PROFILE,
-      destinataireId: 1,
-      envoyeurId: 0
+      type: TypeNotification.PROFILE,
+      destinataire: 1,
+      emetteur: 0
     }
   ];
   

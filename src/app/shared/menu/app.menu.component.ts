@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
+import { NotificationService } from '../../service/notification.service';
+import { Notification } from '../../models/notification.model';
 
 @Component({
     selector: 'app-menu',
@@ -13,10 +15,16 @@ export class AppMenuComponent implements OnInit {
     adminMenu: any[];
     fournisseurMenu: any[];
     model: any[] = [];
+    myNotifs: Notification[] | null = [];
 
-    constructor(private accountService: AccountService, public app: AppMainComponent) { }
+    constructor(private accountService: AccountService, private notificationService: NotificationService, public app: AppMainComponent) { }
 
     ngOnInit() {
+        // S'abonne à l'état des notifications non lu
+        this.notificationService.getUnreadNotificationState().subscribe(notifications => {
+          this.myNotifs = notifications;
+        });
+
         // Menu pour le Client (Assuré) :
         this.clientMenu = [
             {
@@ -39,7 +47,7 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/chats'] }
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
         
         // Menu pour l'Agent :
@@ -73,7 +81,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements des primes', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'] }
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
          
         // Menu pour l'Administrateur :
@@ -117,7 +125,7 @@ export class AppMenuComponent implements OnInit {
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
             { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'] },
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
             {
                 label: 'Paramètres',
                 icon: 'pi pi-fw pi-cog',
@@ -155,7 +163,8 @@ export class AppMenuComponent implements OnInit {
                 items: [
                     { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
-            }
+            },
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
 
         // Construire le menu

@@ -9,11 +9,11 @@ export enum TypeNotification {
 }
   
 export interface Notification extends BaseEntity {
+  lu?: boolean | null;
   titre?: string | null;
+  type?: keyof typeof TypeNotification | null;
   message?: string | null;
   dateEnvoi?: Date | null;
-  lu?: boolean | null;
-  typeNotification?: TypeNotification | null;
-  destinataireId?: number | null;
-  envoyeurId?: number | null;
+  destinataire?: number | null;
+  emetteur?: number | null;
 }

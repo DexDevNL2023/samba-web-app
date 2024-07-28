@@ -200,6 +200,7 @@ const exampleAccount = new Account(
   true, // activated
   ['ROLE_ADMINISTRATOR'], // authorities
   'victor.nlang@teleo.com', // email
+  'Victor Nlang', // fullName
   'Nlang', // firstName
   'Victor', // lastName
   'en', // langKey
