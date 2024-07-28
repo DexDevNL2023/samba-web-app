@@ -18,6 +18,7 @@ import { Account } from '../../core/auth/account.model';
   templateUrl: './../generic.crud.component.html'
 })
 export class NotificationCrudComponent implements OnInit {
+  currentUser: Account;
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -542,14 +543,16 @@ export class NotificationCrudComponent implements OnInit {
           return 'warning';
 
       // Cas pour NotificationType
-      case 'PAIEMENT':
+      case 'INFO':
           return 'info';
-      case 'SOUSCRIPTION':
-          return 'primary';
-      case 'SINISTRE':
+      case 'PAYMENT':
+          return 'success';
+      case 'CLAIM':
           return 'danger';
-      case 'REQUEST':
+      case 'REMINDER':
           return 'warning';
+      case 'PROFILE':
+          return 'primary';
 
       // Cas pour PaymentType
       case 'PRIME':
@@ -753,9 +756,25 @@ export class NotificationCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
+    this.getCurrentUser();
     this.selectedItem = {} as Notification; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
+  }
+
+  getCurrentUser(): void {
+    // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
+    this.accountService.identity().subscribe(account => {
+      if (account) {
+        this.currentUser = account;
+        this.selectCurrentUserAsEmitter();
+      }
+    });
+  }
+
+  selectCurrentUserAsEmitter(): void {
+    this.formGroup.get('emetteur')?.setValue(this.currentUser.id);
+    this.formGroup.get('emetteur')?.disable();
   }
 
   // Méthode pour ouvrir le dialogue de suppression de plusieurs éléments
