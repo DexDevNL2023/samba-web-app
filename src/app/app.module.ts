@@ -104,7 +104,6 @@ import { FinanceurService } from './service/financeur.service';
 import { FournisseurService } from './service/fournisseur.service';
 import { GarantieService } from './service/garantie.service';
 import { MedicalRecordService } from './service/medical-record.service';
-import { MedicalDocumentService } from './service/medical-document.service';
 import { NotificationService } from './service/notification.service';
 import { PaiementService } from './service/paiement.service';
 import { PoliceAssuranceService } from './service/police.service';
@@ -267,7 +266,7 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentSinistreService, UserRouteAccessService,
         FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
-        MedicalDocumentService, NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
+        NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
         RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,

@@ -38,7 +38,8 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
-            }
+            },
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/chats'] }
         ];
         
         // Menu pour l'Agent :
@@ -68,10 +69,11 @@ export class AppMenuComponent implements OnInit {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
-                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] }
+                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
-            }
+            },
+            { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements des primes', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'] }
         ];
          
         // Menu pour l'Administrateur :
@@ -115,6 +117,7 @@ export class AppMenuComponent implements OnInit {
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
             { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'] },
             {
                 label: 'Paramètres',
                 icon: 'pi pi-fw pi-cog',

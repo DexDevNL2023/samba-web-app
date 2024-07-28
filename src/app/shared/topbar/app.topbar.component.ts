@@ -21,9 +21,7 @@ export class AppTopBarComponent implements OnInit {
       dateEnvoi: new Date("2024-07-14T08:00:00Z"),
       type: "SOUSCRIPTION",
       isRead: false,
-      utilisateur: {
-        id: 101
-      }
+      account: 1
     },
     {
       id: 2,
@@ -31,9 +29,7 @@ export class AppTopBarComponent implements OnInit {
       dateEnvoi: new Date("2024-07-13T12:00:00Z"),
       type: "PAIEMENT",
       isRead: false,
-      utilisateur: {
-        id: 101
-      }
+      account: 1
     },
     {
       id: 3,
@@ -41,9 +37,7 @@ export class AppTopBarComponent implements OnInit {
       dateEnvoi: new Date("2024-07-12T09:00:00Z"),
       type: "SINISTRE",
       isRead: false,
-      utilisateur: {
-        id: 101
-      }
+      account: 1
     },
     {
       id: 4,
@@ -51,9 +45,7 @@ export class AppTopBarComponent implements OnInit {
       dateEnvoi: new Date("2024-07-11T11:30:00Z"),
       type: "REQUEST",
       isRead: false,
-      utilisateur: {
-        id: 101
-      }
+      account: 1
     }
   ];
 
@@ -100,9 +92,9 @@ export class AppTopBarComponent implements OnInit {
   // Ouvre le chat des notifications
   openNotifications(): void {
     if(this.hasAuthority(['ROLE_CLIENT'])) {
-      this.router.navigate(['/admin/notifications']);
+      this.router.navigate(['/admin/chats']);
     } else{
-      this.router.navigate(['/admin/clients']);
+      this.router.navigate(['/admin/notifications']);
     }
   }
 

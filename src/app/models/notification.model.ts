@@ -1,5 +1,4 @@
 import { BaseEntity } from "./base-entity.model";
-import { UserExtra } from "./assure.model";
 
 export enum NotificationType {
   PAIEMENT = 'PAIEMENT',
@@ -13,5 +12,5 @@ export interface Notification extends BaseEntity {
   dateEnvoi?: Date | null;
   type?: keyof typeof NotificationType | null;
   isRead: Boolean | null;
-  utilisateur?: Pick<UserExtra, 'id'> | null;
+  account?: number | null;
 }

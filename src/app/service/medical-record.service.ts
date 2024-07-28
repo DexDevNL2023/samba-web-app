@@ -13,7 +13,7 @@ export class MedicalRecordService extends GenericCrudService<DossierMedical> {
     }
 
     // Méthode pour récupérer le patient associé à un dossier médical spécifique
-    getPatient(medicalRecordId: number): Observable<Assure> {
-        return this.http.get<Assure>(`${this.baseUrl}/${this.endpoint}/${medicalRecordId}/patient`);
+    getAllPatients(): Observable<Assure[]> {
+        return this.http.get<Assure[]>(`${this.baseUrl}/${this.endpoint}/all/patients`);
     }
 }

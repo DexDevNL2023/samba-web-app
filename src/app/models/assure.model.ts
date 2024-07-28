@@ -8,7 +8,6 @@ export enum Gender {
 
 export interface Assure extends BaseEntity {
   numNiu?: string | null;
-  fullName?: string | null;
   lastName?: string | null;
   firstName?: string | null;
   email?: string | null;

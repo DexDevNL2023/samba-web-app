@@ -52,8 +52,8 @@ export class BrancheCrudComponent implements OnInit {
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'nom', header: 'Nom', type: 'text' },
         { field: 'telephone', header: 'Telephone', type: 'text' },
-        { field: 'ville', header: 'Ville', type: 'text' },
-        { field: 'pays', header: 'Pays', type: 'text' }
+        { field: 'email', header: 'Email', type: 'text' },
+        { field: 'adresse', header: 'Adresse', type: 'text' }
       ]
     }
   ];
@@ -100,9 +100,7 @@ export class BrancheCrudComponent implements OnInit {
       nom: 'Clinique Santé Plus',
       telephone: '123456789',
       email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé',
-      ville: 'Libreville',
-      pays: 'Gabon',
+      adresse: '123 Rue de la Santé, Libreville - Gabon',
       servicesFournis: 'Consultations, Soins Paramédicaux',
       prestations: [1, 2],
       branches: [1]
@@ -112,14 +110,12 @@ export class BrancheCrudComponent implements OnInit {
       nom: 'Centre Médical Bongo',
       telephone: '987654321',
       email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine',
-      ville: 'Port-Gentil',
-      pays: 'Gabon',
+      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
       servicesFournis: 'Radiologie, Analyses de Laboratoire',
       prestations: [3, 4],
       branches: [2]
     }
-  ];   
+  ]; 
 
   constructor(
     private messageService: MessageService,

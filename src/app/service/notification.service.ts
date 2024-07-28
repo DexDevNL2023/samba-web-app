@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Notification } from '../models/notification.model';
 import { GenericCrudService } from './generic.crud.service';
-import { UserExtra } from '../models/assure.model';
+import { Assure } from '../models/assure.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +17,8 @@ export class NotificationService extends GenericCrudService<Notification> {
     }
 
     // Méthode pour récupérer l'utilisateur associé à une notification spécifique
-    getUtilisateur(notificationId: number): Observable<UserExtra> {
-        return this.http.get<UserExtra>(`${this.baseUrl}/${this.endpoint}/${notificationId}/user`);
+    getAllAssures(): Observable<Assure[]> {
+        return this.http.get<Assure[]>(`${this.baseUrl}/${this.endpoint}/all/assures`);
     }
 
     // Méthode pour récupérer toutes les notifications associé à un utilisateur spécifique
