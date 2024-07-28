@@ -1,16 +1,19 @@
 import { BaseEntity } from "./base-entity.model";
 
-export enum NotificationType {
-  PAIEMENT = 'PAIEMENT',
-  SOUSCRIPTION = 'SOUSCRIPTION',
-  SINISTRE = 'SINISTRE',
-  REQUEST = 'REQUEST'
+export enum TypeNotification {
+  INFO = 'INFO',
+  PAYMENT = 'PAYMENT',
+  REMINDER = 'REMINDER',
+  CLAIM = 'CLAIM',
+  PROFILE = 'PROFILE',
 }
   
 export interface Notification extends BaseEntity {
+  titre?: string | null;
   message?: string | null;
   dateEnvoi?: Date | null;
-  type?: keyof typeof NotificationType | null;
-  isRead: Boolean | null;
-  account?: number | null;
+  lu?: boolean | null;
+  typeNotification?: TypeNotification | null;
+  destinataireId?: number | null;
+  envoyeurId?: number | null;
 }

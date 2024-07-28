@@ -4,7 +4,7 @@ import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { NotificationService } from '../../service/notification.service';
 import { Account } from '../../core/auth/account.model';
-import { Notification } from '../../models/notification.model';
+import { Notification, TypeNotification } from '../../models/notification.model';
 import { LoginService } from '../../login/login.service';
 
 @Component({
@@ -17,38 +17,56 @@ export class AppTopBarComponent implements OnInit {
   myNotifs: Notification[] | null = [
     {
       id: 1,
-      message: "Une nouvelle souscription a été reçue.",
-      dateEnvoi: new Date("2024-07-14T08:00:00Z"),
-      type: "SOUSCRIPTION",
-      isRead: false,
-      account: 1
+      titre: 'Bienvenue',
+      message: 'Bienvenue chez SAMB\'A Assurances! Nous sommes ravis de vous compter parmi nos assurés.',
+      dateEnvoi: new Date('2023-01-01T10:00:00Z'),
+      lu: false,
+      typeNotification: TypeNotification.INFO,
+      destinataireId: 1,
+      envoyeurId: 0
     },
     {
       id: 2,
-      message: "Un paiement de prime a été effectué.",
-      dateEnvoi: new Date("2024-07-13T12:00:00Z"),
-      type: "PAIEMENT",
-      isRead: false,
-      account: 1
+      titre: 'Paiement Reçu',
+      message: 'Nous avons bien reçu votre paiement de 5000 FCFA pour votre assurance santé.',
+      dateEnvoi: new Date('2023-02-15T14:30:00Z'),
+      lu: true,
+      typeNotification: TypeNotification.PAYMENT,
+      destinataireId: 1,
+      envoyeurId: 0
     },
     {
       id: 3,
-      message: "Un sinistre a été déclaré par un client.",
-      dateEnvoi: new Date("2024-07-12T09:00:00Z"),
-      type: "SINISTRE",
-      isRead: false,
-      account: 1
+      titre: 'Rappel de Renouvellement',
+      message: 'Votre assurance arrive à expiration le 2023-12-31. Veuillez la renouveler pour continuer à bénéficier de nos services.',
+      dateEnvoi: new Date('2023-11-01T08:00:00Z'),
+      lu: false,
+      typeNotification: TypeNotification.REMINDER,
+      destinataireId: 1,
+      envoyeurId: 0
     },
     {
       id: 4,
-      message: "Une demande de documentation a été reçue.",
-      dateEnvoi: new Date("2024-07-11T11:30:00Z"),
-      type: "REQUEST",
-      isRead: false,
-      account: 1
+      titre: 'Nouvelle Réclamation',
+      message: 'Votre réclamation pour le sinistre numéro S002 a été reçue et est en cours de traitement.',
+      dateEnvoi: new Date('2023-03-22T09:45:00Z'),
+      lu: true,
+      typeNotification: TypeNotification.CLAIM,
+      destinataireId: 1,
+      envoyeurId: 0
+    },
+    {
+      id: 5,
+      titre: 'Mise à Jour de Profil',
+      message: 'Vos informations de profil ont été mises à jour avec succès.',
+      dateEnvoi: new Date('2023-05-10T12:00:00Z'),
+      lu: true,
+      typeNotification: TypeNotification.PROFILE,
+      destinataireId: 1,
+      envoyeurId: 0
     }
   ];
-
+  
   constructor(
     private accountService: AccountService, 
     private notificationService: NotificationService, 
@@ -89,13 +107,9 @@ export class AppTopBarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
  
-  // Ouvre le chat des notifications
+  // Ouvre les notifications
   openNotifications(): void {
-    if(this.hasAuthority(['ROLE_CLIENT'])) {
-      this.router.navigate(['/admin/chats']);
-    } else{
-      this.router.navigate(['/admin/notifications']);
-    }
+    this.router.navigate(['/admin/notifications']);
   }
 
   // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste

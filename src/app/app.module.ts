@@ -134,7 +134,6 @@ import { CompanyService } from './service/company.service';
 import { BaseService } from './service/base.service';
 import { UserRouteAccessService } from './core/auth/user-route-access.service';
 import { ProfilComponent } from './account/profil/profil.component';
-import { ChatNotificationComponent } from './account/notification/chat-notification.component';
 import { BreadcrumbService } from './shared/breadcrumb/app.breadcrumb.service';
 import { BrancheService } from './service/branche.service';
 import { AppBreadcrumbComponent } from './shared/breadcrumb/app.breadcrumb.component';
@@ -146,6 +145,9 @@ import { PortraitComponent } from './shared/portrait/portrait.demo.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
 import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
 import { FinanceurCrudComponent } from './components/financeur/financeur.crud.component';
+import { DossierMedicalCrudComponent } from './components/dossier-medical/dossier-medical.crud.component';
+import { FournisseurCrudComponent } from './components/fournisseur/fournisseur.crud.component';
+import { GarantieCrudComponent } from './components/garantie/garantie.crud.component';
 
 @NgModule({
     imports: [
@@ -253,12 +255,14 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
         RegisterComponent,
         SettingsComponent,
         ProfilComponent,
-        ChatNotificationComponent,
         AppBreadcrumbComponent,
         AssuranceCrudComponent,
         BrancheCrudComponent,
         DocumentSinistreCrudComponent,
+        DossierMedicalCrudComponent,
         FinanceurCrudComponent,
+        FournisseurCrudComponent,
+        GarantieCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

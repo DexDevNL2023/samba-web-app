@@ -12,7 +12,6 @@ import PasswordResetInitComponent from './account/password-reset/init/password-r
 import RegisterComponent from './account/register/register.component';
 import SettingsComponent from './account/settings/settings.component';
 import { ProfilComponent } from './account/profil/profil.component';
-import { ChatNotificationComponent } from './account/notification/chat-notification.component';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
 import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
@@ -33,7 +32,6 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
                     { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
-                    { path: 'chats', component: ChatNotificationComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMINISTRATOR', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'accessdenied', component: AppAccessdeniedComponent },
                     { path: 'notfound', component: AppNotfoundComponent },
                     { path: '**', redirectTo: '/notfound' },

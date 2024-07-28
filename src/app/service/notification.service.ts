@@ -50,7 +50,7 @@ export class NotificationService extends GenericCrudService<Notification> {
         return this.http.put<Notification[]>(`${this.baseUrl}/${this.endpoint}/${utilisateurId}/mark-all-as-read`, {}).pipe(
             tap(notifications => {
                 this.allNotificationsSubject.next(notifications);
-                this.unreadNotificationsSubject.next(notifications.filter(notification => !notification.isRead));
+                this.unreadNotificationsSubject.next(notifications.filter(notification => !notification.lu));
             })
         );
     }
