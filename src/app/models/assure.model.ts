@@ -10,10 +10,10 @@ export interface Assure extends BaseEntity {
   numNiu?: string | null;
   lastName?: string | null;
   firstName?: string | null;
-  email?: string | null;
   dateNaissance?: Date | null;
   numCni?: string | null;
   sexe?: keyof typeof Gender | null;
+  email?: string | null;
   telephone?: string | null;
   addresse?: string | null;
   signature?: string | null;

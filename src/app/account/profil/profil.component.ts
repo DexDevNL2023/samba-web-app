@@ -18,6 +18,7 @@ export class ProfilComponent implements OnInit{
     data: UserData | null = {
       registrant: {
         id: 1,
+        numeroRegistrant: '2024-RG-5678',
         branche: { id: 1,  ville: 'Douala'},
         partenaire: { id: 1, nom: 'Pharmacie du soliel' }
       },

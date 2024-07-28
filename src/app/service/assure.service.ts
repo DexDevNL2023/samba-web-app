@@ -8,12 +8,40 @@ import { GenericCrudService } from './generic.crud.service';
 import { Registrant } from '../models/registrant.model';
 import { UserData } from '../models/user-data.model';
 import { Assure } from '../models/assure.model';
+import { LiteRegistrant } from '../models/lite.registrant.model';
+import { Branche } from '../models/branche.model';
+import { Fournisseur } from '../models/fournisseur.model';
 
 @Injectable({ providedIn: 'root' })
 export class AssureService extends GenericCrudService<Assure> {
 
     constructor(http: HttpClient) {
         super(http, 'assures');
+    }
+
+    // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+    getAllRegistrants(): Observable<LiteRegistrant[]> {
+        return this.http.get<LiteRegistrant[]>(`${this.baseUrl}/${this.endpoint}/all/registrants`);
+    }
+
+    // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+    getAllDossiers(): Observable<DossierMedical[]> {
+        return this.http.get<DossierMedical[]>(`${this.baseUrl}/${this.endpoint}/all/dossiers`);
+    }
+
+    // Méthode pour récupérer les souscriptions d'un utilisateur
+    getAllSouscriptions(): Observable<Souscription[]> {
+        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/all/souscriptions`);
+    }
+
+    // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+    getAllBranches(): Observable<Branche[]> {
+        return this.http.get<Branche[]>(`${this.baseUrl}/${this.endpoint}/all/branches`);
+    }
+
+    // Méthode pour récupérer les souscriptions d'un utilisateur
+    getAllPartners(): Observable<Fournisseur[]> {
+        return this.http.get<Fournisseur[]>(`${this.baseUrl}/${this.endpoint}/all/partenaires`);
     }
 
     // Méthode pour récupérer les dossiers médicaux d'un utilisateur
@@ -26,14 +54,14 @@ export class AssureService extends GenericCrudService<Assure> {
         return this.http.get<DossierMedical[]>(`${this.baseUrl}/${this.endpoint}/${assureId}/dossiers`);
     }
 
-    // Méthode pour récupérer les notifications d'un utilisateur
-    getNotifications(assureId: number): Observable<Notification[]> {
-        return this.http.get<Notification[]>(`${this.baseUrl}/${this.endpoint}/${assureId}/notifications`);
-    }
-
     // Méthode pour récupérer les souscriptions d'un utilisateur
     getSouscriptions(assureId: number): Observable<Souscription[]> {
         return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/${assureId}/souscriptions`);
+    }
+
+    // Méthode pour récupérer les notifications d'un utilisateur
+    getNotifications(assureId: number): Observable<Notification[]> {
+        return this.http.get<Notification[]>(`${this.baseUrl}/${this.endpoint}/${assureId}/notifications`);
     }
 
     // Méthode pour récupérer les données combinées d'un utilisateur

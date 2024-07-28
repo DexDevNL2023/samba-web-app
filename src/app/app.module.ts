@@ -148,6 +148,8 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
 import { DossierMedicalCrudComponent } from './components/dossier-medical/dossier-medical.crud.component';
 import { FournisseurCrudComponent } from './components/fournisseur/fournisseur.crud.component';
 import { GarantieCrudComponent } from './components/garantie/garantie.crud.component';
+import { NotificationCrudComponent } from './components/notification/notification.crud.component';
+import { AssureCrudComponent } from './components/assure/assure.crud.component';
 
 @NgModule({
     imports: [
@@ -257,12 +259,14 @@ import { GarantieCrudComponent } from './components/garantie/garantie.crud.compo
         ProfilComponent,
         AppBreadcrumbComponent,
         AssuranceCrudComponent,
+        AssureCrudComponent,
         BrancheCrudComponent,
         DocumentSinistreCrudComponent,
         DossierMedicalCrudComponent,
         FinanceurCrudComponent,
         FournisseurCrudComponent,
         GarantieCrudComponent,
+        NotificationCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

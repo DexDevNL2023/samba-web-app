@@ -76,6 +76,7 @@
                 <!-- Ajouter des onglets pour registrant, dossiers, et souscriptions -->
                 <p-tabPanel header="Registrant" *ngIf="data?.registrant">
                     <div class="p-3">
+                        <label class="block font-normal text-900 mb-2">Registrant No: {{ data.registrant.numeroRegistrant }}</label>
                         <p>Branche: {{ data.registrant.branche.ville }}</p>
                         <p>Partenaire: {{ data.registrant.partenaire.nom }}</p>
                     </div>
