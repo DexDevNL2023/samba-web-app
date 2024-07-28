@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 /* // Importation des modules nécessaires depuis Angular et RxJS
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -123,6 +124,17 @@ export class AccountService {
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
     return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey && permission?.haveAccess));
   }
+
+  // Méthode pour récupérer les information d'un utilisateur
+  findUser(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/account/${userId}/user`);
+  }
+
+  // Méthode pour mettre à jour les information d'un utilisateur existante.
+  updateUser(userId: number, user: any): Observable<any> {
+    // Effectue une requête PUT et mappe la réponse pour convertir les dates du serveur.
+    return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
+  }
 }
 
  */
@@ -136,6 +148,7 @@ import { shareReplay, tap, catchError } from 'rxjs/operators';
 import { Account } from './account.model';
 import { Permission } from '../../models/permission.model';
 import { Rule } from '../../models/rule.model';
+import { HttpClient } from '@angular/common/http';
 
 // Exemple de permissions
 const readPermission: Permission = {
@@ -184,12 +197,12 @@ const userRule: Rule = {
 // Exemple de données pour initialiser un compte
 const exampleAccount = new Account(
   1, // id
+  true, // activated
   ['ROLE_ADMINISTRATOR'], // authorities
-  'john.doe@example.com', // email
-  'John', // firstName
+  'victor.nlang@teleo.com', // email
+  'Victor Nlang', // fullName
   'en', // langKey
-  'Doe', // lastName
-  'john.doe', // login
+  'nlang.victor', // login
   '', // imageUrl
   [adminRule, userRule] // rules
 );
@@ -204,8 +217,13 @@ export class AccountService {
   // Déclaration d'un cache pour les informations du compte
   private accountCache$?: Observable<Account> | null;
 
+  // Déclaration de l'URL de base pour les requêtes API
+  protected baseUrl = environment.apiUrl;
+
   // Injection des services nécessaires
-  constructor() {}
+  constructor(
+    private http: HttpClient
+  ) {}
 
   // Méthode pour obtenir le compte de l'utilisateur actuellement connecté
   getCurrentAccount(): Account | null {
@@ -280,6 +298,17 @@ export class AccountService {
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
     return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey && permission?.haveAccess));
+  }
+
+  // Méthode pour récupérer les information d'un utilisateur
+  findUser(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api/account/${userId}/user`);
+  }
+
+  // Méthode pour mettre à jour les information d'un utilisateur existante.
+  updateUser(userId: number, user: any): Observable<any> {
+    // Effectue une requête PUT et mappe la réponse pour convertir les dates du serveur.
+    return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
   }
 }
 

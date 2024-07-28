@@ -8,17 +8,16 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Fournisseur } from '../../models/fournisseur.model';
-import { FournisseurService } from '../../service/fournisseur.service';
+import { DossierMedical } from '../../models/medical-record.model';
+import { MedicalRecordService } from '../../service/medical-record.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Prestation, PrestationStatus } from '../../models/prestation.model';
-import { Branche } from '../../models/branche.model';
+import { ClaimStatus, Sinistre } from '../../models/sinistre.model';
 
 @Component({
-  selector: 'app-fournisseur-soin-crud',
+  selector: 'app-medical-record-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class FournisseurCrudComponent implements OnInit {
+export class DossierMedicalCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -29,8 +28,8 @@ export class FournisseurCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Fournisseur; // Élément de type FournisseurSoin actuellement sélectionné ou en cours de modification
-  selectedItems: Fournisseur[] = []; // Tableau d'éléments de type FournisseurSoin sélectionnés
+  selectedItem: DossierMedical; // Élément de type DossierMedical actuellement sélectionné ou en cours de modification
+  selectedItems: DossierMedical[] = []; // Tableau d'éléments de type DossierMedical sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -46,51 +45,70 @@ export class FournisseurCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'nom', header: 'Name', type: 'text' },
-    { field: 'servicesFournis', header: 'Services', type: 'textarea' },
-    { field: 'adresse', header: 'Adresse', type: 'textarea' },
-    { field: 'telephone', header: 'Telephone', type: 'text' },
-    { field: 'email', header: 'Email', type: 'text' },
-    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'label', key: 'id', subfield: [
+    { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
+    { field: 'patient', header: 'Patient', type: 'objet', values: [], label: 'fullName', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'label', header: 'Intitule', type: 'text' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
-        { field: 'montant', header: 'Montant', type: 'currency' }
+        { field: 'fullName', header: 'Nom et prénom', type: 'text' },
+        { field: 'dateNaissance', header: 'Date de naissance', type: 'date' },
+        { field: 'sexe', header: 'Sexe', type: 'enum', values: [], label: 'label', key: 'value' },
+        { field: 'addresse', header: 'Adresse', type: 'text' },
+        { field: 'telephone', header: 'Telephone', type: 'text' },
+        { field: 'email', header: 'Email', type: 'text' }
       ]
     },
-    { field: 'branches', header: 'Branches', type: 'list', values: [], label: 'code', key: 'id', subfield: [
+    { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },
+    { field: 'maladiesChroniques', header: 'Maladies chroniques', type: 'list', values: [], label: 'label', key: 'value' },,
+    { field: 'maladiesHereditaires', header: 'Maladies hereditaires', type: 'list', values: [], label: 'label', key: 'value' },
+    { field: 'interventionsChirurgicales', header: 'Interventions chirurgicales', type: 'list', values: [], label: 'label', key: 'value' },
+    { field: 'hospitalisations', header: 'Hospitalisations', type: 'list', values: [], label: 'label', key: 'value' },
+    { field: 'allergies', header: 'Allergies', type: 'list', values: [], label: 'label', key: 'value' },
+    { field: 'consultationsEtTraitements', header: 'Consultations et traitements', type: 'list', values: [], label: 'numConsultationEtTraitement', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'code', header: 'Code', type: 'text' },
-        { field: 'ville', header: 'Ville', type: 'text' },
-        { field: 'isDefaut', header: 'Par defaut', type: 'boolean' }
+        { field: 'numAntecedentMedical', header: 'Num AntecedentMedical', type: 'text' },
+        { field: 'maladiesChroniques', header: 'Maladies chroniques', type: 'list', values: [], label: 'label', key: 'value' },,
+        { field: 'maladiesHereditaires', header: 'Maladies hereditaires', type: 'list', values: [], label: 'label', key: 'value' },
+        { field: 'interventionsChirurgicales', header: 'Interventions chirurgicales', type: 'list', values: [], label: 'label', key: 'value' },
+        { field: 'hospitalisations', header: 'Hospitalisations', type: 'list', values: [], label: 'label', key: 'value' },
+        { field: 'allergies', header: 'Allergies', type: 'list', values: [], label: 'label', key: 'value' }
       ]
     }
   ];
   
-  items: Fournisseur[] = [
+  items: DossierMedical[] = [
     {
       id: 1,
-      nom: 'Clinique Santé Plus',
-      telephone: '123456789',
-      email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux',
-      prestations: [1, 2],
-      branches: [1]
+      nom: 'Photo du Sinistre',
+      description: 'Photo montrant les dommages causés par l\'accident',
+      url: 'http://example.com/photo-sinistre.jpg',
+      dateTelechargement: new Date('2023-06-01'),
+      sinistre: 1
     },
     {
       id: 2,
-      nom: 'Centre Médical Bongo',
-      telephone: '987654321',
-      email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
-      servicesFournis: 'Radiologie, Analyses de Laboratoire',
-      prestations: [3, 4],
-      branches: [2]
+      nom: 'Vidéo du Sinistre',
+      description: 'Vidéo enregistrée par une caméra de surveillance',
+      url: 'http://example.com/video-sinistre.mp4',
+      dateTelechargement: new Date('2023-06-02'),
+      sinistre: 1
+    },
+    {
+      id: 3,
+      nom: 'Facture de Réparation',
+      description: 'Facture des coûts de réparation des dommages',
+      url: 'http://example.com/facture-reparation.pdf',
+      dateTelechargement: new Date('2023-06-03'),
+      sinistre: 2
+    },
+    {
+      id: 4,
+      nom: 'Rapport Médical',
+      description: 'Rapport médical décrivant les blessures subies',
+      url: 'http://example.com/rapport-medical.pdf',
+      dateTelechargement: new Date('2023-06-04'),
+      sinistre: 2
     }
-  ];  
-  branches: EntityByBranch<Fournisseur>[] = [
+  ];
+  branches: EntityByBranch<DossierMedical>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -110,98 +128,71 @@ export class FournisseurCrudComponent implements OnInit {
           ]
       }
   ];
-  prestations: Prestation[] = [
+  sinistres: Sinistre[] = [
     {
       id: 1,
-      label: 'Consultation Médicale Générale',
-      datePrestation: new Date('2024-01-15'),
-      description: 'Consultation avec un médecin généraliste.',
-      montant: 5000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 1,
-      financeurs: [1],
-      sinistre: 1
+      numeroSinistre: 'S001',
+      raison: 'Accident de voiture',
+      dateDeclaration: new Date('2023-01-01'),
+      dateTraitement: new Date('2023-01-10'),
+      status: ClaimStatus.EN_ATTENTE,
+      montantSinistre: 10000,
+      montantAssure: 8000,
+      souscription: 1,
+      prestations: [1, 2],
+      reclamations: [1, 2],
+      documents: [1, 2]
     },
     {
       id: 2,
-      label: 'Hospitalisation Chirurgicale',
-      datePrestation: new Date('2024-02-20'),
-      description: 'Hospitalisation pour une intervention chirurgicale.',
-      montant: 120000,
-      status: PrestationStatus.EN_ATTENTE,
-      fournisseur: 2,
-      financeurs: [1, 2],
-      sinistre: 2
-    },
-    {
-      id: 3,
-      label: 'Radiologie',
-      datePrestation: new Date('2024-03-10'),
-      description: 'Radiographie thoracique.',
-      montant: 20000,
-      status: PrestationStatus.NON_REMBOURSE,
-      fournisseur: 3,
-      financeurs: [2],
-      sinistre: 3
-    },
-    {
-      id: 4,
-      label: 'Soins Dentaires',
-      datePrestation: new Date('2024-04-05'),
-      description: 'Traitement de caries et nettoyage dentaire.',
-      montant: 15000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 4,
-      financeurs: [1],
-      sinistre: 3
-    }
-  ];
-  allBranches: Branche[] = [
-    {
-      id: 1,
-      code: 'DLA',
-      ville: 'Branche Douala',
-      isDefaut: false,
-      partenaires: [1,4,5]
-    },
-    {
-      id: 2,
-      code: 'YAE',
-      ville: 'Branche Yaounde',
-      isDefaut: true,
-      partenaires: [2,3]
+      numeroSinistre: 'S002',
+      raison: 'Incendie de maison',
+      dateDeclaration: new Date('2023-02-01'),
+      dateTraitement: new Date('2023-02-15'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 20000,
+      montantAssure: 15000,
+      souscription: 2,
+      prestations: [3],
+      reclamations: [3, 4],
+      documents: [3, 4]
     }
   ];
 
+  // Liste pour ClaimStatus
+  claimStatus = [
+    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
+    { label: 'Approuve', value: ClaimStatus.APPROUVE },
+    { label: 'Annule', value: ClaimStatus.ANNULE }
+  ];
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: FournisseurService, // Service pour les opérations CRUD génériques
+    private service: MedicalRecordService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Fournisseur';
-    this.componentLink = '/admin/fournisseurs';
-    this.importLink = '/import-fournisseur';
-    this.moduleKey = 'PARTNERS_MODULE';
+    this.entityName = 'Dossier medical';
+    this.componentLink = '/admin/dossiers/medicaux';
+    this.importLink = '/import-dossier-medical';
+    this.moduleKey = 'DOCUMENT_SINISTRE_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadPrestations();
-    //this.loadBranches();
+    //this.loadSinistres();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
 
     // Simulate fetching data from a service
-    //this.fetchBranches();
+    //this.fetchDossierMedicals();
   }
 
   // Sample data initialization
@@ -209,31 +200,24 @@ export class FournisseurCrudComponent implements OnInit {
     this.loading = false;
   }
   
-  // Chargement des prestations associés à une fournisseur-soin
-  loadPrestations(): void {
-    this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
-        this.prestations = prestations;
-    });
-  }
-  
-  // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): void {
-    this.service.getAllBranches().subscribe((branches: Branche[]) => {
-        this.allBranches = branches;
+  // Chargement des polices associés à une medical-record
+  loadSinistres(): void {
+    this.service.getAllSinistres().subscribe((sinistres: Sinistre[]) => {
+        this.sinistres = sinistres;
     });
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['nom', 'telephone', 'pays', 'servicesFournis'];
+    return ['nom', 'url'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('prestations', this.prestations);
-    this.setColumnValues('branches', this.allBranches);
+    this.setColumnValues('sinistre', this.sinistres);
+    this.setSubFieldValues('sinistre', 'status', this.claimStatus);
   }
   
   /**
@@ -264,7 +248,7 @@ export class FournisseurCrudComponent implements OnInit {
     }
   }
 
-  protected fetchBranches(): void {
+  protected fetchDossierMedicals(): void {
     // Au chargement du composant, récupère tous les éléments via le service
     if(this.isTable) {
       this.service.query().subscribe(data => {
@@ -383,7 +367,7 @@ export class FournisseurCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Fournisseur>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<DossierMedical>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -628,7 +612,7 @@ export class FournisseurCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Fournisseur; // Initialise un nouvel élément
+    this.selectedItem = {} as DossierMedical; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -639,14 +623,14 @@ export class FournisseurCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Fournisseur) {
+  protected editItem(item: DossierMedical) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Fournisseur) {
+  protected deleteItem(item: DossierMedical) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -669,7 +653,7 @@ export class FournisseurCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Fournisseur; // Réinitialise l'élément
+      this.selectedItem = {} as DossierMedical; // Réinitialise l'élément
     });
   }
 
@@ -692,7 +676,7 @@ export class FournisseurCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Fournisseur; // Réinitialise l'élément
+          this.selectedItem = {} as DossierMedical; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -701,7 +685,7 @@ export class FournisseurCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Fournisseur; // Réinitialise l'élément
+          this.selectedItem = {} as DossierMedical; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Souscription } from '../models/souscription.model';
-import { UserExtra } from '../models/user-extra.model';
+import { UserExtra } from '../models/assure.model';
 import { PoliceAssurance } from '../models/police-assurance.model';
 import { Paiement } from '../models/paiement.model';
 import { Sinistre } from '../models/sinistre.model';

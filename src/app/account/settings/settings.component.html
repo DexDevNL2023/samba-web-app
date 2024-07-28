@@ -7,138 +7,193 @@
   </p-divider>
   <div class="flex gap-5 flex-column-reverse md:flex-row">
     <div class="flex-auto p-fluid">
-      <form *ngIf="settingsForm.value.login" name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
-        <div class="mb-4">
-          <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
-          <input
-            id="lastName"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="lastName"
-            data-cy="lastname"
-          />
+      <form name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
+        
+        <!-- Default User Form Fields -->
+        <div *ngIf="hasAuthority(['ROLE_AGENT', 'ROLE_ADMINISTRATOR'])">
+          <div class="mb-4">
+            <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
+            <input
+              id="lastName"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="lastName"
+              data-cy="lastname"
+            />
+          </div>
+  
+          <div class="mb-4">
+            <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
+            <input
+              id="firstName"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="firstName"
+              data-cy="firstname"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="email" class="block font-normal text-900 mb-2">Email</label>
+            <input
+              id="email"
+              type="email"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="email"
+              data-cy="email"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="langKey" class="block font-normal text-900 mb-2">Langue</label>
+            <p-dropdown
+              id="langKey"
+              [options]="languages"
+              placeholder="Langue"
+              formControlName="langKey"
+            ></p-dropdown>
+          </div>
+
+          <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+            <label for="activated" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
+            <p-checkbox
+              id="activated"
+              name="activated"
+              formControlName="activated"
+              binary="true"
+              [label]="'Activé/Désactivé'"
+              [styleClass]="'p-mr-2'"
+            ></p-checkbox>
+          </div>
+
+          <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+            <label for="authorities" class="block font-normal text-900 mb-2">Rôles</label>
+            <p-multiSelect
+              id="authorities"
+              name="authorities"
+              [options]="authorities"
+              [(ngModel)]="selectedAuthorities"
+              formControlName="authorities"
+              [defaultLabel]="'Sélectionnez les rôles'"
+              [style]="{'width':'100%'}"
+              [panelStyle]="{'max-height':'200px'}"
+              optionLabel="label"
+              dataKey="value"
+              appendTo="body"
+              data-cy="authorities">
+            </p-multiSelect>
+          </div>
         </div>
 
-        <div class="mb-4">
-          <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
-          <input
-            id="firstName"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="firstName"
-            data-cy="firstname"
-          />
-        </div>
+        <!-- Assure Form Fields -->
+        <div *ngIf="hasAuthority(['ROLE_CLIENT'])">
+          <div class="mb-4">
+            <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
+            <input
+              id="lastName"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="lastName"
+              data-cy="lastname"
+            />
+          </div>
+  
+          <div class="mb-4">
+            <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
+            <input
+              id="firstName"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="firstName"
+              data-cy="firstname"
+            />
+          </div>
 
-        <div class="mb-4">
-          <label for="email" class="block font-normal text-900 mb-2">Email</label>
-          <input
-            id="email"
-            type="email"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="email"
-            data-cy="email"
-          />
-        </div>
+          <div class="mb-4">
+            <label for="numNiu" class="block font-normal text-900 mb-2">NIU</label>
+            <input
+              id="numNiu"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="numNiu"
+            />
+          </div>
 
-        <div class="mb-4">
-          <label for="numNiu" class="block font-normal text-900 mb-2">NIU</label>
-          <input
-            id="numNiu"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="numNiu"
-          />
-        </div>
+          <div class="mb-4">
+            <label for="dateNaissance" class="block font-normal text-900 mb-2">Date de naissance</label>
+            <p-calendar
+              id="dateNaissance"
+              formControlName="dateNaissance"
+              [showIcon]="true"
+              inputId="icon"
+              dateFormat="dd/mm/yy"
+              [monthNavigator]="true"
+              [yearNavigator]="true"
+              yearRange="1900:{{ currentYear }}"
+              placeholder="Sélectionnez une date"
+            ></p-calendar>
+          </div>
 
-        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
-          <label for="dateNaissance" class="block font-normal text-900 mb-2">Date de naissance</label>
-          <p-calendar
-            id="dateNaissance"
-            formControlName="dateNaissance"
-            [showIcon]="true"
-            inputId="icon"
-            dateFormat="dd/mm/yy"
-            [monthNavigator]="true"
-            [yearNavigator]="true"
-            yearRange="1900:{{ currentYear }}"
-            placeholder="Sélectionnez une date"
-          ></p-calendar>
-        </div>
+          <div class="mb-4">
+            <label for="numCni" class="block font-normal text-900 mb-2">CNI</label>
+            <input
+              id="numCni"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="numCni"
+            />
+          </div>
 
-        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
-          <label for="numCni" class="block font-normal text-900 mb-2">CNI</label>
-          <input
-            id="numCni"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="numCni"
-          />
-        </div>
+          <div class="mb-4">
+            <label for="sexe" class="block font-normal text-900 mb-2">Genre</label>
+            <p-dropdown
+              [options]="genders"
+              placeholder="Genre"
+              formControlName="sexe"
+            ></p-dropdown>
+          </div>
 
-        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
-          <label for="sexe" class="block font-normal text-900 mb-2">Genre</label>
-          <p-dropdown
-            [options]="genders"
-            placeholder="Genre"
-            formControlName="sexe"
-          ></p-dropdown>
-        </div>
+          <div class="mb-4">
+            <label for="telephone" class="block font-normal text-900 mb-2">Téléphone</label>
+            <input
+              id="telephone"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="telephone"
+            />
+          </div>
 
-        <div class="mb-4">
-          <label for="telephone" class="block font-normal text-900 mb-2">Téléphone</label>
-          <input
-            id="telephone"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="telephone"
-          />
-        </div>
+          <div class="mb-4">
+            <label for="email" class="block font-normal text-900 mb-2">Email</label>
+            <input
+              id="email"
+              type="email"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="email"
+            />
+          </div>
 
-        <div class="mb-4">
-          <label for="addresse" class="block font-normal text-900 mb-2">Adresse</label>
-          <input
-            id="addresse"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="addresse"
-          />
-        </div>
+          <div class="mb-4">
+            <label for="address" class="block font-normal text-900 mb-2">Adresse</label>
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse" 
+                placeholder="Adresse complete" formControlName="adresse" rows="5" cols="30">
+            </textarea>
+          </div>
 
-        <div class="mb-4">
-          <label for="ville" class="block font-normal text-900 mb-2">Ville</label>
-          <input
-            id="ville"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="ville"
-          />
-        </div>
-
-        <div class="mb-4">
-          <label for="pays" class="block font-normal text-900 mb-2">Pays</label>
-          <input
-            id="pays"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="pays"
-          />
-        </div>
-
-        <div *ngIf="hasAuthority(['ROLE_CLIENT'])" class="mb-4">
-          <label for="signature" class="block font-normal text-900 mb-2">Signature</label>
-          <img name="signature" id="signature" formControlName="signature" src="{{ signatureUrlPreview }}" alt="Preview"
-          style="max-width: 200px; max-height: 200px;" size="xlarge" />
-          <p-fileUpload
+          <div class="mb-4">
+            <label for="signature" class="block font-normal text-900 mb-2">Signature</label>
+            <img name="signature" id="signature" formControlName="signature" src="{{ signatureUrlPreview }}" alt="Preview"
+              style="max-width: 200px; max-height: 200px;" size="xlarge" />
+            <p-fileUpload
               mode="basic"
               for="signature"
               chooseLabel="Upload a signature"
@@ -147,57 +202,75 @@
               [showUploadButton]="false"
               [showCancelButton]="true"
               [auto]="true"></p-fileUpload>
+          </div>
         </div>
 
-        <div class="mb-4">
-          <label for="pays" class="block font-normal text-900 mb-2">Pays</label>
-          <input
-            id="pays"
-            type="text"
-            pInputText
-            class="p-inputtext p-component p-element"
-            formControlName="pays"
-          />
-        </div>
+        <!-- Provider Form Fields -->
+        <div *ngIf="hasAuthority(['ROLE_PROVIDER'])">
+          <div class="mb-4">
+            <label for="nom" class="block font-normal text-900 mb-2">Nom</label>
+            <input
+              id="nom"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="nom"
+            />
+          </div>
 
-        <div class="mb-4">
-          <label for="langKey" class="block font-normal text-900 mb-2">Langue</label>
-          <p-dropdown
-            id="langKey"
-            [options]="languages"
-            placeholder="Langue"
-            formControlName="langKey"
-          ></p-dropdown>
-        </div>
+          <div class="mb-4">
+            <label for="telephone" class="block font-normal text-900 mb-2">Téléphone</label>
+            <input
+              id="telephone"
+              type="text"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="telephone"
+            />
+          </div>
 
-        <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
-          <label for="authorities" class="block font-normal text-900 mb-2">Rôles</label>
-          <p-multiSelect
-            id="authorities"
-            name="authorities"
-            [options]="authorities"
-            [(ngModel)]="selectedAuthorities"
-            formControlName="authorities"
-            [defaultLabel]="'Sélectionnez les rôles'"
-            [style]="{'width':'100%'}"
-            [panelStyle]="{'max-height':'200px'}"
-            optionLabel="label"
-            dataKey="value"
-            appendTo="body"
-            data-cy="authorities">
+          <div class="mb-4">
+            <label for="email" class="block font-normal text-900 mb-2">Email</label>
+            <input
+              id="email"
+              type="email"
+              pInputText
+              class="p-inputtext p-component p-element"
+              formControlName="email"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="adresse" class="block font-normal text-900 mb-2">Adresse</label>
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse" 
+                placeholder="Adresse complete" formControlName="adresse" rows="5" cols="30">
+            </textarea>
+          </div>
+
+          <div class="mb-4">
+            <label for="servicesFournis" class="block font-normal text-900 mb-2">Services Fournis</label>
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="servicesFournis" 
+                placeholder="Services Fournis" formControlName="servicesFournis" rows="5" cols="30">
+            </textarea>
+          </div>
+
+          <div class="mb-4">
+            <label for="branches" class="block font-normal text-900 mb-2">Branches</label>
+            <p-multiSelect
+              id="branches"
+              name="branches"
+              [options]="branches"
+              [(ngModel)]="selectedBranches"
+              formControlName="branches"
+              [defaultLabel]="'Sélectionnez les branches'"
+              [style]="{'width':'100%'}"
+              [panelStyle]="{'max-height':'200px'}"
+              optionLabel="label"
+              dataKey="value"
+              appendTo="body"
+              data-cy="branches">
             </p-multiSelect>
-        </div>
-
-        <div class="mb-4">
-          <label for="activated" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
-          <p-checkbox
-            id="activated"
-            name="activated"
-            formControlName="activated"
-            binary="true"
-            [label]="'Activé/Descactivé'"
-            [styleClass]="'p-mr-2'"
-          ></p-checkbox>
+          </div>
         </div>
 
         <div class="flex align-items-center">

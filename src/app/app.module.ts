@@ -113,7 +113,7 @@ import { RapportService } from './service/rapport.service';
 import { ReclamationService } from './service/reclamation.service';
 import { SinistreService } from './service/sinistre.service';
 import { SouscriptionService } from './service/souscription.service';
-import { UserExtraService } from './service/utilisateur.service';
+import { AssureService } from './service/assure.service';
 import { RouterModule } from '@angular/router';
 import LoginComponent from './login/login.component';
 import PasswordComponent from './account/password/password.component';
@@ -268,7 +268,7 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentSinistreService, UserRouteAccessService,
         FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
         MedicalDocumentService, NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
-        RapportService, ReclamationService, SinistreService, SouscriptionService, UserExtraService, LoginService,
+        RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
         RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,
         {

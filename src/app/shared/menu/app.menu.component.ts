@@ -110,8 +110,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
-                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] }
+                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
@@ -151,8 +150,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] },
-                    { moduleKey: 'DOCUMENT_MEDICAUX_MODULE', label: 'Documents medicaux', icon: 'pi pi-fw pi-inbox', routerLink: ['/admin/documents/medicaux'] }
+                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             }
         ];

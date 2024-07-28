@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Notification } from '../models/notification.model';
 import { GenericCrudService } from './generic.crud.service';
-import { UserExtra } from '../models/user-extra.model';
+import { UserExtra } from '../models/assure.model';
 
 
 @Injectable({ providedIn: 'root' })

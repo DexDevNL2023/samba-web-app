@@ -48,7 +48,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
     { field: 'nom', header: 'Nom', type: 'text' },
     { field: 'description', header: 'description', type: 'textarea' },
     { field: 'url', header: 'Telecharger', type: 'url' },
-    { field: 'dateTelechargement', header: 'Telecharger le', type: 'date' },
     { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'numeroSinistre', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
@@ -67,7 +66,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
       nom: 'Photo du Sinistre',
       description: 'Photo montrant les dommages causés par l\'accident',
       url: 'http://example.com/photo-sinistre.jpg',
-      dateTelechargement: new Date('2023-06-01'),
       sinistre: 1
     },
     {
@@ -75,7 +73,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
       nom: 'Vidéo du Sinistre',
       description: 'Vidéo enregistrée par une caméra de surveillance',
       url: 'http://example.com/video-sinistre.mp4',
-      dateTelechargement: new Date('2023-06-02'),
       sinistre: 1
     },
     {
@@ -83,7 +80,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
       nom: 'Facture de Réparation',
       description: 'Facture des coûts de réparation des dommages',
       url: 'http://example.com/facture-reparation.pdf',
-      dateTelechargement: new Date('2023-06-03'),
       sinistre: 2
     },
     {
@@ -91,7 +87,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
       nom: 'Rapport Médical',
       description: 'Rapport médical décrivant les blessures subies',
       url: 'http://example.com/rapport-medical.pdf',
-      dateTelechargement: new Date('2023-06-04'),
       sinistre: 2
     }
   ];
@@ -163,7 +158,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'DocumentSinistre';
+    this.entityName = 'Document de sinistre';
     this.componentLink = '/admin/documents/sinistres';
     this.importLink = '/import-document-sinistre';
     this.moduleKey = 'DOCUMENT_SINISTRE_MODULE';

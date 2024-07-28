@@ -5,7 +5,6 @@ export interface DocumentSinistre extends BaseEntity {
   nom?: string | null;
   description?: string | null;
   url?: string | null;
-  dateTelechargement?: Date | null;
   sinistre?: number | null;
 }
   

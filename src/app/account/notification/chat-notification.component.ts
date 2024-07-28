@@ -19,9 +19,8 @@ export class ChatNotificationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
-    this.accountService.getAuthenticationState().subscribe(account => {
-      this.account = account;
+    // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
+    this.accountService.identity().subscribe(account => {
       if (account) {
         // Récupère toutes les notifications de l'utilisateur
         this.notificationService.getAllNotificationByUtilisateur(account.id).subscribe(notifications => {
@@ -32,7 +31,7 @@ export class ChatNotificationComponent implements OnInit {
       }
     });
   }
-
+ 
   // Marque toutes les notifications comme lues
   markAllAsRead(): void {
     if (this.account) {

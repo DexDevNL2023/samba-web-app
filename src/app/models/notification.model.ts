@@ -1,5 +1,5 @@
 import { BaseEntity } from "./base-entity.model";
-import { UserExtra } from "./user-extra.model";
+import { UserExtra } from "./assure.model";
 
 export enum NotificationType {
   PAIEMENT = 'PAIEMENT',

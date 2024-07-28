@@ -48,10 +48,10 @@ export class FinanceurCrudComponent implements OnInit {
     { field: 'nom', header: 'Name', type: 'text' },
     { field: 'description', header: 'Description', type: 'textarea' },
     { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'adresse', header: 'Adresse', type: 'text' },
+    { field: 'adresse', header: 'Adresse', type: 'textarea' },
     { field: 'telephone', header: 'Telephone', type: 'text' },
     { field: 'email', header: 'Email', type: 'text' },
-    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
+    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'label', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'label', header: 'Intitule', type: 'text' },
         { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
@@ -67,7 +67,7 @@ export class FinanceurCrudComponent implements OnInit {
       nom: 'Assurance Santé Avenir',
       description: 'Assurance offrant des couvertures complètes pour les soins médicaux.',
       type: FinanceurType.ASSUREUR,
-      adresse: '123 Avenue de la Santé, Ville A',
+      adresse: '123 Avenue de la Santé, Ville A - Pays A',
       telephone: '0123456789',
       email: 'contact@assurancesanteavenir.com',
       prestations: [1, 2, 4]
@@ -77,7 +77,7 @@ export class FinanceurCrudComponent implements OnInit {
       nom: 'Mutuelle Bien-Être',
       description: 'Mutuelle spécialisée dans les soins paramédicaux et la prévention.',
       type: FinanceurType.MUTUELLE,
-      adresse: '456 Rue de la Mutuelle, Ville B',
+      adresse: '456 Rue de la Mutuelle, Ville B - Pays B',
       telephone: '0987654321',
       email: 'info@mutuellebienetre.com',
       prestations: [1, 3]

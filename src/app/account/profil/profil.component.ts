@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../core/auth/account.service';
 import { Account } from '../../core/auth/account.model';
 import { Router } from '@angular/router';
-import { Permission } from '../../models/permission.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from 'src/app/app.main.component';
 import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
-import { UserExtraService } from '../../service/utilisateur.service';
 import { UserData } from '../../models/user-data.model';
+import { AssureService } from '../../service/assure.service';
 
 @Component({
   selector: 'app-profil',
@@ -25,12 +24,12 @@ export class ProfilComponent implements OnInit{
       dossiers: [
         {
           id: 1,
-          numMedicalRecord: 'MR123456',
+          numDossierMedical: 'MR123456',
           dateUpdated: new Date('2024-01-01')
         },
         {
           id: 2,
-          numMedicalRecord: 'MR123457',
+          numDossierMedical: 'MR123457',
           dateUpdated: new Date('2024-02-01')
         }
       ],
@@ -54,7 +53,7 @@ export class ProfilComponent implements OnInit{
       ]
     }; // donnees utilisateur actuel
 
-    constructor(private accountService: AccountService, private userService: UserExtraService, private router: Router, public appMain: AppMainComponent){}
+    constructor(private accountService: AccountService, private assureService: AssureService, private router: Router, public appMain: AppMainComponent){}
  
     ngOnInit(): void {
         // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
@@ -64,7 +63,7 @@ export class ProfilComponent implements OnInit{
             const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
             if (userId) {
               if(this.hasAuthority(['ROLE_CLIENT'])) {
-                this.userService.getUserDetails(userId).subscribe((data: UserData) => {
+                this.assureService.getUserDetails(userId).subscribe((data: UserData) => {
                   this.data = data;
                 });
               }

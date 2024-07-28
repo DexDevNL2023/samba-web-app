@@ -5,8 +5,6 @@ export interface Fournisseur extends BaseEntity {
   telephone?: string | null;
   email?: string | null;
   adresse?: string | null;
-  ville?: string | null;
-  pays?: string | null;
   servicesFournis?: string | null;
   prestations?: number[] | null;
   branches?: number[] | null;

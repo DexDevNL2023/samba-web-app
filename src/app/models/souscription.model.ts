@@ -3,7 +3,7 @@ import { MedicalRecord } from "./medical-record.model";
 import { Paiement } from "./paiement.model";
 import { PoliceAssurance } from "./police-assurance.model";
 import { Sinistre } from "./sinistre.model";
-import { UserExtra } from "./user-extra.model";
+import { UserExtra } from "./assure.model";
 
 export enum SubscriptionStatus {
   ACTIVE = 'ACTIVE',

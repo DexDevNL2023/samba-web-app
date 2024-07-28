@@ -53,7 +53,7 @@ export class GarantieCrudComponent implements OnInit {
     { field: 'dateDebut', header: 'Date de début', type: 'date' },
     { field: 'dateFin', header: 'Date de fin', type: 'date' },
     { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'titre', key: 'id', subfield: [
+    { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'numeroPolice', key: 'id', subfield: [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroPolice', header: 'Num Police', type: 'text' },
       { field: 'label', header: 'Libelle', type: 'text' },

@@ -14,38 +14,6 @@ import { LoginService } from '../../login/login.service';
 export class AppTopBarComponent implements OnInit {
   account: Account | null = null; // Variable pour stocker le compte utilisateur
   // Variable pour stocker les notifications de l'utilisateur
-  /* notifications: Notification[] | null = [
-    {
-      id: 1,
-      message: "Votre paiement a été reçu.",
-      dateEnvoi: new Date("2024-07-14T08:00:00Z"),
-      type: "PAIEMENT",
-      isRead: false,
-      utilisateur: {
-        id: 123
-      }
-    },
-    {
-      id: 2,
-      message: "Votre souscription a été approuvée.",
-      dateEnvoi: new Date("2024-07-13T12:00:00Z"),
-      type: "SOUSCRIPTION",
-      isRead: false,
-      utilisateur: {
-        id: 123
-      }
-    },
-    {
-      id: 3,
-      message: "Un sinistre a été déclaré.",
-      dateEnvoi: new Date("2024-07-12T09:00:00Z"),
-      type: "SINISTRE",
-      isRead: false,
-      utilisateur: {
-        id: 123
-      }
-    }
-  ]; */
   myNotifs: Notification[] | null = [
     {
       id: 1,
