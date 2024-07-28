@@ -150,6 +150,7 @@ import { FournisseurCrudComponent } from './components/fournisseur/fournisseur.c
 import { GarantieCrudComponent } from './components/garantie/garantie.crud.component';
 import { NotificationCrudComponent } from './components/notification/notification.crud.component';
 import { AssureCrudComponent } from './components/assure/assure.crud.component';
+import { PaiementCrudComponent } from './components/paiement/paiement.crud.component';
 
 @NgModule({
     imports: [
@@ -267,6 +268,7 @@ import { AssureCrudComponent } from './components/assure/assure.crud.component';
         FournisseurCrudComponent,
         GarantieCrudComponent,
         NotificationCrudComponent,
+        PaiementCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

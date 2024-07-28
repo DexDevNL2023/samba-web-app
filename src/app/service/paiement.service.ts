@@ -13,7 +13,7 @@ export class PaiementService extends GenericCrudService<Paiement> {
     }
 
     // Méthode pour récupérer la souscription associée à un paiement spécifique
-    getSouscription(paiementId: number): Observable<Souscription> {
-        return this.http.get<Souscription>(`${this.baseUrl}/${this.endpoint}/${paiementId}/souscription`);
+    getAllSouscriptions(): Observable<Souscription[]> {
+        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/all/souscriptions`);
     }
 }

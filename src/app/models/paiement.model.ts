@@ -1,5 +1,4 @@
 import { BaseEntity } from "./base-entity.model";
-import { Souscription } from "./souscription.model";
 
 export enum PaymentType {
   PRIME = 'PRIME',
@@ -19,5 +18,5 @@ export interface Paiement extends BaseEntity {
   montant?: number | null;
   type?: keyof typeof PaymentType | null;
   status?: keyof typeof PaymentStatus | null;
-  souscription?: Pick<Souscription, 'id'> | null;
+  souscription?: number | null;
 }
