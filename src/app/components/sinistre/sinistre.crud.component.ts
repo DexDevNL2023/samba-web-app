@@ -8,19 +8,18 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Prestation, PrestationType, PrestationStatus } from '../../models/prestation.model';
-import { PrestationService } from '../../service/prestation.service';
+import { Sinistre, ClaimStatus } from '../../models/sinistre.model';
+import { SinistreService } from '../../service/sinistre.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Financeur, FinanceurType } from '../../models/financeur.model';
-import { Fournisseur } from '../../models/fournisseur.model';
 import { Document } from '../../models/document.model';
-import { ClaimStatus, Sinistre } from '../../models/sinistre.model';
+import { Prestation, PrestationStatus } from '../../models/prestation.model';
+import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
 
 @Component({
-  selector: 'app-prestation-crud',
+  selector: 'app-sinistre-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class PrestationCrudComponent implements OnInit {
+export class SinistreCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -31,8 +30,8 @@ export class PrestationCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Prestation; // Élément de type Prestation actuellement sélectionné ou en cours de modification
-  selectedItems: Prestation[] = []; // Tableau d'éléments de type Prestation sélectionnés
+  selectedItem: Sinistre; // Élément de type Sinistre actuellement sélectionné ou en cours de modification
+  selectedItems: Sinistre[] = []; // Tableau d'éléments de type Sinistre sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -48,36 +47,30 @@ export class PrestationCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+    { field: 'numeroSinistre', header: ' Num Sinistre', type: 'text' },
     { field: 'label', header: 'Libellé', type: 'text' },
-    { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-    { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'description', header: 'Description', type: 'textarea' },
-    { field: 'montant', header: 'Montant', type: 'currency' },
-    { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'fournisseur', header: 'Fournisseur', type: 'objet', values: [], label: 'nom', key: 'id', subfield: [
+    { field: 'raison', header: 'Raison', type: 'textarea' },
+    { field: 'dateDeclaration', header: 'Date de déclaration', type: 'date' },
+    { field: 'dateTraitement', header: 'Date de traiment', type: 'date' },
+    { field: 'status', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'montantSinistre', header: 'Montant du sinistre', type: 'currency' },
+    { field: 'montantAssure', header: 'Montant assuré', type: 'currency' },
+    { field: 'souscription', header: 'Souscription', type: 'objet', values: [], label: 'numeroSouscription', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'nom', header: 'Nom', type: 'text' },
-        { field: 'telephone', header: 'Telephone', type: 'text' },
-        { field: 'email', header: 'Email', type: 'text' },
-        { field: 'adresse', header: 'Adresse', type: 'text' }
+        { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+        { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
+        { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
       ]
     },
-    { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'name', key: 'id', subfield: [
+    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'numeroPrestation', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+        { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },
-        { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
-        { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' }
-      ]
-    },
-    { field: 'financeurs', header: 'Financeurs', type: 'list', values: [], label: 'nom', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'nom', header: 'Name', type: 'text' },
-        { field: 'adresse', header: 'Adresse', type: 'textarea' },
-        { field: 'telephone', header: 'Telephone', type: 'text' },
-        { field: 'email', header: 'Email', type: 'text' }
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+        { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
+        { field: 'montant', header: 'Montant', type: 'currency' }
       ]
     },
     { field: 'documents', header: 'Documents', type: 'list', values: [], label: 'numeroDocument', key: 'id', subfield: [
@@ -89,165 +82,7 @@ export class PrestationCrudComponent implements OnInit {
     }
   ];
   
-  items: Prestation[] = [
-    {
-      id: 1,
-      numeroPrestation: 'PRE-001',
-      label: 'Consultation Médicale Générale',
-      datePrestation: new Date('2024-01-15'),
-      description: 'Consultation avec un médecin généraliste.',
-      montant: 5000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 1,
-      financeurs: [1],
-      sinistre: 1,
-      documents: [1, 2]
-    },
-    {
-      id: 2,
-      numeroPrestation: 'PRE-002',
-      label: 'Hospitalisation Chirurgicale',
-      datePrestation: new Date('2024-02-20'),
-      description: 'Hospitalisation pour une intervention chirurgicale.',
-      montant: 120000,
-      status: PrestationStatus.EN_ATTENTE,
-      fournisseur: 2,
-      financeurs: [1, 2],
-      sinistre: 2,
-      documents: [2, 3]
-    },
-    {
-      id: 3,
-      numeroPrestation: 'PRE-003',
-      label: 'Radiologie',
-      datePrestation: new Date('2024-03-10'),
-      description: 'Radiographie thoracique.',
-      montant: 20000,
-      status: PrestationStatus.NON_REMBOURSE,
-      fournisseur: 1,
-      financeurs: [2],
-      sinistre: 3,
-      documents: [3]
-    },
-    {
-      id: 4,
-      numeroPrestation: 'PRE-004',
-      label: 'Soins Dentaires',
-      datePrestation: new Date('2024-04-05'),
-      description: 'Traitement de caries et nettoyage dentaire.',
-      montant: 15000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 1,
-      financeurs: [1],
-      sinistre: 4,
-      documents: [4, 1]
-    }
-  ];
-  branches: EntityByBranch<Prestation>[] = [
-      {
-          name: 'Branch A',
-          partenaires: [
-              {
-                  name: 'Registrant A1',
-                  data: this.items // Reuse existing items
-              }
-          ]
-      },
-      {
-          name: 'Branch B',
-          partenaires: [
-              {
-                  name: 'Registrant B1',
-                  data: this.items // Reuse existing items
-              }
-          ]
-      }
-  ];
-  fournisseurs: Fournisseur[] = [
-    {
-      id: 1,
-      nom: 'Clinique Santé Plus',
-      telephone: '123456789',
-      email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux',
-      prestations: [1, 2],
-      branches: [1]
-    },
-    {
-      id: 2,
-      nom: 'Centre Médical Bongo',
-      telephone: '987654321',
-      email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
-      servicesFournis: 'Radiologie, Analyses de Laboratoire',
-      prestations: [3, 4],
-      branches: [2]
-    }
-  ]; 
-  financeurs: Financeur[] = [
-    {
-      id: 1,
-      nom: 'Assurance Santé Avenir',
-      description: 'Assurance offrant des couvertures complètes pour les soins médicaux.',
-      type: FinanceurType.ASSUREUR,
-      adresse: '123 Avenue de la Santé, Ville A - Pays A',
-      telephone: '0123456789',
-      email: 'contact@assurancesanteavenir.com',
-      prestations: [1, 2, 4]
-    },
-    {
-      id: 2,
-      nom: 'Mutuelle Bien-Être',
-      description: 'Mutuelle spécialisée dans les soins paramédicaux et la prévention.',
-      type: FinanceurType.MUTUELLE,
-      adresse: '456 Rue de la Mutuelle, Ville B - Pays B',
-      telephone: '0987654321',
-      email: 'info@mutuellebienetre.com',
-      prestations: [1, 3]
-    },
-    {
-      id: 3,
-      nom: 'Caisse Nationale de Sécurité Sociale',
-      description: 'Organisme public offrant des prestations de santé aux travailleurs.',
-      type: FinanceurType.ORGANISME_PUBLIC,
-      adresse: '789 Boulevard de la Sécurité, Capitale C',
-      telephone: '0223344556',
-      email: 'cnss@securitesociale.gouv',
-      prestations: [2, 3, 4]
-    }
-  ];
-  documents: Document[] = [
-    {
-      id: 1,
-      numeroDocument: 'DOC-001',
-      nom: 'Photo du Sinistre',
-      description: 'Photo montrant les dommages causés par l\'accident',
-      url: 'http://example.com/photo-sinistre.jpg'
-    },
-    {
-      id: 2,
-      numeroDocument: 'DOC-002',
-      nom: 'Vidéo du Sinistre',
-      description: 'Vidéo enregistrée par une caméra de surveillance',
-      url: 'http://example.com/video-sinistre.mp4'
-    },
-    {
-      id: 3,
-      numeroDocument: 'DOC-003',
-      nom: 'Facture de Réparation',
-      description: 'Facture des coûts de réparation des dommages',
-      url: 'http://example.com/facture-reparation.pdf'
-    },
-    {
-      id: 4,
-      numeroDocument: 'DOC-004',
-      nom: 'Rapport Médical',
-      description: 'Rapport médical décrivant les blessures subies',
-      url: 'http://example.com/rapport-medical.pdf'
-    }
-  ];
-  sinistres: Sinistre[] = [
+  items: Sinistre[] = [
     // Assurance Bien
     {
       id: 1,
@@ -365,14 +200,162 @@ export class PrestationCrudComponent implements OnInit {
       documents: []
     }
   ];
+  branches: EntityByBranch<Sinistre>[] = [
+      {
+          name: 'Branch A',
+          partenaires: [
+              {
+                  name: 'Registrant A1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      },
+      {
+          name: 'Branch B',
+          partenaires: [
+              {
+                  name: 'Registrant B1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      }
+  ];
+  souscriptions: Souscription[] = [
+    {
+      id: 1,
+      numeroSouscription: 'SUB001',
+      dateSouscription: new Date('2023-01-01'),
+      dateExpiration: new Date('2024-01-01'),
+      status: 'ACTIVE',
+      frequencePaiement: 'MENSUEL',
+      assure: 1,
+      police: 1,
+      paiements: [1, 2, 3],
+      sinistres: [1, 2]
+    },
+    {
+      id: 2,
+      numeroSouscription: 'SUB002',
+      dateSouscription: new Date('2022-06-01'),
+      dateExpiration: new Date('2023-06-01'),
+      status: 'ON_RISK',
+      frequencePaiement: 'ANNUEL',
+      assure: 2,
+      police: 2,
+      paiements: [4],
+      sinistres: [3]
+    },
+    {
+      id: 3,
+      numeroSouscription: 'SUB003',
+      dateSouscription: new Date('2024-02-15'),
+      dateExpiration: new Date('2025-02-15'),
+      status: 'WAITING',
+      frequencePaiement: 'TRIMESTRIEL',
+      assure: 3,
+      police: 3,
+      paiements: [5, 6],
+      sinistres: []
+    },
+    {
+      id: 4,
+      numeroSouscription: 'SUB004',
+      dateSouscription: new Date('2021-09-01'),
+      dateExpiration: new Date('2022-09-01'),
+      status: 'RESILIE',
+      frequencePaiement: 'SEMESTRIEL',
+      assure: 4,
+      police: 4,
+      paiements: [7, 8],
+      sinistres: [4]
+    }
+  ];
+  prestations: Prestation[] = [
+    {
+      id: 1,
+      numeroPrestation: 'PRE-001',
+      label: 'Consultation Médicale Générale',
+      datePrestation: new Date('2024-01-15'),
+      description: 'Consultation avec un médecin généraliste.',
+      montant: 5000,
+      status: PrestationStatus.REMBOURSE,
+      fournisseur: 1,
+      financeurs: [1],
+      sinistre: 1,
+      documents: [1, 2]
+    },
+    {
+      id: 2,
+      numeroPrestation: 'PRE-002',
+      label: 'Hospitalisation Chirurgicale',
+      datePrestation: new Date('2024-02-20'),
+      description: 'Hospitalisation pour une intervention chirurgicale.',
+      montant: 120000,
+      status: PrestationStatus.EN_ATTENTE,
+      fournisseur: 2,
+      financeurs: [1, 2],
+      sinistre: 2,
+      documents: [2, 3]
+    },
+    {
+      id: 3,
+      numeroPrestation: 'PRE-003',
+      label: 'Radiologie',
+      datePrestation: new Date('2024-03-10'),
+      description: 'Radiographie thoracique.',
+      montant: 20000,
+      status: PrestationStatus.NON_REMBOURSE,
+      fournisseur: 1,
+      financeurs: [2],
+      sinistre: 3,
+      documents: [3]
+    },
+    {
+      id: 4,
+      numeroPrestation: 'PRE-004',
+      label: 'Soins Dentaires',
+      datePrestation: new Date('2024-04-05'),
+      description: 'Traitement de caries et nettoyage dentaire.',
+      montant: 15000,
+      status: PrestationStatus.REMBOURSE,
+      fournisseur: 1,
+      financeurs: [1],
+      sinistre: 4,
+      documents: [4, 1]
+    }
+  ];
+  documents: Document[] = [
+    {
+      id: 1,
+      numeroDocument: 'DOC-001',
+      nom: 'Photo du Sinistre',
+      description: 'Photo montrant les dommages causés par l\'accident',
+      url: 'http://example.com/photo-sinistre.jpg'
+    },
+    {
+      id: 2,
+      numeroDocument: 'DOC-002',
+      nom: 'Vidéo du Sinistre',
+      description: 'Vidéo enregistrée par une caméra de surveillance',
+      url: 'http://example.com/video-sinistre.mp4'
+    },
+    {
+      id: 3,
+      numeroDocument: 'DOC-003',
+      nom: 'Facture de Réparation',
+      description: 'Facture des coûts de réparation des dommages',
+      url: 'http://example.com/facture-reparation.pdf'
+    },
+    {
+      id: 4,
+      numeroDocument: 'DOC-004',
+      nom: 'Rapport Médical',
+      description: 'Rapport médical décrivant les blessures subies',
+      url: 'http://example.com/rapport-medical.pdf'
+    }
+  ];
 
   // Liste pour InsuranceType
-  prestationTypes = [
-    { label: 'Bien', value: PrestationType.BIEN },
-    { label: 'Agricole', value: PrestationType.AGRICOLE },
-    { label: 'Personne', value: PrestationType.PERSONNE },
-    { label: 'Santé', value: PrestationType.SANTE }
-  ];
   prestationStatuses = [
     { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
     { label: 'En attente', value: PrestationStatus.EN_ATTENTE },
@@ -383,30 +366,41 @@ export class PrestationCrudComponent implements OnInit {
     { label: 'Approuvé', value: ClaimStatus.APPROUVE },
     { label: 'Annulé', value: ClaimStatus.ANNULE }
   ];
+  frequencies = [
+    { label: 'Annuel', value: PaymentFrequency.ANNUEL },
+    { label: 'Mensuel', value: PaymentFrequency.MENSUEL },
+    { label: 'Semestriel', value: PaymentFrequency.SEMESTRIEL },
+    { label: 'Trimestriel', value: PaymentFrequency.TRIMESTRIEL }
+  ];
+  status = [
+    { label: 'Activee', value: SubscriptionStatus.ACTIVE },
+    { label: 'On risk', value: SubscriptionStatus.ON_RISK },
+    { label: 'Resiliee', value: SubscriptionStatus.RESILIE },
+    { label: 'En attente', value: SubscriptionStatus.WAITING }
+  ];
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: PrestationService, // Service pour les opérations CRUD génériques
+    private service: SinistreService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Prestation';
-    this.componentLink = '/admin/prestations';
-    this.importLink = '/import-prestation';
-    this.moduleKey = 'PRESTATION_MODULE';
+    this.entityName = 'Sinistre';
+    this.componentLink = '/admin/sinistres';
+    this.importLink = '/import-sinistre';
+    this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadFournisseurs();
-    //this.loadSinistres();
-    //this.loadFinanceurs();
+    //this.loadSouscriptions();
+    //this.loadPrestations();
     //this.loadDocuments();
     this.assignColumnValues();
     this.getRequiredFields();
@@ -420,25 +414,18 @@ export class PrestationCrudComponent implements OnInit {
   private initializeData(): void {
     this.loading = false;
   }
-  
-  // Chargement des fournisseurs associés à une prestation
-  loadFournisseurs(): void {
-    this.service.getAllFournisseurs().subscribe((fournisseurs: Fournisseur[]) => {
-        this.fournisseurs = fournisseurs;
+
+  // Chargement des souscriptions associés à une assure
+  loadSouscriptions(): void {
+    this.service.getAllSouscriptions().subscribe((souscriptions: Souscription[]) => {
+        this.souscriptions = souscriptions;
     });
   }
   
-  // Chargement des sinistres associés à une prestation
-  loadSinistres(): void {
-    this.service.getAllSinistres().subscribe((sinistres: Sinistre[]) => {
-        this.sinistres = sinistres;
-    });
-  }
-  
-  // Chargement des financeurs associés à une prestation
-  loadFinanceurs(): void {
-    this.service.getAllFinanceurs().subscribe((financeurs: Financeur[]) => {
-        this.financeurs = financeurs;
+  // Chargement des polices associés à une sinistre
+  loadPrestations(): void {
+    this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
+        this.prestations = prestations;
     });
   }
   
@@ -451,19 +438,19 @@ export class PrestationCrudComponent implements OnInit {
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['numeroPrestation', 'label', 'datePrestation', 'montant'];
+    return ['numeroSinistre', 'raison', 'dateDeclaration', 'montantSinistre'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('type', this.prestationTypes);
-    this.setColumnValues('status', this.prestationStatuses);
-    this.setColumnValues('fournisseur', this.fournisseurs);
-    this.setColumnValues('sinistre', this.sinistres);
-    this.setSubFieldValues('sinistre', 'status', this.claimStatuses);
-    this.setColumnValues('financeurs', this.financeurs);
+    this.setColumnValues('status', this.claimStatuses);
+    this.setColumnValues('souscriptions', this.souscriptions);
+    this.setSubFieldValues('souscriptions', 'status', this.status);
+    this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
+    this.setColumnValues('prestations', this.prestations);
+    this.setSubFieldValues('prestations', 'status', this.prestationStatuses);
     this.setColumnValues('documents', this.documents);
   }
   
@@ -614,7 +601,7 @@ export class PrestationCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Prestation>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Sinistre>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -861,7 +848,7 @@ export class PrestationCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Prestation; // Initialise un nouvel élément
+    this.selectedItem = {} as Sinistre; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -872,14 +859,14 @@ export class PrestationCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Prestation) {
+  protected editItem(item: Sinistre) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Prestation) {
+  protected deleteItem(item: Sinistre) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -902,7 +889,7 @@ export class PrestationCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Prestation; // Réinitialise l'élément
+      this.selectedItem = {} as Sinistre; // Réinitialise l'élément
     });
   }
 
@@ -925,7 +912,7 @@ export class PrestationCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Prestation; // Réinitialise l'élément
+          this.selectedItem = {} as Sinistre; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -934,7 +921,7 @@ export class PrestationCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Prestation; // Réinitialise l'élément
+          this.selectedItem = {} as Sinistre; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

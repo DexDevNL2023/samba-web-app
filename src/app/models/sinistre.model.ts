@@ -17,6 +17,5 @@ export interface Sinistre extends BaseEntity {
   montantAssure?: number | null;
   souscription?: number | null;
   prestations?: number[] | null;
-  reclamations?: number[] | null;
-  documents?: number[] | null;
+  documents?: number[] | null; 
 }
