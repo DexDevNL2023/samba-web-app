@@ -1,10 +1,9 @@
 import { BaseEntity } from "./base-entity.model";
-import { Sinistre } from "./sinistre.model";
 
-export interface DocumentSinistre extends BaseEntity {
+export interface Document extends BaseEntity {
+  numeroDocument?: string | null;
   nom?: string | null;
   description?: string | null;
   url?: string | null;
-  sinistre?: number | null;
 }
   

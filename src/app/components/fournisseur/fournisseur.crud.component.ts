@@ -51,9 +51,10 @@ export class FournisseurCrudComponent implements OnInit {
     { field: 'adresse', header: 'Adresse', type: 'textarea' },
     { field: 'telephone', header: 'Telephone', type: 'text' },
     { field: 'email', header: 'Email', type: 'text' },
-    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'label', key: 'id', subfield: [
+    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'numeroPrestation', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'label', header: 'Intitule', type: 'text' },
+        { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+        { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
         { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
         { field: 'montant', header: 'Montant', type: 'currency' }
@@ -113,6 +114,7 @@ export class FournisseurCrudComponent implements OnInit {
   prestations: Prestation[] = [
     {
       id: 1,
+      numeroPrestation: 'PRE-001',
       label: 'Consultation Médicale Générale',
       datePrestation: new Date('2024-01-15'),
       description: 'Consultation avec un médecin généraliste.',
@@ -120,10 +122,12 @@ export class FournisseurCrudComponent implements OnInit {
       status: PrestationStatus.REMBOURSE,
       fournisseur: 1,
       financeurs: [1],
-      sinistre: 1
+      sinistre: 1,
+      documents: [1, 2]
     },
     {
       id: 2,
+      numeroPrestation: 'PRE-002',
       label: 'Hospitalisation Chirurgicale',
       datePrestation: new Date('2024-02-20'),
       description: 'Hospitalisation pour une intervention chirurgicale.',
@@ -131,29 +135,34 @@ export class FournisseurCrudComponent implements OnInit {
       status: PrestationStatus.EN_ATTENTE,
       fournisseur: 2,
       financeurs: [1, 2],
-      sinistre: 2
+      sinistre: 2,
+      documents: [2, 3]
     },
     {
       id: 3,
+      numeroPrestation: 'PRE-003',
       label: 'Radiologie',
       datePrestation: new Date('2024-03-10'),
       description: 'Radiographie thoracique.',
       montant: 20000,
       status: PrestationStatus.NON_REMBOURSE,
-      fournisseur: 3,
+      fournisseur: 1,
       financeurs: [2],
-      sinistre: 3
+      sinistre: 3,
+      documents: [3]
     },
     {
       id: 4,
+      numeroPrestation: 'PRE-004',
       label: 'Soins Dentaires',
       datePrestation: new Date('2024-04-05'),
       description: 'Traitement de caries et nettoyage dentaire.',
       montant: 15000,
       status: PrestationStatus.REMBOURSE,
-      fournisseur: 4,
+      fournisseur: 1,
       financeurs: [1],
-      sinistre: 3
+      sinistre: 4,
+      documents: [4, 1]
     }
   ];
   allBranches: Branche[] = [

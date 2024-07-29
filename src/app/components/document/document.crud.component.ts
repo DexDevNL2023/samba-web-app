@@ -8,16 +8,15 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { DocumentSinistre } from '../../models/document-sinistre.model';
-import { DocumentSinistreService } from '../../service/document-sinistre.service';
+import { Document } from '../../models/document.model';
+import { DocumentService } from '../../service/document.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { ClaimStatus, Sinistre } from '../../models/sinistre.model';
 
 @Component({
   selector: 'app-document-sinistre-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class DocumentSinistreCrudComponent implements OnInit {
+export class DocumentCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -28,8 +27,8 @@ export class DocumentSinistreCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: DocumentSinistre; // Élément de type DocumentSinistre actuellement sélectionné ou en cours de modification
-  selectedItems: DocumentSinistre[] = []; // Tableau d'éléments de type DocumentSinistre sélectionnés
+  selectedItem: Document; // Élément de type Document actuellement sélectionné ou en cours de modification
+  selectedItems: Document[] = []; // Tableau d'éléments de type Document sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -45,52 +44,43 @@ export class DocumentSinistreCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
+    { field: 'numeroDocument', header: 'Num Document', type: 'text' },
     { field: 'nom', header: 'Nom', type: 'text' },
     { field: 'description', header: 'description', type: 'textarea' },
-    { field: 'url', header: 'Telecharger', type: 'url' },
-    { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'numeroSinistre', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
-        { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
-        { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'montantSinistre', header: 'Montant du sinistre', type: 'currency' },
-        { field: 'montantAssure', header: 'Montant assuré', type: 'currency' }
-      ]
-    }
+    { field: 'url', header: 'Telecharger', type: 'url' }
   ];
   
-  items: DocumentSinistre[] = [
+  items: Document[] = [
     {
       id: 1,
+      numeroDocument: 'DOC-001',
       nom: 'Photo du Sinistre',
       description: 'Photo montrant les dommages causés par l\'accident',
-      url: 'http://example.com/photo-sinistre.jpg',
-      sinistre: 1
+      url: 'http://example.com/photo-sinistre.jpg'
     },
     {
       id: 2,
+      numeroDocument: 'DOC-002',
       nom: 'Vidéo du Sinistre',
       description: 'Vidéo enregistrée par une caméra de surveillance',
-      url: 'http://example.com/video-sinistre.mp4',
-      sinistre: 1
+      url: 'http://example.com/video-sinistre.mp4'
     },
     {
       id: 3,
+      numeroDocument: 'DOC-003',
       nom: 'Facture de Réparation',
       description: 'Facture des coûts de réparation des dommages',
-      url: 'http://example.com/facture-reparation.pdf',
-      sinistre: 2
+      url: 'http://example.com/facture-reparation.pdf'
     },
     {
       id: 4,
+      numeroDocument: 'DOC-004',
       nom: 'Rapport Médical',
       description: 'Rapport médical décrivant les blessures subies',
-      url: 'http://example.com/rapport-medical.pdf',
-      sinistre: 2
+      url: 'http://example.com/rapport-medical.pdf'
     }
   ];
-  branches: EntityByBranch<DocumentSinistre>[] = [
+  branches: EntityByBranch<Document>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -110,83 +100,38 @@ export class DocumentSinistreCrudComponent implements OnInit {
           ]
       }
   ];
-  sinistres: Sinistre[] = [
-    {
-      id: 1,
-      numeroSinistre: 'S001',
-      raison: 'Accident de voiture',
-      dateDeclaration: new Date('2023-01-01'),
-      dateTraitement: new Date('2023-01-10'),
-      status: ClaimStatus.EN_ATTENTE,
-      montantSinistre: 10000,
-      montantAssure: 8000,
-      souscription: 1,
-      prestations: [1, 2],
-      reclamations: [1, 2],
-      documents: [1, 2]
-    },
-    {
-      id: 2,
-      numeroSinistre: 'S002',
-      raison: 'Incendie de maison',
-      dateDeclaration: new Date('2023-02-01'),
-      dateTraitement: new Date('2023-02-15'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 20000,
-      montantAssure: 15000,
-      souscription: 2,
-      prestations: [3],
-      reclamations: [3, 4],
-      documents: [3, 4]
-    }
-  ];
-
-  // Liste pour ClaimStatus
-  claimStatus = [
-    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
-    { label: 'Approuve', value: ClaimStatus.APPROUVE },
-    { label: 'Annule', value: ClaimStatus.ANNULE }
-  ];
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: DocumentSinistreService, // Service pour les opérations CRUD génériques
+    private service: DocumentService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Document de sinistre';
-    this.componentLink = '/admin/documents/sinistres';
-    this.importLink = '/import-document-sinistre';
-    this.moduleKey = 'DOCUMENT_SINISTRE_MODULE';
+    this.entityName = 'Document';
+    this.componentLink = '/admin/documents';
+    this.importLink = '/import-document';
+    this.moduleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadSinistres();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
 
     // Simulate fetching data from a service
-    //this.fetchDocumentSinistres();
+    //this.fetchDocuments();
   }
 
   // Sample data initialization
   private initializeData(): void {
     this.loading = false;
-  }
-  
-  // Chargement des polices associés à une document-sinistre
-  loadSinistres(): void {
-    this.service.getAllSinistres().subscribe((sinistres: Sinistre[]) => {
-        this.sinistres = sinistres;
-    });
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
@@ -198,8 +143,6 @@ export class DocumentSinistreCrudComponent implements OnInit {
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('sinistre', this.sinistres);
-    this.setSubFieldValues('sinistre', 'status', this.claimStatus);
   }
   
   /**
@@ -230,7 +173,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
     }
   }
 
-  protected fetchDocumentSinistres(): void {
+  protected fetchDocuments(): void {
     // Au chargement du composant, récupère tous les éléments via le service
     if(this.isTable) {
       this.service.query().subscribe(data => {
@@ -349,7 +292,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<DocumentSinistre>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Document>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -594,7 +537,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as DocumentSinistre; // Initialise un nouvel élément
+    this.selectedItem = {} as Document; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -605,14 +548,14 @@ export class DocumentSinistreCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: DocumentSinistre) {
+  protected editItem(item: Document) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: DocumentSinistre) {
+  protected deleteItem(item: Document) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -635,7 +578,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as DocumentSinistre; // Réinitialise l'élément
+      this.selectedItem = {} as Document; // Réinitialise l'élément
     });
   }
 
@@ -658,7 +601,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as DocumentSinistre; // Réinitialise l'élément
+          this.selectedItem = {} as Document; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -667,7 +610,7 @@ export class DocumentSinistreCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as DocumentSinistre; // Réinitialise l'élément
+          this.selectedItem = {} as Document; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

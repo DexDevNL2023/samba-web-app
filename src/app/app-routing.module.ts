@@ -14,7 +14,7 @@ import SettingsComponent from './account/settings/settings.component';
 import { ProfilComponent } from './account/profil/profil.component';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
-import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
+import { DocumentSinistreCrudComponent } from './components/document/document.crud.component';
 import { FinanceurCrudComponent } from './components/financeur/financeur.crud.component';
  
 @NgModule({

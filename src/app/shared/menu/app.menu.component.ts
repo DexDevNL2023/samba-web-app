@@ -43,10 +43,10 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
                     { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
+            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents de preuves', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
         
@@ -69,7 +69,6 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
                     { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
@@ -81,6 +80,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements des primes', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents de preuves', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
          
@@ -103,7 +103,6 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
                     { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
@@ -125,6 +124,7 @@ export class AppMenuComponent implements OnInit {
             },
             { moduleKey: 'PAIEMENT_MODULE', label: 'Historiques des Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
             { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
+            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents de preuves', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
             {
                 label: 'Paramètres',
@@ -145,7 +145,6 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
                     { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'DOCUMENT_SINISTRE_MODULE', label: 'Documents des Sinistres', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents/sinistres'] },
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
@@ -164,6 +163,7 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
+            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents de preuves', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
 

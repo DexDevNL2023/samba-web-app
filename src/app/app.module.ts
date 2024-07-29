@@ -99,7 +99,7 @@ import {DashboardComponent} from './shared/dashboard/dashboard.component';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssuranceService } from './service/assurance.service';
-import { DocumentSinistreService } from './service/document-sinistre.service';
+import { DocumentService } from './service/document.service';
 import { FinanceurService } from './service/financeur.service';
 import { FournisseurService } from './service/fournisseur.service';
 import { GarantieService } from './service/garantie.service';
@@ -143,7 +143,7 @@ import { DashboardService } from './service/dashboard.service';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { PortraitComponent } from './shared/portrait/portrait.demo.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
-import { DocumentSinistreCrudComponent } from './components/document-sinistre/document-sinistre.crud.component';
+import { DocumentCrudComponent } from './components/document/document.crud.component';
 import { FinanceurCrudComponent } from './components/financeur/financeur.crud.component';
 import { DossierMedicalCrudComponent } from './components/dossier-medical/dossier-medical.crud.component';
 import { FournisseurCrudComponent } from './components/fournisseur/fournisseur.crud.component';
@@ -152,6 +152,7 @@ import { NotificationCrudComponent } from './components/notification/notificatio
 import { AssureCrudComponent } from './components/assure/assure.crud.component';
 import { PaiementCrudComponent } from './components/paiement/paiement.crud.component';
 import { PoliceAssuranceCrudComponent } from './components/police-assurance/police-assurance.crud.component';
+import { PrestationCrudComponent } from './components/prestation/prestation.crud.component';
 
 @NgModule({
     imports: [
@@ -263,7 +264,7 @@ import { PoliceAssuranceCrudComponent } from './components/police-assurance/poli
         AssuranceCrudComponent,
         AssureCrudComponent,
         BrancheCrudComponent,
-        DocumentSinistreCrudComponent,
+        DocumentCrudComponent,
         DossierMedicalCrudComponent,
         FinanceurCrudComponent,
         FournisseurCrudComponent,
@@ -271,12 +272,13 @@ import { PoliceAssuranceCrudComponent } from './components/police-assurance/poli
         NotificationCrudComponent,
         PaiementCrudComponent,
         PoliceAssuranceCrudComponent,
+        PrestationCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
-        BreadcrumbService, EventService, MenuService, AssuranceService, DocumentSinistreService, UserRouteAccessService,
+        BreadcrumbService, EventService, MenuService, AssuranceService, DocumentService, UserRouteAccessService,
         FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
         NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,

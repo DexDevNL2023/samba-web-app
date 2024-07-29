@@ -6,7 +6,7 @@ import { Souscription } from '../models/souscription.model';
 import { Fournisseur } from '../models/fournisseur.model';
 import { Prestation } from '../models/prestation.model';
 import { Reclamation } from '../models/reclamation.model';
-import { DocumentSinistre } from '../models/document-sinistre.model';
+import { DocumentSinistre } from '../models/document.model';
 import { GenericCrudService } from './generic.crud.service';
 
 @Injectable({ providedIn: 'root' })

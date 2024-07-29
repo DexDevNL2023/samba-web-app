@@ -1,8 +1,4 @@
 import { BaseEntity } from "./base-entity.model";
-import { Prestation } from "./prestation.model";
-import { Reclamation } from "./reclamation.model";
-import { Souscription } from "./souscription.model";
-import { DocumentSinistre } from './document-sinistre.model';
 
 export enum ClaimStatus {
   EN_ATTENTE = 'EN_ATTENTE',
@@ -12,6 +8,7 @@ export enum ClaimStatus {
 
 export interface Sinistre extends BaseEntity {
   numeroSinistre?: string | null;
+  label?: string | null;
   raison?: string | null;
   dateDeclaration?: Date | null;
   dateTraitement?: Date | null;

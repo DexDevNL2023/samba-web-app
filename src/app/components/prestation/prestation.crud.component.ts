@@ -8,16 +8,19 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Financeur, FinanceurType } from '../../models/financeur.model';
-import { FinanceurService } from '../../service/financeur.service';
+import { Prestation, PrestationType, PrestationStatus } from '../../models/prestation.model';
+import { PrestationService } from '../../service/prestation.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Prestation, PrestationStatus } from '../../models/prestation.model';
+import { Financeur, FinanceurType } from '../../models/financeur.model';
+import { Fournisseur } from '../../models/fournisseur.model';
+import { Document } from '../../models/document.model';
+import { ClaimStatus, Sinistre } from '../../models/sinistre.model';
 
 @Component({
-  selector: 'app-financeur-soin-crud',
+  selector: 'app-prestation-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class FinanceurCrudComponent implements OnInit {
+export class PrestationCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -28,8 +31,8 @@ export class FinanceurCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Financeur; // Élément de type FinanceurSoin actuellement sélectionné ou en cours de modification
-  selectedItems: Financeur[] = []; // Tableau d'éléments de type FinanceurSoin sélectionnés
+  selectedItem: Prestation; // Élément de type Prestation actuellement sélectionné ou en cours de modification
+  selectedItems: Prestation[] = []; // Tableau d'éléments de type Prestation sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -45,76 +48,48 @@ export class FinanceurCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'nom', header: 'Name', type: 'text' },
-    { field: 'description', header: 'Description', type: 'textarea' },
+    { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+    { field: 'label', header: 'Libellé', type: 'text' },
+    { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
     { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'adresse', header: 'Adresse', type: 'textarea' },
-    { field: 'telephone', header: 'Telephone', type: 'text' },
-    { field: 'email', header: 'Email', type: 'text' },
-    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'numeroPrestation', key: 'id', subfield: [
-      { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
-      { field: 'label', header: 'Libellé', type: 'text' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
-        { field: 'montant', header: 'Montant', type: 'currency' }
+    { field: 'description', header: 'Description', type: 'textarea' },
+    { field: 'montant', header: 'Montant', type: 'currency' },
+    { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'fournisseur', header: 'Fournisseur', type: 'objet', values: [], label: 'nom', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'nom', header: 'Nom', type: 'text' },
+        { field: 'telephone', header: 'Telephone', type: 'text' },
+        { field: 'email', header: 'Email', type: 'text' },
+        { field: 'adresse', header: 'Adresse', type: 'text' }
+      ]
+    },
+    { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'name', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+        { field: 'label', header: 'Libellé', type: 'text' },
+        { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
+        { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' }
+      ]
+    },
+    { field: 'financeurs', header: 'Financeurs', type: 'list', values: [], label: 'nom', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'nom', header: 'Name', type: 'text' },
+        { field: 'adresse', header: 'Adresse', type: 'textarea' },
+        { field: 'telephone', header: 'Telephone', type: 'text' },
+        { field: 'email', header: 'Email', type: 'text' }
+      ]
+    },
+    { field: 'documents', header: 'Financeurs', type: 'list', values: [], label: 'numeroDocument', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroDocument', header: 'Num Document', type: 'text' },
+        { field: 'nom', header: 'Nom', type: 'text' },
+        { field: 'url', header: 'Telecharger', type: 'url' }
       ]
     }
   ];
   
-  items: Financeur[] = [
-    {
-      id: 1,
-      nom: 'Assurance Santé Avenir',
-      description: 'Assurance offrant des couvertures complètes pour les soins médicaux.',
-      type: FinanceurType.ASSUREUR,
-      adresse: '123 Avenue de la Santé, Ville A - Pays A',
-      telephone: '0123456789',
-      email: 'contact@assurancesanteavenir.com',
-      prestations: [1, 2, 4]
-    },
-    {
-      id: 2,
-      nom: 'Mutuelle Bien-Être',
-      description: 'Mutuelle spécialisée dans les soins paramédicaux et la prévention.',
-      type: FinanceurType.MUTUELLE,
-      adresse: '456 Rue de la Mutuelle, Ville B - Pays B',
-      telephone: '0987654321',
-      email: 'info@mutuellebienetre.com',
-      prestations: [1, 3]
-    },
-    {
-      id: 3,
-      nom: 'Caisse Nationale de Sécurité Sociale',
-      description: 'Organisme public offrant des prestations de santé aux travailleurs.',
-      type: FinanceurType.ORGANISME_PUBLIC,
-      adresse: '789 Boulevard de la Sécurité, Capitale C',
-      telephone: '0223344556',
-      email: 'cnss@securitesociale.gouv',
-      prestations: [2, 3, 4]
-    }
-  ];
-  branches: EntityByBranch<Financeur>[] = [
-      {
-          name: 'Branch A',
-          partenaires: [
-              {
-                  name: 'Registrant A1',
-                  data: this.items // Reuse existing items
-              }
-          ]
-      },
-      {
-          name: 'Branch B',
-          partenaires: [
-              {
-                  name: 'Registrant B1',
-                  data: this.items // Reuse existing items
-              }
-          ]
-      }
-  ];
-  prestations: Prestation[] = [
+  items: Prestation[] = [
     {
       id: 1,
       numeroPrestation: 'PRE-001',
@@ -168,43 +143,279 @@ export class FinanceurCrudComponent implements OnInit {
       documents: [4, 1]
     }
   ];
-
-  // Liste pour FinanceurType
-  financeurTypes = [
-    { label: 'Assureur', value: FinanceurType.ASSUREUR },
-    { label: 'Mutuelle', value: FinanceurType.MUTUELLE },
-    { label: 'Organisme public', value: FinanceurType.ORGANISME_PUBLIC }
+  branches: EntityByBranch<Prestation>[] = [
+      {
+          name: 'Branch A',
+          partenaires: [
+              {
+                  name: 'Registrant A1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      },
+      {
+          name: 'Branch B',
+          partenaires: [
+              {
+                  name: 'Registrant B1',
+                  data: this.items // Reuse existing items
+              }
+          ]
+      }
+  ];
+  fournisseurs: Fournisseur[] = [
+    {
+      id: 1,
+      nom: 'Clinique Santé Plus',
+      telephone: '123456789',
+      email: 'contact@santeplus.com',
+      adresse: '123 Rue de la Santé, Libreville - Gabon',
+      servicesFournis: 'Consultations, Soins Paramédicaux',
+      prestations: [1, 2],
+      branches: [1]
+    },
+    {
+      id: 2,
+      nom: 'Centre Médical Bongo',
+      telephone: '987654321',
+      email: 'info@cmbongo.com',
+      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
+      servicesFournis: 'Radiologie, Analyses de Laboratoire',
+      prestations: [3, 4],
+      branches: [2]
+    }
+  ]; 
+  financeurs: Financeur[] = [
+    {
+      id: 1,
+      nom: 'Assurance Santé Avenir',
+      description: 'Assurance offrant des couvertures complètes pour les soins médicaux.',
+      type: FinanceurType.ASSUREUR,
+      adresse: '123 Avenue de la Santé, Ville A - Pays A',
+      telephone: '0123456789',
+      email: 'contact@assurancesanteavenir.com',
+      prestations: [1, 2, 4]
+    },
+    {
+      id: 2,
+      nom: 'Mutuelle Bien-Être',
+      description: 'Mutuelle spécialisée dans les soins paramédicaux et la prévention.',
+      type: FinanceurType.MUTUELLE,
+      adresse: '456 Rue de la Mutuelle, Ville B - Pays B',
+      telephone: '0987654321',
+      email: 'info@mutuellebienetre.com',
+      prestations: [1, 3]
+    },
+    {
+      id: 3,
+      nom: 'Caisse Nationale de Sécurité Sociale',
+      description: 'Organisme public offrant des prestations de santé aux travailleurs.',
+      type: FinanceurType.ORGANISME_PUBLIC,
+      adresse: '789 Boulevard de la Sécurité, Capitale C',
+      telephone: '0223344556',
+      email: 'cnss@securitesociale.gouv',
+      prestations: [2, 3, 4]
+    }
+  ];
+  documents: Document[] = [
+    {
+      id: 1,
+      numeroDocument: 'DOC-001',
+      nom: 'Photo du Sinistre',
+      description: 'Photo montrant les dommages causés par l\'accident',
+      url: 'http://example.com/photo-sinistre.jpg'
+    },
+    {
+      id: 2,
+      numeroDocument: 'DOC-002',
+      nom: 'Vidéo du Sinistre',
+      description: 'Vidéo enregistrée par une caméra de surveillance',
+      url: 'http://example.com/video-sinistre.mp4'
+    },
+    {
+      id: 3,
+      numeroDocument: 'DOC-003',
+      nom: 'Facture de Réparation',
+      description: 'Facture des coûts de réparation des dommages',
+      url: 'http://example.com/facture-reparation.pdf'
+    },
+    {
+      id: 4,
+      numeroDocument: 'DOC-004',
+      nom: 'Rapport Médical',
+      description: 'Rapport médical décrivant les blessures subies',
+      url: 'http://example.com/rapport-medical.pdf'
+    }
+  ];
+  sinistres: Sinistre[] = [
+    // Assurance Bien
+    {
+      id: 1,
+      numeroSinistre: 'SIN123456',
+      label: 'Accident de voiture',
+      raison: 'Collision avec un autre véhicule',
+      dateDeclaration: new Date('2024-03-15'),
+      dateTraitement: new Date('2024-03-20'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 500000,
+      montantAssure: 450000,
+      souscription: 1,
+      prestations: [1, 2],
+      reclamations: [1],
+      documents: [1, 2]
+    },
+    {
+      id: 2,
+      numeroSinistre: 'SIN654321',
+      label: 'Incendie de maison',
+      raison: 'Court-circuit électrique',
+      dateDeclaration: new Date('2024-05-10'),
+      dateTraitement: new Date('2024-05-15'),
+      status: ClaimStatus.EN_ATTENTE,
+      montantSinistre: 2000000,
+      montantAssure: 1800000,
+      souscription: 2,
+      prestations: [3, 4],
+      reclamations: [2],
+      documents: [3, 4]
+    },
+    // Assurance Agricole
+    {
+      id: 3,
+      numeroSinistre: 'SIN789012',
+      label: 'Inondation de champs',
+      raison: 'Fortes pluies',
+      dateDeclaration: new Date('2024-06-01'),
+      dateTraitement: new Date('2024-06-05'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 300000,
+      montantAssure: 250000,
+      souscription: 3,
+      prestations: [3],
+      reclamations: [3],
+      documents: [1]
+    },
+    {
+      id: 4,
+      numeroSinistre: 'SIN890123',
+      label: 'Sécheresse',
+      raison: 'Absence de pluie prolongée',
+      dateDeclaration: new Date('2024-07-15'),
+      dateTraitement: new Date('2024-07-20'),
+      status: ClaimStatus.EN_ATTENTE,
+      montantSinistre: 150000,
+      montantAssure: 120000,
+      souscription: 4,
+      prestations: [4],
+      reclamations: [4],
+      documents: []
+    },
+    // Assurance Personne
+    {
+      id: 5,
+      numeroSinistre: 'SIN456789',
+      label: 'Accident de travail',
+      raison: 'Chute d\'une échelle',
+      dateDeclaration: new Date('2024-08-05'),
+      dateTraitement: new Date('2024-08-10'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 50000,
+      montantAssure: 45000,
+      souscription: 2,
+      prestations: [3, 1],
+      reclamations: [1],
+      documents: [1, 2]
+    },
+    {
+      id: 6,
+      numeroSinistre: 'SIN321654',
+      label: 'Décès',
+      raison: 'Cause naturelle',
+      dateDeclaration: new Date('2024-09-01'),
+      dateTraitement: new Date('2024-09-05'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 100000,
+      montantAssure: 95000,
+      souscription: 3,
+      prestations: [1, 2],
+      reclamations: [1],
+      documents: [2]
+    },
+    // Assurance Santé
+    {
+      id: 7,
+      numeroSinistre: 'SIN654987',
+      label: 'Hospitalisation',
+      raison: 'Chirurgie d\'appendicite',
+      dateDeclaration: new Date('2024-10-10'),
+      dateTraitement: new Date('2024-10-15'),
+      status: ClaimStatus.APPROUVE,
+      montantSinistre: 70000,
+      montantAssure: 65000,
+      souscription: 2,
+      prestations: [3, 4],
+      reclamations: [1],
+      documents: [3, 4]
+    },
+    {
+      id: 8,
+      numeroSinistre: 'SIN987321',
+      label: 'Consultation médicale',
+      raison: 'Fièvre élevée',
+      dateDeclaration: new Date('2024-11-01'),
+      dateTraitement: new Date('2024-11-05'),
+      status: ClaimStatus.EN_ATTENTE,
+      montantSinistre: 2000,
+      montantAssure: 1500,
+      souscription: 1,
+      prestations: [2],
+      reclamations: [1, 2],
+      documents: []
+    }
   ];
 
-// Liste pour PrestationStatus
-prestationStatus = [
-  { label: 'Non Remboursé', value: PrestationStatus.NON_REMBOURSE },
-  { label: 'En Attente', value: PrestationStatus.EN_ATTENTE },
-  { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
-];
-
+  // Liste pour InsuranceType
+  prestationTypes = [
+    { label: 'Bien', value: PrestationType.BIEN },
+    { label: 'Agricole', value: PrestationType.AGRICOLE },
+    { label: 'Personne', value: PrestationType.PERSONNE },
+    { label: 'Santé', value: PrestationType.SANTE }
+  ];
+  prestationStatuses = [
+    { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
+    { label: 'En attente', value: PrestationStatus.EN_ATTENTE },
+    { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
+  ];
+  claimStatuses = [
+    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
+    { label: 'Approuvé', value: ClaimStatus.APPROUVE },
+    { label: 'Annulé', value: ClaimStatus.ANNULE }
+  ];
 
   constructor(
     private messageService: MessageService,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: FinanceurService, // Service pour les opérations CRUD génériques
+    private service: PrestationService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Financeur';
-    this.componentLink = '/admin/financeurs';
-    this.importLink = '/import-financeur';
-    this.moduleKey = 'FINANCEUR_MODULE';
+    this.entityName = 'Prestation';
+    this.componentLink = '/admin/prestations';
+    this.importLink = '/import-prestation';
+    this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadPrestations();
+    //this.loadFournisseurs();
+    //this.loadSinistres();
+    //this.loadFinanceurs();
+    //this.loadDocuments();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -218,25 +429,50 @@ prestationStatus = [
     this.loading = false;
   }
   
-  // Chargement des prestations associés à une financeur-soin
-  loadPrestations(): void {
-    this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
-        this.prestations = prestations;
+  // Chargement des fournisseurs associés à une prestation
+  loadFournisseurs(): void {
+    this.service.getAllFournisseurs().subscribe((fournisseurs: Fournisseur[]) => {
+        this.fournisseurs = fournisseurs;
+    });
+  }
+  
+  // Chargement des sinistres associés à une prestation
+  loadSinistres(): void {
+    this.service.getAllSinistres().subscribe((sinistres: Sinistre[]) => {
+        this.sinistres = sinistres;
+    });
+  }
+  
+  // Chargement des financeurs associés à une prestation
+  loadFinanceurs(): void {
+    this.service.getAllFinanceurs().subscribe((financeurs: Financeur[]) => {
+        this.financeurs = financeurs;
+    });
+  }
+  
+  // Chargement des documents associés à une prestation
+  loadDocuments(): void {
+    this.service.getAllDocuments().subscribe((documents: Document[]) => {
+        this.documents = documents;
     });
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['nom', 'type', 'email'];
+    return ['numeroPrestation', 'label', 'datePrestation', 'montant'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('type', this.financeurTypes);
-    this.setColumnValues('prestations', this.prestations);
-    this.setSubFieldValues('prestations', 'status', this.prestationStatus);
+    this.setColumnValues('type', this.prestationTypes);
+    this.setColumnValues('status', this.prestationStatuses);
+    this.setColumnValues('fournisseur', this.fournisseurs);
+    this.setColumnValues('sinistre', this.sinistres);
+    this.setSubFieldValues('sinistre', 'status', this.claimStatuses);
+    this.setColumnValues('financeurs', this.financeurs);
+    this.setColumnValues('documents', this.documents);
   }
   
   /**
@@ -386,7 +622,7 @@ prestationStatus = [
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Financeur>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Prestation>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -631,7 +867,7 @@ prestationStatus = [
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Financeur; // Initialise un nouvel élément
+    this.selectedItem = {} as Prestation; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -642,14 +878,14 @@ prestationStatus = [
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Financeur) {
+  protected editItem(item: Prestation) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Financeur) {
+  protected deleteItem(item: Prestation) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -672,7 +908,7 @@ prestationStatus = [
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Financeur; // Réinitialise l'élément
+      this.selectedItem = {} as Prestation; // Réinitialise l'élément
     });
   }
 
@@ -695,7 +931,7 @@ prestationStatus = [
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Financeur; // Réinitialise l'élément
+          this.selectedItem = {} as Prestation; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -704,7 +940,7 @@ prestationStatus = [
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Financeur; // Réinitialise l'élément
+          this.selectedItem = {} as Prestation; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }
