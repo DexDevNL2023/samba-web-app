@@ -1,16 +1,27 @@
 import { BaseEntity } from "./base-entity.model";
-import { Sinistre } from "./sinistre.model";
 
-export enum ReclamationStatus {
+export enum TypeReclamation {
+  SINISTRE = 'SINISTRE',
+  PRESTATION = 'PRESTATION'
+}
+
+export enum StatutReclamation {
   EN_COURS = 'EN_COURS',
-  RESOLUE = 'RESOLUE',
-  REJETEE = 'REJETEE'
+  APPROUVEE = 'APPROUVEE',
+  REJETEE = 'REJETEE',
+  EN_ATTENTE = 'EN_ATTENTE'
 }
 
 export interface Reclamation extends BaseEntity {
   numeroReclamation?: string | null;
+  type?: TypeReclamation | null;
   dateReclamation?: Date | null;
+  status?: StatutReclamation | null;
   description?: string | null;
-  status?: keyof typeof ReclamationStatus | null;
-  sinistre?: Pick<Sinistre, 'id'> | null;
+  montantReclame?: number | null;
+  montantApprouve?: number | null;
+  dateEvaluation?: Date | null;
+  agentEvaluateur?: string | null;
+  justification?: string | null;
+  souscription?: number | null;
 }

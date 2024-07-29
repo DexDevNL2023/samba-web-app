@@ -320,7 +320,7 @@ export class NotificationCrudComponent implements OnInit {
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
     this.importLink = '/import-notification';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.moduleKey = 'NOTIFICATION_MODULE';
     this.isTable = true;
   }
 

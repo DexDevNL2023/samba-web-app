@@ -378,7 +378,7 @@ export class PoliceAssuranceCrudComponent implements OnInit {
     this.entityName = 'PoliceAssurance';
     this.componentLink = '/admin/polices/assurances';
     this.importLink = '/import-police-assurance';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.moduleKey = 'POLICE_ASSURANCE_MODULE';
     this.isTable = true;
   }
 

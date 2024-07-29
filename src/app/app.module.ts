@@ -153,6 +153,7 @@ import { AssureCrudComponent } from './components/assure/assure.crud.component';
 import { PaiementCrudComponent } from './components/paiement/paiement.crud.component';
 import { PoliceAssuranceCrudComponent } from './components/police-assurance/police-assurance.crud.component';
 import { PrestationCrudComponent } from './components/prestation/prestation.crud.component';
+import { ReclamationCrudComponent } from './components/reclamation/reclamation.crud.component';
 
 @NgModule({
     imports: [
@@ -273,6 +274,7 @@ import { PrestationCrudComponent } from './components/prestation/prestation.crud
         PaiementCrudComponent,
         PoliceAssuranceCrudComponent,
         PrestationCrudComponent,
+        ReclamationCrudComponent,
         PortraitComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

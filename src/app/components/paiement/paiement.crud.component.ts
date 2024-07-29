@@ -250,7 +250,7 @@ export class PaiementCrudComponent implements OnInit {
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
     this.importLink = '/import-paiement';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.moduleKey = 'PAIEMENT_MODULE';
     this.isTable = true;
   }
 

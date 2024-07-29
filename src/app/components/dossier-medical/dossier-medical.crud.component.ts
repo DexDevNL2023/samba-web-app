@@ -224,7 +224,7 @@ export class DossierMedicalCrudComponent implements OnInit {
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
     this.importLink = '/import-dossier-medical';
-    this.moduleKey = 'DOCUMENT_SINISTRE_MODULE';
+    this.moduleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }
 

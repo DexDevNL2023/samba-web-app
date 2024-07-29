@@ -8,20 +8,16 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Assure, Gender } from '../../models/assure.model';
-import { AssureService } from '../../service/assure.service';
+import { Reclamation, StatutReclamation, TypeReclamation } from '../../models/reclamation.model';
+import { ReclamationService } from '../../service/reclamation.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { LiteRegistrant } from '../../models/lite.registrant.model';
-import { DossierMedical } from '../../models/medical-record.model';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
-import { Fournisseur } from '../../models/fournisseur.model';
-import { Branche } from '../../models/branche.model';
 
 @Component({
-  selector: 'app-assure-crud',
+  selector: 'app-reclamation-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class AssureCrudComponent implements OnInit {
+export class ReclamationCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -32,8 +28,8 @@ export class AssureCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Assure; // Élément de type Assure actuellement sélectionné ou en cours de modification
-  selectedItems: Assure[] = []; // Tableau d'éléments de type Assure sélectionnés
+  selectedItem: Reclamation; // Élément de type Reclamation actuellement sélectionné ou en cours de modification
+  selectedItems: Reclamation[] = []; // Tableau d'éléments de type Reclamation sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -49,106 +45,142 @@ export class AssureCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'numNiu', header: 'Niu', type: 'text' },
-    { field: 'firstName', header: 'Nom', type: 'text' },
-    { field: 'lastName', header: 'Prénom', type: 'text' },
-    { field: 'dateNaissance', header: 'Né(e) le', type: 'date' },
-    { field: 'numCni', header: 'CNI', type: 'text' },
-    { field: 'sexe', header: 'Sexe', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'email', header: 'Email', type: 'text' },
-    { field: 'telephone', header: 'Telephone', type: 'text' },
-    { field: 'addresse', header: 'Addresse', type: 'textarea' },
-    { field: 'signature', header: 'Signature', type: 'image' },
-    { field: 'registrant', header: 'Registrant', type: 'objet', values: [], label: 'numeroRegistrant', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'branche', header: 'Branche', type: 'objet', values: [], label: 'ville', key: 'id' },
-        { field: 'partenaire', header: 'Partenaire', type: 'objet', values: [], label: 'nom', key: 'id' }
-      ]
-    },
-    { field: 'dossiers', header: 'Dossiers médicaux', type: 'list', values: [], label: 'numDossierMedical', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numDossierMedical', header: 'Num Dossier medical', type: 'text' },
-        { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },
-      ]
-    },
-    { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], label: 'numeroSouscription', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
-        { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
-        { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
-      ]
-    }
+    { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
+    { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
+    { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'description', header: 'Description', type: 'textarea' },
+    { field: 'montantReclame', header: 'Montant reclamé', type: 'currency' },
+    { field: 'montantApprouve', header: 'Montant approuvé', type: 'currency' },
+    { field: 'dateEvaluation', header: 'Date évaluation', type: 'date' },
+    { field: 'agentEvaluateur', header: 'Agent évaluateur', type: 'text' },
+    { field: 'justification', header: 'Justification', type: 'textarea' },
+    { field: 'souscription', header: 'Souscription', type: 'objet', values: [], label: 'numeroSouscription', key: 'id', subfield: [
+      { field: 'id', header: 'ID', type: 'id' },
+      { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+      { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
+      { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
+      { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+      { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
+    ]
+  }
   ];
-
-  items: Assure[] = [
+  
+  items: Reclamation[] = [
     {
       id: 1,
-      numNiu: 'NIU123456789',
-      lastName: 'Doe',
-      firstName: 'John',
-      dateNaissance: new Date('1985-01-15'),
-      numCni: 'CNI12345678',
-      sexe: Gender.MALE,
-      email: 'john.doe@example.com',
-      telephone: '1234567890',
-      addresse: '123 Main St, Douala',
-      signature: 'john_doe_signature.png',
-      registrant: 1,
-      dossiers: [1],
-      souscriptions: [4]
+      numeroReclamation: 'REC123456',
+      type: TypeReclamation.SINISTRE,
+      dateReclamation: new Date('2024-03-15'),
+      status: StatutReclamation.EN_COURS,
+      description: 'Réclamation pour un sinistre auto.',
+      montantReclame: 500000,
+      montantApprouve: 450000,
+      dateEvaluation: new Date('2024-03-20'),
+      agentEvaluateur: 'Agent 001',
+      justification: 'Dommages évalués et approuvés.',
+      souscription: 4
     },
     {
       id: 2,
-      numNiu: 'NIU987654321',
-      lastName: 'Smith',
-      firstName: 'Jane',
-      dateNaissance: new Date('1990-07-22'),
-      numCni: 'CNI87654321',
-      sexe: Gender.FEMALE,
-      email: 'jane.smith@example.com',
-      telephone: '0987654321',
-      addresse: '456 Elm St, Yaoundé',
-      signature: 'jane_smith_signature.png',
-      registrant: 2,
-      dossiers: [2],
-      souscriptions: [1]
+      numeroReclamation: 'REC654321',
+      type: TypeReclamation.PRESTATION,
+      dateReclamation: new Date('2024-04-10'),
+      status: StatutReclamation.APPROUVEE,
+      description: 'Réclamation pour des frais médicaux.',
+      montantReclame: 10000,
+      montantApprouve: 8000,
+      dateEvaluation: new Date('2024-04-15'),
+      agentEvaluateur: 'Agent 002',
+      justification: 'Frais médicaux partiellement approuvés.',
+      souscription: 3
     },
     {
       id: 3,
-      numNiu: 'NIU555555555',
-      lastName: 'Nguyen',
-      firstName: 'Thi',
-      dateNaissance: new Date('1988-03-12'),
-      numCni: 'CNI55555555',
-      sexe: Gender.FEMALE,
-      email: 'thi.nguyen@example.com',
-      telephone: '5555555555',
-      addresse: '789 Maple St, Bafoussam',
-      signature: 'thi_nguyen_signature.png',
-      registrant: 1,
-      dossiers: [3],
-      souscriptions: [3]
+      numeroReclamation: 'REC789012',
+      type: TypeReclamation.SINISTRE,
+      dateReclamation: new Date('2024-05-05'),
+      status: StatutReclamation.REJETEE,
+      description: 'Réclamation pour des dommages agricoles.',
+      montantReclame: 300000,
+      montantApprouve: 0,
+      dateEvaluation: new Date('2024-05-10'),
+      agentEvaluateur: 'Agent 003',
+      justification: 'Réclamation rejetée pour non-conformité.',
+      souscription: 2
     },
     {
       id: 4,
-      numNiu: 'NIU333333333',
-      lastName: 'Johnson',
-      firstName: 'Chris',
-      dateNaissance: new Date('1995-09-25'),
-      numCni: 'CNI33333333',
-      sexe: Gender.OTHER,
-      email: 'chris.johnson@example.com',
-      telephone: '3333333333',
-      addresse: '321 Oak St, Garoua',
-      signature: 'chris_johnson_signature.png',
-      registrant: 2,
-      dossiers: [4],
-      souscriptions: [2]
+      numeroReclamation: 'REC890123',
+      type: TypeReclamation.PRESTATION,
+      dateReclamation: new Date('2024-06-15'),
+      status: StatutReclamation.EN_ATTENTE,
+      description: 'Réclamation pour des prestations de rééducation.',
+      montantReclame: 50000,
+      montantApprouve: null,
+      dateEvaluation: null,
+      agentEvaluateur: null,
+      justification: null,
+      souscription: 1
+    },
+    {
+      id: 5,
+      numeroReclamation: 'REC456789',
+      type: TypeReclamation.SINISTRE,
+      dateReclamation: new Date('2024-07-20'),
+      status: StatutReclamation.APPROUVEE,
+      description: 'Réclamation pour un sinistre habitation.',
+      montantReclame: 1000000,
+      montantApprouve: 950000,
+      dateEvaluation: new Date('2024-07-25'),
+      agentEvaluateur: 'Agent 004',
+      justification: 'Évaluation des dommages approuvée.',
+      souscription: 1
+    },
+    {
+      id: 6,
+      numeroReclamation: 'REC321654',
+      type: TypeReclamation.PRESTATION,
+      dateReclamation: new Date('2024-08-01'),
+      status: StatutReclamation.REJETEE,
+      description: 'Réclamation pour des soins dentaires.',
+      montantReclame: 15000,
+      montantApprouve: 0,
+      dateEvaluation: new Date('2024-08-05'),
+      agentEvaluateur: 'Agent 005',
+      justification: 'Réclamation rejetée pour absence de justificatifs.',
+      souscription: 2
+    },
+    {
+      id: 7,
+      numeroReclamation: 'REC654987',
+      type: TypeReclamation.SINISTRE,
+      dateReclamation: new Date('2024-09-10'),
+      status: StatutReclamation.EN_ATTENTE,
+      description: 'Réclamation pour un sinistre agricole.',
+      montantReclame: 200000,
+      montantApprouve: null,
+      dateEvaluation: null,
+      agentEvaluateur: null,
+      justification: null,
+      souscription: 3
+    },
+    {
+      id: 8,
+      numeroReclamation: 'REC987321',
+      type: TypeReclamation.PRESTATION,
+      dateReclamation: new Date('2024-10-01'),
+      status: StatutReclamation.EN_COURS,
+      description: 'Réclamation pour des services de télémédecine.',
+      montantReclame: 3000,
+      montantApprouve: null,
+      dateEvaluation: null,
+      agentEvaluateur: null,
+      justification: null,
+      souscription: 4
     }
-  ];
-  branches: EntityByBranch<Assure>[] = [
+  ];  
+  branches: EntityByBranch<Reclamation>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -167,106 +199,6 @@ export class AssureCrudComponent implements OnInit {
               }
           ]
       }
-  ];
-  registrants: LiteRegistrant[] = [
-    {
-      id: 1,
-      numeroRegistrant: 'S001',
-      branche: 1,
-      partenaire: 2
-    },
-    {
-      id: 2,
-      numeroRegistrant: 'S002',
-      branche: 2,
-      partenaire: 1
-    }
-  ];
-  dossiers: DossierMedical[] = [
-    {
-      id: 1,
-      numDossierMedical: 'DM001',
-      patient: 1,
-      dateUpdated: new Date('2024-07-01'),
-      maladiesChroniques: 'Hypertension, Diabète',
-      maladiesHereditaires: 'Cardiopathie',
-      interventionsChirurgicales: 'Appendicectomie en 2010',
-      hospitalisations: 'Hospitalisation pour fracture en 2018',
-      allergies: 'Allergie aux arachides',
-      vaccins: 'Vaccin contre la grippe en 2023',
-      habitudesAlimentaires: 'Régime pauvre en sel',
-      consommationAlcool: 'Occasionnelle',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Modéré',
-      revenusAnnuels: 5000000,
-      chargesFinancieres: 2000000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 2,
-      numDossierMedical: 'DM002',
-      patient: 2,
-      dateUpdated: new Date('2024-07-02'),
-      maladiesChroniques: 'Asthme',
-      maladiesHereditaires: 'Aucune',
-      interventionsChirurgicales: 'Chirurgie des amygdales en 2015',
-      hospitalisations: 'Aucune',
-      allergies: 'Aucune',
-      vaccins: 'Vaccin contre la grippe en 2022',
-      habitudesAlimentaires: 'Alimentation équilibrée',
-      consommationAlcool: 'Jamais',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Élevé',
-      revenusAnnuels: 6000000,
-      chargesFinancieres: 2500000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 3,
-      numDossierMedical: 'DM003',
-      patient: 3,
-      dateUpdated: new Date('2024-07-03'),
-      maladiesChroniques: 'Aucune',
-      maladiesHereditaires: 'Diabète',
-      interventionsChirurgicales: 'Aucune',
-      hospitalisations: 'Hospitalisation pour grippe sévère en 2019',
-      allergies: 'Allergie au pollen',
-      vaccins: 'Vaccin contre la grippe en 2021',
-      habitudesAlimentaires: 'Végétarien',
-      consommationAlcool: 'Modérée',
-      consommationTabac: 'Non fumeur',
-      niveauActivitePhysique: 'Faible',
-      revenusAnnuels: 4000000,
-      chargesFinancieres: 1500000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    },
-    {
-      id: 4,
-      numDossierMedical: 'DM004',
-      patient: 4,
-      dateUpdated: new Date('2024-07-04'),
-      maladiesChroniques: 'Aucune',
-      maladiesHereditaires: 'Hypertension',
-      interventionsChirurgicales: 'Chirurgie du genou en 2020',
-      hospitalisations: 'Aucune',
-      allergies: 'Aucune',
-      vaccins: 'Vaccin contre la grippe en 2020',
-      habitudesAlimentaires: 'Régime riche en fibres',
-      consommationAlcool: 'Occasionnelle',
-      consommationTabac: 'Fumeur occasionnel',
-      niveauActivitePhysique: 'Modéré',
-      revenusAnnuels: 7000000,
-      chargesFinancieres: 3000000,
-      declarationBonneSante: true,
-      consentementCollecteDonnees: true,
-      declarationNonFraude: true
-    }
   ];
   souscriptions: Souscription[] = [
     {
@@ -318,51 +250,18 @@ export class AssureCrudComponent implements OnInit {
       sinistres: [4]
     }
   ];
-  allBranches: Branche[] = [
-    {
-      id: 1,
-      code: 'DLA',
-      ville: 'Branche Douala',
-      isDefaut: false,
-      partenaires: [1,4,5]
-    },
-    {
-      id: 2,
-      code: 'YAE',
-      ville: 'Branche Yaounde',
-      isDefaut: true,
-      partenaires: [2,3]
-    }
-  ];
-  partenaires: Fournisseur[] = [
-    {
-      id: 1,
-      nom: 'Clinique Santé Plus',
-      telephone: '123456789',
-      email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux',
-      prestations: [1, 2],
-      branches: [1]
-    },
-    {
-      id: 2,
-      nom: 'Centre Médical Bongo',
-      telephone: '987654321',
-      email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
-      servicesFournis: 'Radiologie, Analyses de Laboratoire',
-      prestations: [3, 4],
-      branches: [2]
-    }
-  ]; 
 
-  // Liste pour Gender
-  genders = [
-    { label: 'Male', value: 'MALE' },
-    { label: 'Female', value: 'FEMALE' },
-    { label: 'Other', value: 'OTHER' }
+  // Liste pour InsuranceType
+  typeReclamations = [
+    { label: 'Sinistre', value: TypeReclamation.SINISTRE },
+    { label: 'Prestation', value: TypeReclamation.PRESTATION }
   ];
+  statutReclamations = [
+    { label: 'En cours', value: StatutReclamation.EN_COURS },
+    { label: 'Approuvée', value: StatutReclamation.APPROUVEE },
+    { label: 'Rejetée', value: StatutReclamation.REJETEE },
+    { label: 'En attente', value: StatutReclamation.EN_ATTENTE }
+  ];  
   frequencies = [
     { label: 'Annuel', value: PaymentFrequency.ANNUEL },
     { label: 'Mensuel', value: PaymentFrequency.MENSUEL },
@@ -381,26 +280,22 @@ export class AssureCrudComponent implements OnInit {
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: AssureService, // Service pour les opérations CRUD génériques
+    private service: ReclamationService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Assure';
-    this.componentLink = '/admin/assures';
-    this.importLink = '/import-assure';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.entityName = 'Reclamation';
+    this.componentLink = '/admin/reclamations';
+    this.importLink = '/import-reclamation';
+    this.moduleKey = 'RECLAMATION_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadRegistrants();
     //this.loadSouscriptions();
-    //this.loadDossiers();
-    //this.loadBranches();
-    //this.loadPartenaires();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -414,54 +309,24 @@ export class AssureCrudComponent implements OnInit {
     this.loading = false;
   }
 
-  // Chargement aux registrants associés à une assure
-  loadRegistrants(): void {
-    this.service.getAllRegistrants().subscribe((registrants: LiteRegistrant[]) => {
-        this.registrants = registrants;
-    });
-  }
-
-  // Chargement des souscriptions associés à une assure
+  // Chargement des souscriptions associés à une reclamation
   loadSouscriptions(): void {
     this.service.getAllSouscriptions().subscribe((souscriptions: Souscription[]) => {
         this.souscriptions = souscriptions;
     });
   }
-  
-  // Chargement des dossiers médicaux associés à une assure
-  loadDossiers(): void {
-    this.service.getAllDossiers().subscribe((dossiers: DossierMedical[]) => {
-        this.dossiers = dossiers;
-    });
-  }
-
-  // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): void {
-    this.service.getAllBranches().subscribe((branches: Branche[]) => {
-        this.allBranches = branches;
-    });
-  }
-  
-  // Chargement des polices associés à une branche
-  loadPartenaires(): void {
-    this.service.getAllPartners().subscribe((partenaires: Fournisseur[]) => {
-        this.partenaires = partenaires;
-    });
-  }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['numNiu', 'lastName', 'dateNaissance', 'numCni', 'email'];
+    return ['numeroReclamation', 'dateReclamation', 'description'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('registrant', this.registrants);
-    this.setSubFieldValues('registrant', 'branche', this.allBranches);
-    this.setSubFieldValues('registrant', 'partenaire', this.partenaires);
-    this.setColumnValues('dossiers', this.dossiers);
+    this.setColumnValues('type', this.typeReclamations);
+    this.setColumnValues('status', this.statutReclamations);
     this.setColumnValues('souscriptions', this.souscriptions);
     this.setSubFieldValues('souscriptions', 'status', this.status);
     this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
@@ -614,7 +479,7 @@ export class AssureCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Assure>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Reclamation>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -859,7 +724,7 @@ export class AssureCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Assure; // Initialise un nouvel élément
+    this.selectedItem = {} as Reclamation; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -870,14 +735,14 @@ export class AssureCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Assure) {
+  protected editItem(item: Reclamation) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Assure) {
+  protected deleteItem(item: Reclamation) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -900,7 +765,7 @@ export class AssureCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Assure; // Réinitialise l'élément
+      this.selectedItem = {} as Reclamation; // Réinitialise l'élément
     });
   }
 
@@ -923,7 +788,7 @@ export class AssureCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assure; // Réinitialise l'élément
+          this.selectedItem = {} as Reclamation; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -932,7 +797,7 @@ export class AssureCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Assure; // Réinitialise l'élément
+          this.selectedItem = {} as Reclamation; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

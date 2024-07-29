@@ -196,7 +196,7 @@ export class FournisseurCrudComponent implements OnInit {
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
     this.importLink = '/import-fournisseur';
-    this.moduleKey = 'PARTNERS_MODULE';
+    this.moduleKey = 'FOURNISSEUR_MODULE';
     this.isTable = true;
   }
 

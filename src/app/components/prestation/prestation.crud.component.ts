@@ -405,7 +405,7 @@ export class PrestationCrudComponent implements OnInit {
     this.entityName = 'Prestation';
     this.componentLink = '/admin/prestations';
     this.importLink = '/import-prestation';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.moduleKey = 'PRESTATION_MODULE';
     this.isTable = true;
   }
 
@@ -646,6 +646,8 @@ export class PrestationCrudComponent implements OnInit {
           return 'primary';
       case 'AGRICOLE':
           return 'success';
+      case 'SANTE':
+          return 'warning';
 
       // Cas pour GarantieStatus
       case 'ACTIVE':

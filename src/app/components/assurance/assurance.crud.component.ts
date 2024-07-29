@@ -465,6 +465,8 @@ export class AssuranceCrudComponent implements OnInit {
           return 'primary';
       case 'AGRICOLE':
           return 'success';
+      case 'SANTE':
+          return 'warning';
 
       // Cas pour GarantieStatus
       case 'ACTIVE':
