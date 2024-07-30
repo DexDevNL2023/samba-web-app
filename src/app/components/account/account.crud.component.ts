@@ -73,7 +73,7 @@ export class AccountCrudComponent implements OnInit {
       langKey: 'en',
       login: 'victor.nlang',
       imageUrl: 'https://example.com/image1.jpg',
-      ruleIds: [39, 40, 41, 42, 43, 44, 45, 46]
+      ruleIds: [39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
     },
     
     // Compte pour un agent
@@ -147,7 +147,6 @@ export class AccountCrudComponent implements OnInit {
       }
   ];
   roles: Rule[] = [
-    
     // Menu pour l'Administrateur :
     {
       id: 1,
@@ -430,6 +429,18 @@ export class AccountCrudComponent implements OnInit {
       moduleKey: 'NOTIFICATION_MODULE',
       module: 'Gestion des notifications',
       permissionIds: [1, 4, 5]
+    },
+    {
+      id: 47,
+      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      module: 'Gestion des dossiers médicaux',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 48,
+      moduleKey: 'PAIEMENT_MODULE',
+      module: 'Gestion des paiements',
+      permissionIds: [1, 2, 3, 4, 5]
     }
   ];   
   permissions: Permission[] = [

@@ -15,6 +15,19 @@ import { ProfilComponent } from './account/profil/profil.component';
 import { AssuranceCrudComponent } from './components/assurance/assurance.crud.component';
 import { BrancheCrudComponent } from './components/branche/branche.crud.component';
 import { FinanceurCrudComponent } from './components/financeur/financeur.crud.component';
+import { AccountCrudComponent } from './components/account/account.crud.component';
+import { AssureCrudComponent } from './components/assure/assure.crud.component';
+import { DocumentCrudComponent } from './components/document/document.crud.component';
+import { DossierMedicalCrudComponent } from './components/dossier-medical/dossier-medical.crud.component';
+import { FournisseurCrudComponent } from './components/fournisseur/fournisseur.crud.component';
+import { GarantieCrudComponent } from './components/garantie/garantie.crud.component';
+import { NotificationCrudComponent } from './components/notification/notification.crud.component';
+import { PaiementCrudComponent } from './components/paiement/paiement.crud.component';
+import { PoliceAssuranceCrudComponent } from './components/police-assurance/police-assurance.crud.component';
+import { PrestationCrudComponent } from './components/prestation/prestation.crud.component';
+import { ReclamationCrudComponent } from './components/reclamation/reclamation.crud.component';
+import { SinistreCrudComponent } from './components/sinistre/sinistre.crud.component';
+import { SouscriptionCrudComponent } from './components/souscription/souscription.crud.component';
  
 @NgModule({
     imports: [
@@ -23,13 +36,29 @@ import { FinanceurCrudComponent } from './components/financeur/financeur.crud.co
                 path: 'admin',
                 component: AppMainComponent,
                 children: [
-                    { path: '', component: DashboardComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
-                    { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
+                    { path: '', component: DashboardComponent },
+                    
+                    { path: 'accounts', component: AccountCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
+                    { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+                    { path: 'assures', component: AssureCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
                     { path: 'branches', component: BrancheCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
+                    { path: 'documents', component: DocumentCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
+                    { path: 'dossiers/medicaux', component: DossierMedicalCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'financeurs', component: FinanceurCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_PROVIDER'] } },
+                    { path: 'fournisseurs', component: FournisseurCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
+                    { path: 'garanties', component: GarantieCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+                    { path: 'notifications', component: NotificationCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
+                    { path: 'paiements', component: PaiementCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+                    { path: 'polices/assurances', component: PoliceAssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+                    { path: 'prestations', component: PrestationCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_PROVIDER'] } },
+                    { path: 'reclamations', component: ReclamationCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+                    { path: 'sinistres', component: SinistreCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
+                    { path: 'souscriptions', component: SouscriptionCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
+
                     { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
+                    
                     { path: 'accessdenied', component: AppAccessdeniedComponent },
                     { path: 'notfound', component: AppNotfoundComponent },
                     { path: '**', redirectTo: '/notfound' },

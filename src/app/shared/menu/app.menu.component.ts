@@ -45,8 +45,16 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
+            { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements des primes', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
             { moduleKey: 'DOCUMENT_MODULE', label: 'Documents de preuves', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
+            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
+            {
+                label: 'Partie santé',
+                icon: 'pi pi-fw pi-heart',
+                items: [
+                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
+                ]
+            }
         ];
         
         // Menu pour l'Agent :
@@ -91,7 +99,7 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-shield',
                 items: [
                     { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices'] },
+                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices/assurances'] },
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties d\'assurance', icon: 'pi pi-fw pi-calendar-clock', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'ASSURE_MODULE', label: 'Gestion des assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] }
@@ -109,7 +117,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Gestions des partenaires',
                 icon: 'pi pi-fw pi-sitemap',
                 items: [
-                    { moduleKey: 'FOURNISSEUR_MODULE', label: 'Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/partenaires'] },
+                    { moduleKey: 'FOURNISSEUR_MODULE', label: 'Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/fournisseurs'] },
                     { moduleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
                     { moduleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
                 ]
@@ -129,7 +137,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Paramètres',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    { moduleKey: 'USERS_MODULE', label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-users', routerLink: ['/admin/utilisateurs'] },
+                    { moduleKey: 'USERS_MODULE', label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-users', routerLink: ['/admin/accounts'] },
                     { moduleKey: 'BRANCHE_MODULE', label: 'Gestions des Branches', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/branches'] },
                     { moduleKey: 'COMPANY_MODULE', label: 'Gestions de la société', icon: 'pi pi-fw pi-warehouse', routerLink: ['/admin/company'] },
                 ]
