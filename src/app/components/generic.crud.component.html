@@ -560,17 +560,21 @@
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'objet'">
                                             <span class="p-column-title">{{ col.header }}</span>
-                                            <button pButton pRipple icon="pi pi-board" class="p-button-primary mr-2"
-                                                (click)="openItemView({ field: col.field, id: item[col.field] })">
-                                                {{ col.header }}
-                                            </button>
+											<!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
+												(click)="openItemView({ field: col.field, id: item[col.field] })"></button> -->
+											<p-dropdown *ngSwitchCase="'objet'" [options]="col.values" 
+											[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
+											optionValue="{{ col.key }}" [showClear]="true" appendTo="body" />
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'list'">
                                             <span class="p-column-title">{{ col.header }}</span>
-                                            <button pButton pRipple icon="pi pi-board" class="p-button-primary mr-2"
-                                                (click)="openItemListView({ field: col.field, ids: item[col.field] })">
-                                                {{ col.header }}
-                                            </button>
+											<!-- <button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info"
+												(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button> -->
+											<p-multiSelect *ngSwitchCase="'list'" [options]="col.values" 
+												[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}" 
+												optionValue="{{ col.key }}" [showClear]="true"
+												appendTo="body" [style]="{'width':'100%'}"
+												[panelStyle]="{'max-height':'200px'}"></p-multiSelect>
                                         </ng-container>
                                         <ng-container *ngSwitchDefault>
                                             <span class="p-column-title">{{ col.header }}</span>

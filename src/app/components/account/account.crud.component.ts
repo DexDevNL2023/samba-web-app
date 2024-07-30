@@ -538,13 +538,13 @@ export class AccountCrudComponent implements OnInit {
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['fullName', 'email', 'login', 'authorities'];
   }
-
+  
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('rules', this.roles);
-    this.setSubFieldValues('rules', 'permissions', this.permissions);
+    this.setColumnValues('ruleIds', this.roles);
+    this.setSubFieldValues('ruleIds', 'permissionIds', this.permissions);
   }
   
   /**
