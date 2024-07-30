@@ -63,7 +63,7 @@ export class PrestationCrudComponent implements OnInit {
         { field: 'adresse', header: 'Adresse', type: 'text' }
       ]
     },
-    { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'name', key: 'id', subfield: [
+    { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], label: 'numeroSinistre', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },

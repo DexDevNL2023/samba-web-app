@@ -46,15 +46,12 @@ export class DossierMedicalCrudComponent implements OnInit {
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
     { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
-    { field: 'patient', header: 'Patient', type: 'objet', values: [], label: 'fullName', key: 'id', subfield: [
+    { field: 'patient', header: 'Patient', type: 'objet', values: [], label: 'numNiu', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'lastName', header: 'Nom', type: 'text' },
-        { field: 'firstName', header: 'Prénom', type: 'text' },
-        { field: 'dateNaissance', header: 'Date de naissance', type: 'date' },
-        { field: 'sexe', header: 'Sexe', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'addresse', header: 'Adresse', type: 'text' },
-        { field: 'telephone', header: 'Telephone', type: 'text' },
-        { field: 'email', header: 'Email', type: 'text' }
+        { field: 'numNiu', header: 'Niu', type: 'text' },
+        { field: 'firstName', header: 'Nom', type: 'text' },
+        { field: 'lastName', header: 'Prénom', type: 'text' },
+        { field: 'addresse', header: 'Addresse', type: 'textarea' }
       ]
     },
     { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },

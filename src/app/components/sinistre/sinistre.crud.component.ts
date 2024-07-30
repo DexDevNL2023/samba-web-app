@@ -356,15 +356,15 @@ export class SinistreCrudComponent implements OnInit {
   ];
 
   // Liste pour InsuranceType
-  prestationStatuses = [
-    { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
-    { label: 'En attente', value: PrestationStatus.EN_ATTENTE },
-    { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
-  ];
   claimStatuses = [
     { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
     { label: 'Approuvé', value: ClaimStatus.APPROUVE },
     { label: 'Annulé', value: ClaimStatus.ANNULE }
+  ];
+  prestationStatuses = [
+    { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
+    { label: 'En attente', value: PrestationStatus.EN_ATTENTE },
+    { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
   ];
   frequencies = [
     { label: 'Annuel', value: PaymentFrequency.ANNUEL },

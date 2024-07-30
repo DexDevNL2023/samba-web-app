@@ -8,8 +8,6 @@ export class Account {
     public authorities: string[],
     public email: string,
     public fullName: string | null,
-    public firstName: string | null,
-    public lastName: string | null,
     public langKey: string,
     public login: string,
     public imageUrl: string | null,

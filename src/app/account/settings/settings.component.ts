@@ -119,8 +119,7 @@ export default class SettingsComponent implements OnInit {
   }
 
   private buildDefaultUserForm(): void {
-    this.settingsForm.addControl('firstName', this.formBuilder.control('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]));
-    this.settingsForm.addControl('lastName', this.formBuilder.control('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]));
+    this.settingsForm.addControl('fullName', this.formBuilder.control('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]));
     this.settingsForm.addControl('email', this.formBuilder.control('', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(254)]));
     this.settingsForm.addControl('langKey', this.formBuilder.control('', Validators.required));
     this.settingsForm.addControl('activated', this.formBuilder.control(false, Validators.required));

@@ -12,26 +12,14 @@
         <!-- Default User Form Fields -->
         <div *ngIf="hasAuthority(['ROLE_AGENT', 'ROLE_ADMINISTRATOR'])">
           <div class="mb-4">
-            <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
+            <label for="fullName" class="block font-normal text-900 mb-2">Nom complet</label>
             <input
-              id="lastName"
+              id="fullName"
               type="text"
               pInputText
               class="p-inputtext p-component p-element"
-              formControlName="lastName"
-              data-cy="lastname"
-            />
-          </div>
-  
-          <div class="mb-4">
-            <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
-            <input
-              id="firstName"
-              type="text"
-              pInputText
-              class="p-inputtext p-component p-element"
-              formControlName="firstName"
-              data-cy="firstname"
+              formControlName="fullName"
+              data-cy="fullName"
             />
           </div>
 
