@@ -34,7 +34,6 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
                     { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/polices/assurances'] },
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties d\'assurance', icon: 'pi pi-fw pi-calendar-clock', routerLink: ['/admin/garanties'] },
-                    { moduleKey: 'ASSURE_MODULE', label: 'Gestion des assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] }
                 ]
             },
@@ -144,8 +143,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
+                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] }
                 ]
             },
             {
@@ -172,7 +170,7 @@ export class AppMenuComponent implements OnInit {
             this.buildMenu(this.clientMenu);
         } else if(this.hasAuthority('ROLE_AGENT')) {
             this.buildMenu(this.agentMenu);
-        } else if(this.hasAuthority('ROLE_ADMINISTRATOR')) {
+        } else if(this.hasAuthority('ROLE_ADMIN')) {
             this.buildMenu(this.adminMenu);
         } else if(this.hasAuthority('ROLE_PROVIDER')) {
             this.buildMenu(this.fournisseurMenu);

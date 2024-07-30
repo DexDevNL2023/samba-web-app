@@ -8,18 +8,17 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Sinistre, ClaimStatus } from '../../models/sinistre.model';
-import { SinistreService } from '../../service/sinistre.service';
+import { Account, Authority } from '../../models/account.model';
+import { AccountCrudService } from '../../service/account.crud.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Document } from '../../models/document.model';
-import { Prestation, PrestationStatus } from '../../models/prestation.model';
-import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
+import { Rule } from '../../models/rule.model';
+import { Permission } from '../../models/permission.model';
 
 @Component({
-  selector: 'app-sinistre-crud',
+  selector: 'app-account-crud',
   templateUrl: './../generic.crud.component.html'
 })
-export class SinistreCrudComponent implements OnInit {
+export class AccountCrudComponent implements OnInit {
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
@@ -30,8 +29,8 @@ export class SinistreCrudComponent implements OnInit {
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Sinistre; // Élément de type Sinistre actuellement sélectionné ou en cours de modification
-  selectedItems: Sinistre[] = []; // Tableau d'éléments de type Sinistre sélectionnés
+  selectedItem: Account; // Élément de type Account actuellement sélectionné ou en cours de modification
+  selectedItems: Account[] = []; // Tableau d'éléments de type Account sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
   importLink: string = '';
@@ -47,160 +46,87 @@ export class SinistreCrudComponent implements OnInit {
   // Configuration des colonnes de la table
   cols: Column[] = [
     { field: 'id', header: 'ID', type: 'id' },
-    { field: 'numeroSinistre', header: ' Num Sinistre', type: 'text' },
-    { field: 'label', header: 'Libellé', type: 'text' },
-    { field: 'raison', header: 'Raison', type: 'textarea' },
-    { field: 'dateDeclaration', header: 'Date de déclaration', type: 'date' },
-    { field: 'dateTraitement', header: 'Date de traiment', type: 'date' },
-    { field: 'status', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
-    { field: 'montantSinistre', header: 'Montant du sinistre', type: 'currency' },
-    { field: 'montantAssure', header: 'Montant assuré', type: 'currency' },
-    { field: 'souscription', header: 'Souscription', type: 'objet', values: [], label: 'numeroSouscription', key: 'id', subfield: [
+    { field: 'imageUrl', header: 'Avatar', type: 'image' },
+    { field: 'fullName', header: 'Nom complet', type: 'text' },
+    { field: 'email', header: 'Email', type: 'text' },
+    { field: 'langKey', header: 'Langue', type: 'text' },
+    { field: 'login', header: 'Login', type: 'text' },
+    { field: 'authorities', header: 'Authorisations', type: 'enum', values: [], label: 'label', key: 'value' },
+    { field: 'activated', header: 'Actif', type: 'boolean' },
+    { field: 'ruleIds', header: 'Rôles', type: 'list', values: [], label: 'moduleKey', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
-        { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
-        { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
-      ]
-    },
-    { field: 'prestations', header: 'Prestations', type: 'list', values: [], label: 'numeroPrestation', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
-        { field: 'label', header: 'Libellé', type: 'text' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'datePrestation', header: 'Effectuer le', type: 'date' },
-        { field: 'montant', header: 'Montant', type: 'currency' }
-      ]
-    },
-    { field: 'documents', header: 'Documents', type: 'list', values: [], label: 'numeroDocument', key: 'id', subfield: [
-        { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroDocument', header: 'Num Document', type: 'text' },
-        { field: 'nom', header: 'Nom', type: 'text' },
-        { field: 'url', header: 'Telecharger', type: 'url' }
+        { field: 'moduleKey', header: 'Clé', type: 'text' },
+        { field: 'module', header: 'Libelle', type: 'text' },
+        { field: 'permissionIds', header: 'Permissions', type: 'list', values: [], label: 'libelle', key: 'id' }
       ]
     }
   ];
   
-  items: Sinistre[] = [
-    // Assurance Bien
+  items: Account[] = [
+    // Compte pour un client
     {
       id: 1,
-      numeroSinistre: 'SIN123456',
-      label: 'Accident de voiture',
-      raison: 'Collision avec un autre véhicule',
-      dateDeclaration: new Date('2024-03-15'),
-      dateTraitement: new Date('2024-03-20'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 500000,
-      montantAssure: 450000,
-      souscription: 1,
-      prestations: [1, 2],
-      documents: [1, 2]
+      activated: true,
+      authorities: ['ROLE_CLIENT'],
+      email: 'john.doe@example.com',
+      fullName: 'Victor Nlang',
+      langKey: 'en',
+      login: 'victor.nlang',
+      imageUrl: 'https://example.com/image1.jpg',
+      ruleIds: [39, 40, 41, 42, 43, 44, 45, 46]
     },
+    
+    // Compte pour un agent
     {
       id: 2,
-      numeroSinistre: 'SIN654321',
-      label: 'Incendie de maison',
-      raison: 'Court-circuit électrique',
-      dateDeclaration: new Date('2024-05-10'),
-      dateTraitement: new Date('2024-05-15'),
-      status: ClaimStatus.EN_ATTENTE,
-      montantSinistre: 2000000,
-      montantAssure: 1800000,
-      souscription: 2,
-      prestations: [3, 4],
-      documents: [3, 4]
+      activated: true,
+      authorities: ['ROLE_AGENT'],
+      email: 'jane.smith@example.com',
+      fullName: 'Jane Smith',
+      langKey: 'fr',
+      login: 'jane.smith',
+      imageUrl: 'https://example.com/image2.jpg',
+      ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
     },
-    // Assurance Agricole
     {
       id: 3,
-      numeroSinistre: 'SIN789012',
-      label: 'Inondation de champs',
-      raison: 'Fortes pluies',
-      dateDeclaration: new Date('2024-06-01'),
-      dateTraitement: new Date('2024-06-05'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 300000,
-      montantAssure: 250000,
-      souscription: 3,
-      prestations: [3],
-      documents: [1]
+      activated: true,
+      authorities: ['ROLE_AGENT'],
+      email: 'john.doe@example.com',
+      fullName: 'John Doe',
+      langKey: 'en',
+      login: 'john.doe',
+      imageUrl: 'https://example.com/image1.jpg',
+      ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
     },
+    
+    // Compte pour un administrateur
     {
       id: 4,
-      numeroSinistre: 'SIN890123',
-      label: 'Sécheresse',
-      raison: 'Absence de pluie prolongée',
-      dateDeclaration: new Date('2024-07-15'),
-      dateTraitement: new Date('2024-07-20'),
-      status: ClaimStatus.EN_ATTENTE,
-      montantSinistre: 150000,
-      montantAssure: 120000,
-      souscription: 4,
-      prestations: [4],
-      documents: []
+      activated: true,
+      authorities: ['ROLE_ADMIN'],
+      email: 'admin.abc@example.com',
+      fullName: 'SAMB\'A Assurances Gabon S.A',
+      langKey: 'en',
+      login: 'admin.samba',
+      imageUrl: 'https://example.com/image3.jpg',
+      ruleIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     },
-    // Assurance Personne
+    
+    // Compte pour un fournisseur de soins
     {
       id: 5,
-      numeroSinistre: 'SIN456789',
-      label: 'Accident de travail',
-      raison: 'Chute d\'une échelle',
-      dateDeclaration: new Date('2024-08-05'),
-      dateTraitement: new Date('2024-08-10'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 50000,
-      montantAssure: 45000,
-      souscription: 2,
-      prestations: [3, 1],
-      documents: [1, 2]
-    },
-    {
-      id: 6,
-      numeroSinistre: 'SIN321654',
-      label: 'Décès',
-      raison: 'Cause naturelle',
-      dateDeclaration: new Date('2024-09-01'),
-      dateTraitement: new Date('2024-09-05'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 100000,
-      montantAssure: 95000,
-      souscription: 3,
-      prestations: [1, 2],
-      documents: [2]
-    },
-    // Assurance Santé
-    {
-      id: 7,
-      numeroSinistre: 'SIN654987',
-      label: 'Hospitalisation',
-      raison: 'Chirurgie d\'appendicite',
-      dateDeclaration: new Date('2024-10-10'),
-      dateTraitement: new Date('2024-10-15'),
-      status: ClaimStatus.APPROUVE,
-      montantSinistre: 70000,
-      montantAssure: 65000,
-      souscription: 2,
-      prestations: [3, 4],
-      documents: [3, 4]
-    },
-    {
-      id: 8,
-      numeroSinistre: 'SIN987321',
-      label: 'Consultation médicale',
-      raison: 'Fièvre élevée',
-      dateDeclaration: new Date('2024-11-01'),
-      dateTraitement: new Date('2024-11-05'),
-      status: ClaimStatus.EN_ATTENTE,
-      montantSinistre: 2000,
-      montantAssure: 1500,
-      souscription: 1,
-      prestations: [2],
-      documents: []
+      activated: true,
+      authorities: ['ROLE_PROVIDER'],
+      email: 'care.provider@example.com',
+      fullName: 'Care Provider',
+      langKey: 'fr',
+      login: 'care.provider',
+      imageUrl: 'https://example.com/image4.jpg',
+      ruleIds: [20, 21, 22, 23, 24, 25, 26]
     }
   ];
-  branches: EntityByBranch<Sinistre>[] = [
+  branches: EntityByBranch<Account>[] = [
       {
           name: 'Branch A',
           partenaires: [
@@ -220,163 +146,340 @@ export class SinistreCrudComponent implements OnInit {
           ]
       }
   ];
-  souscriptions: Souscription[] = [
+  roles: Rule[] = [
+    
+    // Menu pour l'Administrateur :
     {
       id: 1,
-      numeroSouscription: 'SUB001',
-      dateSouscription: new Date('2023-01-01'),
-      dateExpiration: new Date('2024-01-01'),
-      status: 'ACTIVE',
-      frequencePaiement: 'MENSUEL',
-      assure: 1,
-      police: 1,
-      paiements: [1, 2, 3],
-      sinistres: [1, 2]
+      moduleKey: 'ASSURANCE_MODULE',
+      module: 'Gestion des assurances',
+      permissionIds: [1, 2, 3, 4, 5]
     },
     {
       id: 2,
-      numeroSouscription: 'SUB002',
-      dateSouscription: new Date('2022-06-01'),
-      dateExpiration: new Date('2023-06-01'),
-      status: 'ON_RISK',
-      frequencePaiement: 'ANNUEL',
-      assure: 2,
-      police: 2,
-      paiements: [4],
-      sinistres: [3]
+      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      module: 'Gestion des polices d\'assurance',
+      permissionIds: [1, 2, 3, 4, 5]
     },
     {
       id: 3,
-      numeroSouscription: 'SUB003',
-      dateSouscription: new Date('2024-02-15'),
-      dateExpiration: new Date('2025-02-15'),
-      status: 'WAITING',
-      frequencePaiement: 'TRIMESTRIEL',
-      assure: 3,
-      police: 3,
-      paiements: [5, 6],
-      sinistres: []
+      moduleKey: 'GARANTIE_MODULE',
+      module: 'Gestion des garanties',
+      permissionIds: [1, 2, 3, 4, 5]
     },
     {
       id: 4,
-      numeroSouscription: 'SUB004',
-      dateSouscription: new Date('2021-09-01'),
-      dateExpiration: new Date('2022-09-01'),
-      status: 'RESILIE',
-      frequencePaiement: 'SEMESTRIEL',
-      assure: 4,
-      police: 4,
-      paiements: [7, 8],
-      sinistres: [4]
+      moduleKey: 'ASSURE_MODULE',
+      module: 'Gestion des assurés',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 5,
+      moduleKey: 'SUBSCRIPTION_MODULE',
+      module: 'Gestion des souscriptions',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 6,
+      moduleKey: 'SINISTRE_MODULE',
+      module: 'Gestion des sinistres',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 7,
+      moduleKey: 'RECLAMATION_MODULE',
+      module: 'Gestion des réclamations',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 8,
+      moduleKey: 'DOCUMENT_MODULE',
+      module: 'Gestion des documents',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 9,
+      moduleKey: 'NOTIFICATION_MODULE',
+      module: 'Gestion des notifications',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 10,
+      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      module: 'Gestion des dossiers médicaux',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 11,
+      moduleKey: 'PAIEMENT_MODULE',
+      module: 'Gestion des paiements',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 12,
+      moduleKey: 'REPORTING_MODULE',
+      module: 'Gestion des rapports',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 13,
+      moduleKey: 'USERS_MODULE',
+      module: 'Gestion des utilisateurs',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 14,
+      moduleKey: 'BRANCHE_MODULE',
+      module: 'Gestion des branches',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 15,
+      moduleKey: 'COMPANY_MODULE',
+      module: 'Gestion de la société',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 16,
+      moduleKey: 'FOURNISSEUR_MODULE',
+      module: 'Gestion des partenaires',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 17,
+      moduleKey: 'PRESTATION_MODULE',
+      module: 'Gestion des prestations',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 18,
+      moduleKey: 'FINANCEUR_MODULE',
+      module: 'Gestion des financeurs',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 19,
+      moduleKey: 'DASHBOARD_MODULE',
+      module: 'Dashboard',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+
+    // Menu pour le Fournisseur de Services :
+    {
+      id: 20,
+      moduleKey: 'DASHBOARD_MODULE',
+      module: 'Dashboard',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 21,
+      moduleKey: 'SINISTRE_MODULE',
+      module: 'Gestion des sinistres',
+      permissionIds: [1, 4, 5]
+    },
+    {
+      id: 22,
+      moduleKey: 'PRESTATION_MODULE',
+      module: 'Gestion des prestations',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 23,
+      moduleKey: 'FINANCEUR_MODULE',
+      module: 'Gestion des financeurs',
+      permissionIds: [1, 4, 5]
+    },
+    {
+      id: 24,
+      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      module: 'Gestion des dossiers médicaux',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 25,
+      moduleKey: 'DOCUMENT_MODULE',
+      module: 'Gestion des documents',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 26,
+      moduleKey: 'NOTIFICATION_MODULE',
+      module: 'Gestion des notifications',
+      permissionIds: [1, 4, 5]
+    },
+
+    // Menu pour l'Agent :
+    {
+      id: 27,
+      moduleKey: 'DASHBOARD_MODULE',
+      module: 'Dashboard',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 28,
+      moduleKey: 'ASSURANCE_MODULE',
+      module: 'Gestion des assurances',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 29,
+      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      module: 'Gestion des polices d\'assurance',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 30,
+      moduleKey: 'GARANTIE_MODULE',
+      module: 'Gestion des garanties',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 31,
+      moduleKey: 'ASSURE_MODULE',
+      module: 'Gestion des assurés',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 32,
+      moduleKey: 'SUBSCRIPTION_MODULE',
+      module: 'Gestion des souscriptions',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 33,
+      moduleKey: 'SINISTRE_MODULE',
+      module: 'Gestion des sinistres',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 34,
+      moduleKey: 'RECLAMATION_MODULE',
+      module: 'Gestion des réclamations',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 35,
+      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      module: 'Gestion des dossiers médicaux',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 36,
+      moduleKey: 'PAIEMENT_MODULE',
+      module: 'Gestion des paiements',
+      permissionIds: [1, 2, 4, 5]
+    },
+    {
+      id: 37,
+      moduleKey: 'DOCUMENT_MODULE',
+      module: 'Gestion des documents',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 38,
+      moduleKey: 'NOTIFICATION_MODULE',
+      module: 'Gestion des notifications',
+      permissionIds: [1, 4, 5]
+    },
+
+    // Menu pour le Client (Assuré) :
+    {
+      id: 39,
+      moduleKey: 'ASSURANCE_MODULE',
+      module: 'Gestion des assurances',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 40,
+      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      module: 'Gestion des polices d\'assurance',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 41,
+      moduleKey: 'GARANTIE_MODULE',
+      module: 'Gestion des garanties',
+      permissionIds: [4, 5]
+    },
+    {
+      id: 42,
+      moduleKey: 'SUBSCRIPTION_MODULE',
+      module: 'Gestion des souscriptions',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 43,
+      moduleKey: 'SINISTRE_MODULE',
+      module: 'Gestion des sinistres',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 44,
+      moduleKey: 'RECLAMATION_MODULE',
+      module: 'Gestion des réclamations',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 45,
+      moduleKey: 'DOCUMENT_MODULE',
+      module: 'Gestion des documents',
+      permissionIds: [1, 2, 3, 4, 5]
+    },
+    {
+      id: 46,
+      moduleKey: 'NOTIFICATION_MODULE',
+      module: 'Gestion des notifications',
+      permissionIds: [1, 4, 5]
     }
-  ];
-  prestations: Prestation[] = [
+  ];   
+  permissions: Permission[] = [
+    // Permission pour ajouter un élément
     {
       id: 1,
-      numeroPrestation: 'PRE-001',
-      label: 'Consultation Médicale Générale',
-      datePrestation: new Date('2024-01-15'),
-      description: 'Consultation avec un médecin généraliste.',
-      montant: 5000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 1,
-      financeurs: [1],
-      sinistre: 1,
-      documents: [1, 2]
+      permissionKey: 'WRITE_PERMISSION',
+      libelle: 'Ajouter',
+      haveAccess: true
     },
+  
+    // Permission pour modifier un élément
     {
       id: 2,
-      numeroPrestation: 'PRE-002',
-      label: 'Hospitalisation Chirurgicale',
-      datePrestation: new Date('2024-02-20'),
-      description: 'Hospitalisation pour une intervention chirurgicale.',
-      montant: 120000,
-      status: PrestationStatus.EN_ATTENTE,
-      fournisseur: 2,
-      financeurs: [1, 2],
-      sinistre: 2,
-      documents: [2, 3]
+      permissionKey: 'EDIT_PERMISSION',
+      libelle: 'Modifier',
+      haveAccess: true
     },
+  
+    // Permission pour supprimer un élément
     {
       id: 3,
-      numeroPrestation: 'PRE-003',
-      label: 'Radiologie',
-      datePrestation: new Date('2024-03-10'),
-      description: 'Radiographie thoracique.',
-      montant: 20000,
-      status: PrestationStatus.NON_REMBOURSE,
-      fournisseur: 1,
-      financeurs: [2],
-      sinistre: 3,
-      documents: [3]
+      permissionKey: 'DELET_PERMISSION',
+      libelle: 'Supprimer',
+      haveAccess: true
     },
+  
+    // Permission pour consulter un élément
     {
       id: 4,
-      numeroPrestation: 'PRE-004',
-      label: 'Soins Dentaires',
-      datePrestation: new Date('2024-04-05'),
-      description: 'Traitement de caries et nettoyage dentaire.',
-      montant: 15000,
-      status: PrestationStatus.REMBOURSE,
-      fournisseur: 1,
-      financeurs: [1],
-      sinistre: 4,
-      documents: [4, 1]
-    }
-  ];
-  documents: Document[] = [
-    {
-      id: 1,
-      numeroDocument: 'DOC-001',
-      nom: 'Photo du Sinistre',
-      description: 'Photo montrant les dommages causés par l\'accident',
-      url: 'http://example.com/photo-sinistre.jpg'
+      permissionKey: 'READ_PERMISSION',
+      libelle: 'Consulter',
+      haveAccess: true
     },
+  
+    // Permission pour imprimer un élément
     {
-      id: 2,
-      numeroDocument: 'DOC-002',
-      nom: 'Vidéo du Sinistre',
-      description: 'Vidéo enregistrée par une caméra de surveillance',
-      url: 'http://example.com/video-sinistre.mp4'
-    },
-    {
-      id: 3,
-      numeroDocument: 'DOC-003',
-      nom: 'Facture de Réparation',
-      description: 'Facture des coûts de réparation des dommages',
-      url: 'http://example.com/facture-reparation.pdf'
-    },
-    {
-      id: 4,
-      numeroDocument: 'DOC-004',
-      nom: 'Rapport Médical',
-      description: 'Rapport médical décrivant les blessures subies',
-      url: 'http://example.com/rapport-medical.pdf'
+      id: 5,
+      permissionKey: 'PRINT_PERMISSION',
+      libelle: 'Imprimer',
+      haveAccess: true
     }
   ];
 
   // Liste pour InsuranceType
-  claimStatuses = [
-    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
-    { label: 'Approuvé', value: ClaimStatus.APPROUVE },
-    { label: 'Annulé', value: ClaimStatus.ANNULE }
-  ];
-  prestationStatuses = [
-    { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
-    { label: 'En attente', value: PrestationStatus.EN_ATTENTE },
-    { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
-  ];
-  frequencies = [
-    { label: 'Annuel', value: PaymentFrequency.ANNUEL },
-    { label: 'Mensuel', value: PaymentFrequency.MENSUEL },
-    { label: 'Semestriel', value: PaymentFrequency.SEMESTRIEL },
-    { label: 'Trimestriel', value: PaymentFrequency.TRIMESTRIEL }
-  ];
-  status = [
-    { label: 'Activee', value: SubscriptionStatus.ACTIVE },
-    { label: 'On risk', value: SubscriptionStatus.ON_RISK },
-    { label: 'Resiliee', value: SubscriptionStatus.RESILIE },
-    { label: 'En attente', value: SubscriptionStatus.WAITING }
+  authorities = [
+    { label: 'Assuré', value: Authority.CLIENT },
+    { label: 'Agent', value: Authority.AGENT },
+    { label: 'Administrateur', value: Authority.ADMIN },
+    { label: 'Fournisseur', value: Authority.PROVIDER }
   ];
 
   constructor(
@@ -384,24 +487,22 @@ export class SinistreCrudComponent implements OnInit {
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
-    private service: SinistreService, // Service pour les opérations CRUD génériques
+    private service: AccountCrudService, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'Sinistre';
-    this.componentLink = '/admin/sinistres';
-    this.importLink = '/import-sinistre';
-    this.moduleKey = 'SINISTRE_MODULE';
+    this.entityName = 'Account';
+    this.componentLink = '/admin/accounts';
+    this.importLink = '/import-account';
+    this.moduleKey = 'USERS_MODULE';
     this.isTable = true;
   }
 
   ngOnInit() {
     this.initializeData();
     // Initialise les colonnes de la table
-    //this.loadSouscriptions();
-    //this.loadPrestations();
-    //this.loadDocuments();
+    //this.loadRoles();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -414,44 +515,25 @@ export class SinistreCrudComponent implements OnInit {
   private initializeData(): void {
     this.loading = false;
   }
-
-  // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): void {
-    this.service.getAllSouscriptions().subscribe((souscriptions: Souscription[]) => {
-        this.souscriptions = souscriptions;
-    });
-  }
   
-  // Chargement des polices associés à une sinistre
-  loadPrestations(): void {
-    this.service.getAllPrestations().subscribe((prestations: Prestation[]) => {
-        this.prestations = prestations;
-    });
-  }
-  
-  // Chargement des documents associés à une prestation
-  loadDocuments(): void {
-    this.service.getAllDocuments().subscribe((documents: Document[]) => {
-        this.documents = documents;
+  // Chargement des rôles associés à une account
+  loadRoles(): void {
+    this.service.getAllRoles().subscribe((roles: Rule[]) => {
+        this.roles = roles;
     });
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['numeroSinistre', 'raison', 'dateDeclaration', 'montantSinistre'];
+    return ['fullName', 'email', 'login', 'authorities'];
   }
 
   /**
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('status', this.claimStatuses);
-    this.setColumnValues('souscriptions', this.souscriptions);
-    this.setSubFieldValues('souscriptions', 'status', this.status);
-    this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
-    this.setColumnValues('prestations', this.prestations);
-    this.setSubFieldValues('prestations', 'status', this.prestationStatuses);
-    this.setColumnValues('documents', this.documents);
+    this.setColumnValues('rules', this.roles);
+    this.setSubFieldValues('rules', 'permissions', this.permissions);
   }
   
   /**
@@ -601,7 +683,7 @@ export class SinistreCrudComponent implements OnInit {
   }
 
   // Method to calculate the total number of subscriptions for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Sinistre>): number {
+  protected calculateTotalSubscriptions(branch: EntityByBranch<Account>): number {
     return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
@@ -848,7 +930,7 @@ export class SinistreCrudComponent implements OnInit {
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
-    this.selectedItem = {} as Sinistre; // Initialise un nouvel élément
+    this.selectedItem = {} as Account; // Initialise un nouvel élément
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -859,14 +941,14 @@ export class SinistreCrudComponent implements OnInit {
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Sinistre) {
+  protected editItem(item: Account) {
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
   // Méthode pour supprimer un élément spécifique
-  protected deleteItem(item: Sinistre) {
+  protected deleteItem(item: Account) {
     this.displayDeleteDialog = true; // Affiche le dialogue de suppression d'un élément
     this.selectedItem = { ...item }; // Copie l'élément à supprimer dans la variable item
   }
@@ -889,7 +971,7 @@ export class SinistreCrudComponent implements OnInit {
     this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Sinistre; // Réinitialise l'élément
+      this.selectedItem = {} as Account; // Réinitialise l'élément
     });
   }
 
@@ -912,7 +994,7 @@ export class SinistreCrudComponent implements OnInit {
           this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Sinistre; // Réinitialise l'élément
+          this.selectedItem = {} as Account; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       } else { // Sinon, crée un nouvel élément
@@ -921,7 +1003,7 @@ export class SinistreCrudComponent implements OnInit {
           this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
           this.items = [...this.items]; // Met à jour le tableau d'éléments
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Sinistre; // Réinitialise l'élément
+          this.selectedItem = {} as Account; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
         });
       }

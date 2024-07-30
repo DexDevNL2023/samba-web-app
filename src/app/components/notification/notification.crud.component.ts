@@ -11,7 +11,7 @@ import { Column } from '../../models/column.model';
 import { Notification, TypeNotification } from '../../models/notification.model';
 import { NotificationService } from '../../service/notification.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
-import { Account } from '../../core/auth/account.model';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-notification-crud',
@@ -224,11 +224,11 @@ export class NotificationCrudComponent implements OnInit {
       }
   ];
   accounts: Account[] = [
-    // Compte pour un utilisateur (client)
+    // Compte pour un client
     {
       id: 1,
       activated: true,
-      authorities: ['ROLE_USER'],
+      authorities: ['ROLE_CLIENT'],
       email: 'john.doe@example.com',
       fullName: 'Victor Nlang',
       langKey: 'en',

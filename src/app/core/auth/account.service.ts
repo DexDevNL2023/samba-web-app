@@ -1,5 +1,5 @@
 import { environment } from 'src/environments/environment';
-/* // Importation des modules nécessaires depuis Angular et RxJS
+// Importation des modules nécessaires depuis Angular et RxJS
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -7,12 +7,12 @@ import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 
 // Importation des modèles et services spécifiques
-import { Account } from './account.model';
 import { StateStorageService } from './state-storage.service';
-import { environment } from '../../../environments/environment';
-import { Permission } from '../../models/permission';
+import { Account } from '../../models/account.model';
+import { Permission } from '../../models/permission.model';
+import { Rule } from '../../models/rule.model';
 
-// Déclaration du service injectable et accessible dans la racine de l'application
+/* // Déclaration du service injectable et accessible dans la racine de l'application
 @Injectable({ providedIn: 'root' })
 export class AccountService { 
   // Déclaration d'un signal pour stocker l'identité de l'utilisateur
@@ -139,16 +139,6 @@ export class AccountService {
 
  */
 
-// Importation des modules nécessaires depuis Angular et RxJS
-import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, of } from 'rxjs';
-import { shareReplay, tap, catchError } from 'rxjs/operators';
-
-// Importation des modèles et services spécifiques
-import { Account } from './account.model';
-import { Permission } from '../../models/permission.model';
-import { Rule } from '../../models/rule.model';
-import { HttpClient } from '@angular/common/http';
 
 // Exemple de permissions
 const readPermission: Permission = {
@@ -195,17 +185,17 @@ const userRule: Rule = {
 };
 
 // Exemple de données pour initialiser un compte
-const exampleAccount = new Account(
-  1, // id
-  true, // activated
-  ['ROLE_ADMINISTRATOR'], // authorities
-  'victor.nlang@teleo.com', // email
-  'Victor Nlang', // fullName
-  'en', // langKey
-  'victor.nlang', // login
-  '', // imageUrl
-  [adminRule, userRule] // rules
-);
+const exampleAccount = {
+  id: 1, // id
+  activated: true, // activated
+  authorities: ['ROLE_ADMIN'], // authorities
+  email: 'victor.nlang@teleo.com', // email
+  fullName: 'Victor Nlang', // fullName
+  langKey: 'en', // langKey
+  login: 'victor.nlang', // login
+  imageUrl: '', // imageUrl
+  rules: [adminRule, userRule] // rules
+};
 
 // Déclaration du service injectable et accessible dans la racine de l'application
 @Injectable({ providedIn: 'root' })

@@ -836,7 +836,7 @@ export class SouscriptionCrudComponent implements OnInit {
     this.entityName = 'Souscription';
     this.componentLink = '/admin/souscriptions';
     this.importLink = '/import-souscription';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.moduleKey = 'SUBSCRIPTION_MODULE';
     this.isTable = true;
   }
 

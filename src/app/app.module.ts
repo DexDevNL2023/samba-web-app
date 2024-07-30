@@ -156,6 +156,8 @@ import { PrestationCrudComponent } from './components/prestation/prestation.crud
 import { ReclamationCrudComponent } from './components/reclamation/reclamation.crud.component';
 import { SinistreCrudComponent } from './components/sinistre/sinistre.crud.component';
 import { SouscriptionCrudComponent } from './components/souscription/souscription.crud.component';
+import { AccountCrudService } from './service/account.crud.service';
+import { AccountCrudComponent } from './components/account/account.crud.component';
 
 @NgModule({
     imports: [
@@ -264,6 +266,7 @@ import { SouscriptionCrudComponent } from './components/souscription/souscriptio
         SettingsComponent,
         ProfilComponent,
         AppBreadcrumbComponent,
+        AccountCrudComponent,
         AssuranceCrudComponent,
         AssureCrudComponent,
         BrancheCrudComponent,
@@ -286,7 +289,7 @@ import { SouscriptionCrudComponent } from './components/souscription/souscriptio
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentService, UserRouteAccessService,
         FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
-        NotificationService, PaiementService, PoliceAssuranceService, PrestationService, 
+        NotificationService, PaiementService, PoliceAssuranceService, PrestationService, AccountCrudService,
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
         RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,

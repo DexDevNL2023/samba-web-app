@@ -3,9 +3,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { PasswordService } from './password.service';
-import { Account } from '../../core/auth/account.model';
 import { AccountService } from '../../core/auth/account.service';
 import { AppMainComponent } from '../../app.main.component';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-password',

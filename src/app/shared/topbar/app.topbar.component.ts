@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { NotificationService } from '../../service/notification.service';
-import { Account } from '../../core/auth/account.model';
 import { Notification, TypeNotification } from '../../models/notification.model';
 import { LoginService } from '../../login/login.service';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-topbar',

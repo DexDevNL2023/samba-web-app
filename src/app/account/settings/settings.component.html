@@ -10,7 +10,7 @@
       <form name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
         
         <!-- Default User Form Fields -->
-        <div *ngIf="hasAuthority(['ROLE_AGENT', 'ROLE_ADMINISTRATOR'])">
+        <div *ngIf="hasAuthority(['ROLE_AGENT', 'ROLE_ADMIN'])">
           <div class="mb-4">
             <label for="fullName" class="block font-normal text-900 mb-2">Nom complet</label>
             <input
@@ -45,7 +45,7 @@
             ></p-dropdown>
           </div>
 
-          <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+          <div *ngIf="hasAuthority(['ROLE_ADMIN'])" class="mb-4">
             <label for="activated" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
             <p-checkbox
               id="activated"
@@ -57,7 +57,7 @@
             ></p-checkbox>
           </div>
 
-          <div *ngIf="hasAuthority(['ROLE_ADMINISTRATOR'])" class="mb-4">
+          <div *ngIf="hasAuthority(['ROLE_ADMIN'])" class="mb-4">
             <label for="authorities" class="block font-normal text-900 mb-2">Rôles</label>
             <p-multiSelect
               id="authorities"

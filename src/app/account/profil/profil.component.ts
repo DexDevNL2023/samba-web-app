@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../core/auth/account.service';
-import { Account } from '../../core/auth/account.model';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from 'src/app/app.main.component';
 import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
 import { UserData } from '../../models/user-data.model';
 import { AssureService } from '../../service/assure.service';
+import { Account } from '../../models/account.model';
 
 @Component({
   selector: 'app-profil',
@@ -100,7 +100,7 @@ export class ProfilComponent implements OnInit{
     }
 
     updatePermission(id: number, event: any){
-      if(this.hasAuthority(['ROLE_ADMINISTRATOR'])) {
+      if(this.hasAuthority(['ROLE_ADMIN'])) {
         this.form = new FormGroup({
           "id": new FormControl(id),
           "haveAccess": new FormControl(event.checked, [Validators.required]),

@@ -51,7 +51,7 @@ export class AssuranceCrudComponent implements OnInit {
     { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], label: 'numeroPolice', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPolice', header: 'Num Police', type: 'text' },
-        { field: 'label', header: 'Libelle', type: 'text' },
+        { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'montantSouscription', header: 'Coût', type: 'currency' }
       ]
     }

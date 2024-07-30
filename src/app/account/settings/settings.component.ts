@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Authority } from '../../config/authority.constants';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
-import { Account } from '../../core/auth/account.model';
+import { Account, Authority } from '../../models/account.model';
 
 @Component({
   selector: 'app-settings',
@@ -43,10 +42,10 @@ export default class SettingsComponent implements OnInit {
     { label: 'Other', value: 'OTHER' }
   ];
   authorities = [
-    { label: 'Client', value: Authority.CLIENT },
+    { label: 'Assuré', value: Authority.CLIENT },
     { label: 'Agent', value: Authority.AGENT },
-    { label: 'Administrator', value: Authority.ADMINISTRATOR },
-    { label: 'Provider', value: Authority.PROVIDER }
+    { label: 'Administrateur', value: Authority.ADMIN },
+    { label: 'Fournisseur', value: Authority.PROVIDER }
   ];
   selectedAuthorities: string[] = [];
   imageUrlPreview: string | ArrayBuffer | null = null;
