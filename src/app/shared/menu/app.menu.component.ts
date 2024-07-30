@@ -59,7 +59,7 @@ export class AppMenuComponent implements OnInit {
         
         // Menu pour l'Agent :
         this.agentMenu = [
-            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] },
+            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
@@ -93,7 +93,7 @@ export class AppMenuComponent implements OnInit {
          
         // Menu pour l'Administrateur :
         this.adminMenu = [
-            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] },
+            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
