@@ -55,7 +55,7 @@ import { SouscriptionCrudComponent } from './components/souscription/souscriptio
                     { path: 'sinistres', component: SinistreCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'souscriptions', component: SouscriptionCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
 
-                    { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
+                    { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     

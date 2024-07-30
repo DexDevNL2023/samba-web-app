@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
         { title: 'Souscriptions', stats: 1150, details: '+25% depuis la semaine dernière', icon:'pi pi-shield' },
         { title: 'Sinistres', stats: 320, details: '+10% depuis la semaine dernière', icon:'pi-exclamation-triangle' },
         { title: 'Réclamations', stats: 98, details: '+5% depuis la semaine dernière', icon:'pi pi-id-card' },
-        { title: 'Ploices d\'assurances', stats: 1260, details: '+20% depuis la semaine dernière', icon:'pi pi-credit-card' },
+        { title: 'Polices d\'assurances', stats: 1260, details: '+20% depuis la semaine dernière', icon:'pi pi-credit-card' },
         { title: 'Partenaires', stats: 25, details: '+5% depuis la semaine dernière', icon:'pi pi-sitemap' },
         { title: 'Prestations de Soins', stats: 1500, details: '+30% depuis la semaine dernière', icon:'pi pi-heart' },
         { title: 'Dossiers Médicaux', stats: 534, details: '+12% depuis la semaine dernière', icon:'pi pi-folder-open' }

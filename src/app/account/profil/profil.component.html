@@ -70,7 +70,7 @@
                 </p-tabPanel>
 
                 <!-- Ajouter des onglets pour registrant, dossiers, et souscriptions -->
-                <p-tabPanel header="Registrant" *ngIf="data?.registrant">
+                <p-tabPanel header="Registrant" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.registrant">
                     <div class="p-3">
                         <label class="block font-normal text-900 mb-2">Registrant No: {{ data.registrant.numeroRegistrant }}</label>
                         <p>Branche: {{ data.registrant.branche.ville }}</p>
@@ -78,7 +78,7 @@
                     </div>
                 </p-tabPanel>
 
-                <p-tabPanel header="Dossiers" *ngIf="data?.dossiers?.length">
+                <p-tabPanel header="Dossiers" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.dossiers?.length">
                     <p-table [value]="data.dossiers" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>
@@ -95,7 +95,7 @@
                     </p-table>
                 </p-tabPanel>
 
-                <p-tabPanel header="Souscriptions" *ngIf="data?.souscriptions?.length">
+                <p-tabPanel header="Souscriptions" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.souscriptions?.length">
                     <p-table [value]="data.souscriptions" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { AccountService } from '../core/auth/account.service';
 import { LoginService } from './login.service';
+import { Login } from './login.model';
 
 @Component({
   selector: 'app-login',
@@ -84,7 +85,28 @@ export default class LoginComponent implements OnInit, AfterViewInit {
       error: () => {
         this.authenticationError = true;
       }
-    }); */
+    }); */ 
+
+    // Récupère les valeurs du formulaire
+    const credentials: Login = this.loginForm.getRawValue();
+    
+    // Change les authorities de l'utilisateur en fonction du nom d'utilisateur
+    switch (credentials.username) {
+      case 'admin':
+        this.accountService.changeAuthorities(['ROLE_ADMIN']);
+        break;
+      case 'agent':
+        this.accountService.changeAuthorities(['ROLE_AGENT']);
+        break;
+      case 'provider':
+        this.accountService.changeAuthorities(['ROLE_PROVIDER']);
+        break;
+      default:
+        this.accountService.changeAuthorities(['ROLE_CLIENT']);
+        break;
+    }
+
+    // Redirige l'utilisateur vers la page /admin
     this.router.navigate(['/admin']);
   }
 }

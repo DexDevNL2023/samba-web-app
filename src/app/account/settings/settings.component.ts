@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { Account, Authority } from '../../models/account.model';
+import { Gender } from '../../models/assure.model';
 
 @Component({
   selector: 'app-settings',
@@ -13,23 +14,32 @@ export default class SettingsComponent implements OnInit {
   settingsForm: FormGroup; // Formulaire de paramètres utilisateur
   user: any | null = {
     id: 1,
-    numNiu: '123456789',
+    // Champ commun
+    email: 'victor.nlang@teleo.com',
+    telephone: '1234567890',
+
+    // Admin et agent
     activated: true,
+    authorities: ['ROLE_CLIENT'],
+    fullName: 'Victor Nlang',
     langKey: 'en',
-    imageUrl: 'https://example.com/profile.jpg',
-    login: 'johndoe',
-    lastName: 'Doe',
-    firstName: 'John',
-    email: 'johndoe@example.com',
-    dateNaissance: new Date('1990-01-01'),
-    numCni: 'CNI123456',
-    sexe: 'MALE',
-    telephone: '+1234567890',
-    addresse: '123 Main St, Yaoundé - Cameroun',
-    ville: 'Sample City',
-    pays: 'Sample Country',
-    authorities: [Authority.CLIENT],
-    signature: 'https://example.com/signature.jpg'
+    login: 'victor.nlang',
+    imageUrl: '',
+
+    // Client
+      numNiu: 'NIU123456789',
+      lastName: 'Doe',
+      firstName: 'John',
+      dateNaissance: new Date('1985-01-15'),
+      numCni: 'CNI12345678',
+      sexe: Gender.MALE,
+      addresse: '123 Main St, Douala',
+      signature: 'john_doe_signature.png',
+
+    // Provider
+      nom: 'Clinique Santé Plus',
+      adresse: '123 Rue de la Santé, Libreville - Gabon',
+      servicesFournis: 'Consultations, Soins Paramédicaux'
   }; // Utilisateur actuel
   currentYear: number = new Date().getFullYear();
   languages = [
@@ -65,26 +75,23 @@ export default class SettingsComponent implements OnInit {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
     this.accountService.identity().subscribe(account => {
       this.account = account;
-      this.selectedAuthorities = this.account.authorities || [];
+      this.selectedAuthorities = this.account.authorities;
       if (this.account) {
         const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
           this.accountService.findUser(userId).subscribe((user: any) => {
             this.user = user;
-            this.rebuildFormBasedOnAuthorities();
-            this.settingsForm.patchValue(this.user);
           });
         }
       }
     });
-    this.settingsForm.patchValue(this.user); // Remplir le formulaire avec les données de l'utilisateur
+    // Remplir le formulaire avec les données de l'utilisateur
+    this.rebuildFormBasedOnAuthorities();
+    this.settingsForm.patchValue(this.user);
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
   }
 
   private rebuildFormBasedOnAuthorities(): void {
-    // Réinitialiser le formulaire
-    this.settingsForm = this.formBuilder.group({});
-
     if (this.account?.authorities.includes(Authority.PROVIDER)) {
       this.buildProviderForm();
     } else if (this.account?.authorities.includes(Authority.CLIENT)) {
@@ -178,6 +185,6 @@ export default class SettingsComponent implements OnInit {
   }
 
   hasAuthority(authorities: string[]): boolean {
-    return this.user.authorities?.some(auth => authorities.includes(auth)) || false;
+    return this.account.authorities?.some(auth => authorities.includes(auth)) || false;
   }
 }

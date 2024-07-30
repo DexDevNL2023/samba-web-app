@@ -135,6 +135,14 @@ export class AccountService {
     // Effectue une requête PUT et mappe la réponse pour convertir les dates du serveur.
     return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
   }
+
+  // Nouvelle méthode pour changer les authorities
+  changeAuthorities(newAuthorities: string[]): void {
+    if (this.userIdentity) {
+      this.userIdentity.authorities = newAuthorities;
+      this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
+    }
+  }
 }
 
  */
@@ -188,7 +196,7 @@ const userRule: Rule = {
 const exampleAccount = {
   id: 1, // id
   activated: true, // activated
-  authorities: ['ROLE_ADMIN'], // authorities
+  authorities: ['ROLE_CLIENT'], // authorities
   email: 'victor.nlang@teleo.com', // email
   fullName: 'Victor Nlang', // fullName
   langKey: 'en', // langKey
@@ -299,6 +307,14 @@ export class AccountService {
   updateUser(userId: number, user: any): Observable<any> {
     // Effectue une requête PUT et mappe la réponse pour convertir les dates du serveur.
     return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
+  }
+
+  // Nouvelle méthode pour changer les authorities
+  changeAuthorities(newAuthorities: string[]): void {
+    if (this.userIdentity) {
+      this.userIdentity.authorities = newAuthorities;
+      this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
+    }
   }
 }
 
