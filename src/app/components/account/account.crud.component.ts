@@ -72,7 +72,7 @@ export class AccountCrudComponent implements OnInit {
       fullName: 'Victor Nlang',
       langKey: 'en',
       login: 'victor.nlang',
-      imageUrl: 'https://example.com/image1.jpg',
+      imageUrl: 'assets/demo/images/avatar/amyelsner.png',
       ruleIds: [39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
     },
     
@@ -85,7 +85,7 @@ export class AccountCrudComponent implements OnInit {
       fullName: 'Jane Smith',
       langKey: 'fr',
       login: 'jane.smith',
-      imageUrl: 'https://example.com/image2.jpg',
+      imageUrl: 'assets/demo/images/avatar/annafali.png',
       ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
     },
     {
@@ -96,7 +96,7 @@ export class AccountCrudComponent implements OnInit {
       fullName: 'John Doe',
       langKey: 'en',
       login: 'john.doe',
-      imageUrl: 'https://example.com/image1.jpg',
+      imageUrl: 'assets/demo/images/avatar/asiyajavayant.png',
       ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
     },
     
@@ -109,7 +109,7 @@ export class AccountCrudComponent implements OnInit {
       fullName: 'SAMB\'A Assurances Gabon S.A',
       langKey: 'en',
       login: 'admin.samba',
-      imageUrl: 'https://example.com/image3.jpg',
+      imageUrl: 'assets/demo/images/avatar/bernardodominic.png',
       ruleIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     },
     
@@ -122,7 +122,7 @@ export class AccountCrudComponent implements OnInit {
       fullName: 'Care Provider',
       langKey: 'fr',
       login: 'care.provider',
-      imageUrl: 'https://example.com/image4.jpg',
+      imageUrl: 'assets/demo/images/avatar/elwinsharvill.png',
       ruleIds: [20, 21, 22, 23, 24, 25, 26]
     }
   ];

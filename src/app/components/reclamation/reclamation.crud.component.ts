@@ -327,9 +327,9 @@ export class ReclamationCrudComponent implements OnInit {
   protected assignColumnValues(): void { // Ajoutez le modificateur override
     this.setColumnValues('type', this.typeReclamations);
     this.setColumnValues('status', this.statutReclamations);
-    this.setColumnValues('souscriptions', this.souscriptions);
-    this.setSubFieldValues('souscriptions', 'status', this.status);
-    this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
+    this.setColumnValues('souscription', this.souscriptions);
+    this.setSubFieldValues('souscription', 'status', this.status);
+    this.setSubFieldValues('souscription', 'frequencePaiement', this.frequencies);
   }
   
   /**

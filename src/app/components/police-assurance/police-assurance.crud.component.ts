@@ -431,7 +431,9 @@ export class PoliceAssuranceCrudComponent implements OnInit {
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
+    this.setColumnValues('assurance', this.assurances);
     this.setSubFieldValues('assurance', 'type', this.insuranceTypes);
+    this.setColumnValues('garanties', this.garanties);
     this.setSubFieldValues('garanties', 'status', this.garantieStatus);
     this.setColumnValues('souscriptions', this.souscriptions);
     this.setSubFieldValues('souscriptions', 'status', this.status);

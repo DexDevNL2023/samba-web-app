@@ -61,6 +61,7 @@ export class AssureCrudComponent implements OnInit {
     { field: 'signature', header: 'Signature', type: 'image' },
     { field: 'registrant', header: 'Registrant', type: 'objet', values: [], label: 'numeroRegistrant', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
         { field: 'branche', header: 'Branche', type: 'objet', values: [], label: 'ville', key: 'id' },
         { field: 'partenaire', header: 'Partenaire', type: 'objet', values: [], label: 'nom', key: 'id' }
       ]

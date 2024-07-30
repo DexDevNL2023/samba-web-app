@@ -348,8 +348,8 @@ export class NotificationCrudComponent implements OnInit {
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
     this.setColumnValues('type', this.notificationTypes);
-    this.setColumnValues('polices', this.accounts);
-    this.setColumnValues('polices', this.accounts);
+    this.setColumnValues('destinataire', this.accounts);
+    this.setColumnValues('emetteur', this.accounts);
   }
   
   /**

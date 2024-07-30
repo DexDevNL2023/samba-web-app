@@ -446,7 +446,7 @@
         
                             <!-- Image -->
                             <img *ngSwitchCase="'image'" [src]="selectedItemView?.data[col.field]"
-                                [alt]="selectedItemView?.data[col.altField]" width="100" class="shadow-4" />
+                                [alt]="selectedItemView?.data[col.field]" width="100" class="shadow-4" />
         
                             <!-- Enum -->
                             <p-tag *ngSwitchCase="'enum'" [value]="getEnumLabel(col.values, selectedItemView?.data[col.field])"
@@ -465,6 +465,16 @@
                             <p-panel *ngSwitchCase="'textarea'" header="{{ col.header }}" [toggleable]="true">
                                 <p>{{ selectedItemView?.data[col.field] }}</p>
                             </p-panel>
+
+							<p-dropdown *ngSwitchCase="'objet'" [options]="col.values" 
+								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
+								optionValue="{{ col.key }}" [showClear]="true" appendTo="body" />
+
+							<p-multiSelect *ngSwitchCase="'list'" [options]="col.values" 
+								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}" 
+								optionValue="{{ col.key }}" [showClear]="true"
+								appendTo="body" [style]="{'width':'100%'}"
+								[panelStyle]="{'max-height':'200px'}"></p-multiSelect>
                         </ng-container>
                     </div>
                 </ng-template>

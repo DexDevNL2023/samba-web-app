@@ -446,9 +446,9 @@ export class SinistreCrudComponent implements OnInit {
    */
   protected assignColumnValues(): void { // Ajoutez le modificateur override
     this.setColumnValues('status', this.claimStatuses);
-    this.setColumnValues('souscriptions', this.souscriptions);
-    this.setSubFieldValues('souscriptions', 'status', this.status);
-    this.setSubFieldValues('souscriptions', 'frequencePaiement', this.frequencies);
+    this.setColumnValues('souscription', this.souscriptions);
+    this.setSubFieldValues('souscription', 'status', this.status);
+    this.setSubFieldValues('souscription', 'frequencePaiement', this.frequencies);
     this.setColumnValues('prestations', this.prestations);
     this.setSubFieldValues('prestations', 'status', this.prestationStatuses);
     this.setColumnValues('documents', this.documents);
