@@ -35,7 +35,7 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/contras/assurances'] }
+                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contras/assurances'] }
                 ]
             },
             {
@@ -70,7 +70,7 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/contras/assurances'] }
+                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contras/assurances'] }
                 ]
             },
             {
@@ -105,7 +105,7 @@ export class AppMenuComponent implements OnInit {
                     { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
                     { moduleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
                     { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-clipboard', routerLink: ['/admin/contras/assurances'] }
+                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contras/assurances'] }
                 ]
             },
             {
