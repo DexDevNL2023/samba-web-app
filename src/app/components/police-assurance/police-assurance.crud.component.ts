@@ -375,7 +375,7 @@ export class PoliceAssuranceCrudComponent implements OnInit {
   ) {
     // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
     this.formGroup = this.fb.group(this.createFormControls());
-    this.entityName = 'PoliceAssurance';
+    this.entityName = 'Police d\'assurance';
     this.componentLink = '/admin/polices/assurances';
     this.importLink = '/import-police-assurance';
     this.moduleKey = 'POLICE_ASSURANCE_MODULE';

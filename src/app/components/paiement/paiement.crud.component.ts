@@ -8,7 +8,7 @@ import { EntityByBranch } from '../../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../../models/column.model';
-import { Paiement, PaymentStatus, PaymentType } from '../../models/paiement.model';
+import { Paiement, PaymentStatus, PaymentType, RecuPaiement } from '../../models/paiement.model';
 import { PaiementService } from '../../service/paiement.service';
 import { PortraitComponent } from '../../shared/portrait/portrait.demo.component';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
@@ -51,12 +51,20 @@ export class PaiementCrudComponent implements OnInit {
     { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
     { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
     { field: 'souscription', header: 'Souscription', type: 'objet', values: [], label: 'numeroSouscription', key: 'id', subfield: [
-      { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
-      { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
-      { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-      { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-      { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+        { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
+        { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
+        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
+      ]
+    },
+    { field: 'recuPaiement', header: 'Reçu du paiement', type: 'objet', values: [], label: 'numeroRecu', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroRecu', header: 'Num Reçu', type: 'text' },
+        { field: 'dateEmission', header: 'Date d\'émission', type: 'date' },
+        { field: 'montant', header: 'Montant', type: 'currency' },
+        { field: 'details', header: 'Détails', type: 'textarea' }
       ]
     }
   ];
@@ -70,7 +78,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 60000,
       type: PaymentType.PRIME,
       status: PaymentStatus.COMPLETED,
-      souscription: 3
+      souscription: 3,
+      recuPaiement: 1
     },
     {
       id: 2,
@@ -79,7 +88,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 70000,
       type: PaymentType.PRIME,
       status: PaymentStatus.PENDING,
-      souscription: 2
+      souscription: 2,
+      recuPaiement: 2
     },
   
     // Paiements pour Assurance Automobile
@@ -90,7 +100,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 25000,
       type: PaymentType.REMBOURSEMENT,
       status: PaymentStatus.COMPLETED,
-      souscription: 4
+      souscription: 4,
+      recuPaiement: 3
     },
     {
       id: 4,
@@ -99,7 +110,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 35000,
       type: PaymentType.REMBOURSEMENT,
       status: PaymentStatus.FAILED,
-      souscription: 1
+      souscription: 1,
+      recuPaiement: 4
     },
   
     // Paiements pour Assurance Agricole
@@ -110,7 +122,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 40000,
       type: PaymentType.PRESTATION,
       status: PaymentStatus.COMPLETED,
-      souscription: 1
+      souscription: 1,
+      recuPaiement: 5
     },
     {
       id: 6,
@@ -119,7 +132,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 50000,
       type: PaymentType.PRESTATION,
       status: PaymentStatus.PENDING,
-      souscription: 3
+      souscription: 3,
+      recuPaiement: 6
     },
   
     // Paiements pour Assurance Vie
@@ -130,7 +144,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 200000,
       type: PaymentType.PRIME,
       status: PaymentStatus.COMPLETED,
-      souscription: 2
+      souscription: 2,
+      recuPaiement: 6
     },
     {
       id: 8,
@@ -139,7 +154,8 @@ export class PaiementCrudComponent implements OnInit {
       montant: 120000,
       type: PaymentType.PRIME,
       status: PaymentStatus.PENDING,
-      souscription: 4
+      souscription: 4,
+      recuPaiement: 3
     }
   ]; 
   branches: EntityByBranch<Paiement>[] = [
@@ -212,6 +228,56 @@ export class PaiementCrudComponent implements OnInit {
       sinistres: [4]
     }
   ];
+  recuPaiements: RecuPaiement[] = [
+    // Prime de souscription
+    {
+      id: 1,
+      numeroRecu: 'PR123456',
+      dateEmission: new Date('2024-07-31'),
+      montant: 50.00,
+      details: "Paiement de la prime d'assurance pour le mois de juillet 2024, souscription n° 78910"
+    },
+    // Remboursement de frais médicaux
+    {
+      id: 2,
+      numeroRecu: 'RM654321',
+      dateEmission: new Date('2024-07-30'),
+      montant: 150.00,
+      details: "Remboursement pour frais médicaux après sinistre, souscription n° 12345"
+    },
+    // Prestation d'expertise
+    {
+      id: 3,
+      numeroRecu: 'PRM789012',
+      dateEmission: new Date('2024-07-29'),
+      montant: 200.00,
+      details: "Paiement pour la prestation d'expertise liée à une demande de sinistre, souscription n° 56789"
+    },
+    // Prime de renouvellement
+    {
+      id: 4,
+      numeroRecu: 'PR987654',
+      dateEmission: new Date('2024-06-15'),
+      montant: 75.00,
+      details: "Renouvellement de la prime d'assurance pour le trimestre de juillet à septembre 2024, souscription n° 34567"
+    },
+    // Remboursement pour pertes matérielles
+    {
+      id: 5,
+      numeroRecu: 'RM432109',
+      dateEmission: new Date('2024-07-10'),
+      montant: 300.00,
+      details: "Remboursement pour pertes matérielles dues à un incendie, souscription n° 67890"
+    },
+    // Prestation d'assistance juridique
+    {
+      id: 6,
+      numeroRecu: 'PRM210987',
+      dateEmission: new Date('2024-07-05'),
+      montant: 120.00,
+      details: "Paiement pour la prestation d'assistance juridique liée à un litige, souscription n° 23456"
+    }
+  ];  
   
   // Liste pour Gender
   paymentTypes = [
@@ -258,6 +324,7 @@ export class PaiementCrudComponent implements OnInit {
     this.initializeData();
     // Initialise les colonnes de la table
     //this.loadSouscriptions();
+    //this.loadRecuPaiements();
     this.assignColumnValues();
     this.getRequiredFields();
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
@@ -278,6 +345,13 @@ export class PaiementCrudComponent implements OnInit {
     });
   }
 
+  // Chargement des reçu de paiement associés à une assure
+  loadRecuPaiements(): void {
+    this.service.getAllRecuPaiements().subscribe((recuPaiements: RecuPaiement[]) => {
+        this.recuPaiements = recuPaiements;
+    });
+  }
+
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['numeroPaiement', 'montant'];
@@ -292,6 +366,7 @@ export class PaiementCrudComponent implements OnInit {
     this.setColumnValues('souscription', this.souscriptions);
     this.setSubFieldValues('souscription', 'status', this.status);
     this.setSubFieldValues('souscription', 'frequencePaiement', this.frequencies);
+    this.setColumnValues('recuPaiement', this.recuPaiements);
   }
   
   /**

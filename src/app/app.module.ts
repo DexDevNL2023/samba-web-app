@@ -158,6 +158,8 @@ import { SinistreCrudComponent } from './components/sinistre/sinistre.crud.compo
 import { SouscriptionCrudComponent } from './components/souscription/souscription.crud.component';
 import { AccountCrudService } from './service/account.crud.service';
 import { AccountCrudComponent } from './components/account/account.crud.component';
+import { ContratAssuranceService } from './service/contrat-assurance.service';
+import { ContratAssuranceCrudComponent } from './components/contrat-assurance/contrat-assurance.crud.component';
 
 @NgModule({
     imports: [
@@ -270,6 +272,7 @@ import { AccountCrudComponent } from './components/account/account.crud.componen
         AssuranceCrudComponent,
         AssureCrudComponent,
         BrancheCrudComponent,
+        ContratAssuranceCrudComponent,
         DocumentCrudComponent,
         DossierMedicalCrudComponent,
         FinanceurCrudComponent,
@@ -293,6 +296,7 @@ import { AccountCrudComponent } from './components/account/account.crud.componen
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
         RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,
+        ContratAssuranceService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,

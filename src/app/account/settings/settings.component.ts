@@ -75,7 +75,9 @@ export default class SettingsComponent implements OnInit {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
     this.accountService.identity().subscribe(account => {
       this.account = account;
+      console.log(this.account.authorities);
       this.selectedAuthorities = this.account.authorities;
+      console.log(this.selectedAuthorities);
       if (this.account) {
         const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
@@ -155,7 +157,9 @@ export default class SettingsComponent implements OnInit {
       // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
       this.accountService.identity().subscribe(account => {
         this.account = account;
-        this.selectedAuthorities = this.account.authorities || [];
+        console.log(this.account.authorities);
+        this.selectedAuthorities = this.account.authorities;
+        console.log(this.selectedAuthorities);
         if (this.account) {
           const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
           if (userId) {

@@ -11,7 +11,14 @@ export enum PaymentStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED'
 }
- 
+
+export interface RecuPaiement extends BaseEntity {
+  numeroRecu: string;        // Identifiant unique du reçu
+  dateEmission: Date;        // Date d'émission du reçu
+  montant: number;           // Montant payé
+  details: string;           // Détails supplémentaires sur le paiement
+}
+
 export interface Paiement extends BaseEntity {
   numeroPaiement?: string | null;
   datePaiement?: Date | null;
@@ -19,4 +26,5 @@ export interface Paiement extends BaseEntity {
   type?: keyof typeof PaymentType | null;
   status?: keyof typeof PaymentStatus | null;
   souscription?: number | null;
+  recuPaiement?: number | null;
 }
