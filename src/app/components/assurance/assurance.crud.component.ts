@@ -113,12 +113,12 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
   ];
 
   constructor(
+    appMain: AppMainComponent,
     messageService: MessageService,
     baseService: BaseService,
     accountService: AccountService,
-    fb: FormBuilder, // Service pour construire des formulaires
-    private assuranceService: AssuranceService, // Service pour les opérations CRUD génériques
-    appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
+    fb: FormBuilder,
+    private assuranceService: AssuranceService
   ) {
     super(messageService, baseService, accountService, fb, assuranceService, appMain);
     this.entityName = 'Assurance';
@@ -126,26 +126,6 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     this.importLink = '/import-assurance';
     this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
-  }
-
-  // Chargement des polices associés à une assurance
-  loadPolices(): void {
-    this.assuranceService.getAllPolices().subscribe((polices: PoliceAssurance[]) => {
-        this.polices = polices;
-    });
-  }
-
-  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
-  protected getRequiredFields(): string[] {
-    return ['nom', 'type'];
-  }
-
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected assignColumnsValues(): void {
-    this.setColumnValues('type', this.insuranceTypes);
-    this.setColumnValues('polices', this.polices);
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -255,5 +235,25 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     ];
     this.loadPolices();
     this.loading = false;
+  }
+
+  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
+  protected getRequiredFields(): string[] {
+    return ['nom', 'type'];
+  }
+
+  /**
+   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
+   */
+  protected assignColumnsValues(): void {
+    this.setColumnValues('type', this.insuranceTypes);
+    this.setColumnValues('polices', this.polices);
+  }
+
+  // Chargement des polices associés à une assurance
+  loadPolices(): void {
+    this.assuranceService.getAllPolices().subscribe((polices: PoliceAssurance[]) => {
+        this.polices = polices;
+    });
   }
 }
