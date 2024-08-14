@@ -100,7 +100,7 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     super(messageService, baseService, accountService, fb, reclamationService, appMain);
     this.entityName = 'Reclamation';
     this.componentLink = '/admin/reclamations';
-    this.importLink = '/import-reclamation';
+    this.importLink = '/import/reclamations';
     this.moduleKey = 'RECLAMATION_MODULE';
     this.isTable = true;
   }

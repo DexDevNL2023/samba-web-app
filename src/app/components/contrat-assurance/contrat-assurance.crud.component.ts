@@ -31,8 +31,8 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
   ) {
     super(messageService, baseService, accountService, fb, contratAssuranceService, appMain);
     this.entityName = 'Contrat d\'assurance';
-    this.componentLink = '/admin/contras/assurances';
-    this.importLink = '/import-contrat-assurance';
+    this.componentLink = '/admin/contrats/assurances';
+    this.importLink = '/import/contrats/assurances';
     this.moduleKey = 'CONTRAT_MODULE';
     this.isTable = true;
   }

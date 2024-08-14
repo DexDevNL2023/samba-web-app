@@ -206,7 +206,7 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
     super(messageService, baseService, accountService, fb, policeAssuranceService, appMain);
     this.entityName = 'Police d\'assurance';
     this.componentLink = '/admin/polices/assurances';
-    this.importLink = '/import-police-assurance';
+    this.importLink = '/import/polices/assurances';
     this.moduleKey = 'POLICE_ASSURANCE_MODULE';
     this.isTable = true;
   }

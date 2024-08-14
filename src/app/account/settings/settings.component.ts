@@ -17,9 +17,10 @@ export default class SettingsComponent implements OnInit {
     // Champ commun
     email: 'victor.nlang@teleo.com',
     telephone: '1234567890',
+    adresse: '123 Rue de la Santé, Libreville - Gabon',
 
     // Admin et agent
-    activated: true,
+    actived: true,
     authorities: ['ROLE_CLIENT'],
     fullName: 'Victor Nlang',
     langKey: 'en',
@@ -27,19 +28,17 @@ export default class SettingsComponent implements OnInit {
     imageUrl: '',
 
     // Client
-      numNiu: 'NIU123456789',
-      lastName: 'Doe',
-      firstName: 'John',
-      dateNaissance: new Date('1985-01-15'),
-      numCni: 'CNI12345678',
-      sexe: Gender.MALE,
-      addresse: '123 Main St, Douala',
-      signature: 'john_doe_signature.png',
+    numNiu: 'NIU123456789',
+    lastName: 'Doe',
+    firstName: 'John',
+    dateNaissance: new Date('1985-01-15'),
+    numCni: 'CNI12345678',
+    sexe: Gender.MALE,
+    signature: 'john_doe_signature.png',
 
     // Provider
-      nom: 'Clinique Santé Plus',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux'
+    nom: 'Clinique Santé Plus',
+    servicesFournis: 'Consultations, Soins Paramédicaux'
   }; // Utilisateur actuel
   currentYear: number = new Date().getFullYear();
   languages = [
@@ -121,7 +120,7 @@ export default class SettingsComponent implements OnInit {
     this.settingsForm.addControl('numCni', this.formBuilder.control('', Validators.required));
     this.settingsForm.addControl('sexe', this.formBuilder.control(''));
     this.settingsForm.addControl('telephone', this.formBuilder.control('', Validators.required));
-    this.settingsForm.addControl('addresse', this.formBuilder.control(''));
+    this.settingsForm.addControl('adresse', this.formBuilder.control(''));
     this.settingsForm.addControl('signature', this.formBuilder.control(''));
     this.settingsForm.addControl('dossiers', this.formBuilder.control([]));
   }
@@ -130,7 +129,7 @@ export default class SettingsComponent implements OnInit {
     this.settingsForm.addControl('fullName', this.formBuilder.control('', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]));
     this.settingsForm.addControl('email', this.formBuilder.control('', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(254)]));
     this.settingsForm.addControl('langKey', this.formBuilder.control('', Validators.required));
-    this.settingsForm.addControl('activated', this.formBuilder.control(false, Validators.required));
+    this.settingsForm.addControl('actived', this.formBuilder.control(false, Validators.required));
     this.settingsForm.addControl('authorities', this.formBuilder.control([]));
     this.settingsForm.addControl('imageUrl', this.formBuilder.control(''));
     this.settingsForm.addControl('login', this.formBuilder.control(''));

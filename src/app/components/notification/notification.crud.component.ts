@@ -18,7 +18,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     // Compte pour un client
     {
       id: 1,
-      activated: true,
+      actived: true,
       authorities: ['ROLE_CLIENT'],
       email: 'john.doe@example.com',
       fullName: 'Victor Nlang',
@@ -31,7 +31,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     // Compte pour un agent
     {
       id: 2,
-      activated: true,
+      actived: true,
       authorities: ['ROLE_AGENT'],
       email: 'jane.smith@example.com',
       fullName: 'Jane Smith',
@@ -42,7 +42,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     },
     {
       id: 3,
-      activated: true,
+      actived: true,
       authorities: ['ROLE_AGENT'],
       email: 'john.doe@example.com',
       fullName: 'John Doe',
@@ -55,7 +55,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     // Compte pour un administrateur
     {
       id: 4,
-      activated: true,
+      actived: true,
       authorities: ['ROLE_ADMIN'],
       email: 'admin.abc@example.com',
       fullName: 'SAMB\'A Assurances Gabon S.A',
@@ -68,7 +68,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     // Compte pour un fournisseur de soins
     {
       id: 5,
-      activated: true,
+      actived: true,
       authorities: ['ROLE_PROVIDER'],
       email: 'care.provider@example.com',
       fullName: 'Care Provider',
@@ -99,7 +99,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     super(messageService, baseService, accountService, fb, notificationService, appMain);
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
-    this.importLink = '/import-notification';
+    this.importLink = '/import/notifications';
     this.moduleKey = 'NOTIFICATION_MODULE';
     this.isTable = true;
   }

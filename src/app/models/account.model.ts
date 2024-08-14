@@ -13,9 +13,11 @@ export interface Account extends BaseEntity {
   email?: string | null;
   langKey?: string | null;
   login?: string | null;
+  usingQr?: boolean | null;
+  loginUrl?: string | null;
   imageUrl?: string | null;
   authorities?: string[] | null;
-  activated?: boolean | null;
+  actived?: boolean | null;
   rules?: Rule[] | null;
   ruleIds?: number[] | null;
 }

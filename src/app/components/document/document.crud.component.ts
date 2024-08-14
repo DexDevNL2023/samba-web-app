@@ -25,7 +25,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     super(messageService, baseService, accountService, fb, documentService, appMain);
     this.entityName = 'Document';
     this.componentLink = '/admin/documents';
-    this.importLink = '/import-document';
+    this.importLink = '/import/documents';
     this.moduleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }

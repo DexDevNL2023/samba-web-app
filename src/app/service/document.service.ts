@@ -8,6 +8,6 @@ import { GenericCrudService } from './generic.crud.service';
 export class DocumentService extends GenericCrudService<Document> {
 
     constructor(http: HttpClient) {
-        super(http, 'documents-sinistres');
+        super(http, 'documents');
     }
 }

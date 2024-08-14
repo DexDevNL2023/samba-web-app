@@ -249,7 +249,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     super(messageService, baseService, accountService, fb, prestationService, appMain);
     this.entityName = 'Prestation';
     this.componentLink = '/admin/prestations';
-    this.importLink = '/import-prestation';
+    this.importLink = '/import/prestations';
     this.moduleKey = 'PRESTATION_MODULE';
     this.isTable = true;
   }

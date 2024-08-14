@@ -3,7 +3,7 @@ import { Permission } from "./permission.model";
 
 export interface Rule extends BaseEntity {
     moduleKey?: string | null;
-    module?: string | null;
+    libelle?: string | null;
     permissions?: Permission[] | null;
     permissionIds?: number[] | null;
 }

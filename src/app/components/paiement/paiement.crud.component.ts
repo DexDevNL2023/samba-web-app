@@ -150,7 +150,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     super(messageService, baseService, accountService, fb, paiementService, appMain);
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
-    this.importLink = '/import-paiement';
+    this.importLink = '/import/paiements';
     this.moduleKey = 'PAIEMENT_MODULE';
     this.isTable = true;
   }

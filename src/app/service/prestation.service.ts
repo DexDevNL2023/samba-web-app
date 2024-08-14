@@ -12,7 +12,7 @@ import { Document } from '../models/document.model';
 export class PrestationService extends GenericCrudService<Prestation> {
 
     constructor(http: HttpClient) {
-        super(http, 'prestations-soin');
+        super(http, 'prestations');
     }
 
     // Méthode pour récupérer le fournisseur associé à une prestation de soin spécifique

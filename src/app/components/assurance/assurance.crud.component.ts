@@ -123,7 +123,7 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     super(messageService, baseService, accountService, fb, assuranceService, appMain);
     this.entityName = 'Assurance';
     this.componentLink = '/admin/assurances';
-    this.importLink = '/import-assurance';
+    this.importLink = '/import/assurances';
     this.moduleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }

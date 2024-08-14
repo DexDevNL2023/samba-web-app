@@ -9,7 +9,7 @@ import { GenericCrudService } from './generic.crud.service';
 export class FinanceurService extends GenericCrudService<Financeur> {
 
     constructor(http: HttpClient) {
-        super(http, 'financeurs-soin');
+        super(http, 'financeurs');
     }
 
     // Méthode pour récupérer les prestations associées à un financeur de soin spécifique

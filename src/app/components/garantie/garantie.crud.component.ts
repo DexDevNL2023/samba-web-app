@@ -122,7 +122,7 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     super(messageService, baseService, accountService, fb, garantieService, appMain);
     this.entityName = 'Garantie';
     this.componentLink = '/admin/garanties';
-    this.importLink = '/import-garantie';
+    this.importLink = '/import/garanties';
     this.moduleKey = 'GARANTIE_MODULE';
     this.isTable = true;
   }

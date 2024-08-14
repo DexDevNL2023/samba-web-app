@@ -94,7 +94,7 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
     super(messageService, baseService, accountService, fb, financeurService, appMain);
     this.entityName = 'Financeur';
     this.componentLink = '/admin/financeurs';
-    this.importLink = '/import-financeur';
+    this.importLink = '/import/financeurs';
     this.moduleKey = 'FINANCEUR_MODULE';
     this.isTable = true;
   }

@@ -46,11 +46,11 @@
           </div>
 
           <div *ngIf="hasAuthority(['ROLE_ADMIN'])" class="mb-4">
-            <label for="activated" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
+            <label for="actived" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
             <p-checkbox
-              id="activated"
-              name="activated"
-              formControlName="activated"
+              id="actived"
+              name="actived"
+              formControlName="actived"
               binary="true"
               [label]="'Activé/Désactivé'"
               [styleClass]="'p-mr-2'"
@@ -172,9 +172,9 @@
           </div>
 
           <div class="mb-4">
-            <label for="addresse" class="block font-normal text-900 mb-2">Adresse</label>
-            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="addresse" 
-                placeholder="Adresse complete" formControlName="addresse" rows="5" cols="30">
+            <label for="adresse" class="block font-normal text-900 mb-2">Adresse</label>
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse" 
+                placeholder="Adresse complete" formControlName="adresse" rows="5" cols="30">
             </textarea>
           </div>
 

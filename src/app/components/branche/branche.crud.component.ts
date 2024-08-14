@@ -48,7 +48,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     super(messageService, baseService, accountService, fb, brancheService, appMain);
     this.entityName = 'Branche';
     this.componentLink = '/admin/branches';
-    this.importLink = '/import-branche';
+    this.importLink = '/import/branches';
     this.moduleKey = 'BRANCHE_MODULE';
     this.isTable = true;
   }

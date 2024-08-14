@@ -13,7 +13,7 @@ export class RapportService extends GenericCrudService<Rapport> {
     }
 
     // Méthode pour récupérer l'assurance associée à un rapport spécifique
-    getAssurance(rapportId: number): Observable<Assurance> {
-        return this.http.get<Assurance>(`${this.baseUrl}/${this.endpoint}/${rapportId}/assurance`);
+    getAssurance(id: number): Observable<Assurance> {
+        return this.http.get<Assurance>(`${this.baseUrl}/${this.endpoint}/${id}/assurance`);
     }
 }

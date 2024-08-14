@@ -65,7 +65,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.initializeColumnsData();
     this.assignColumnsValues();
     this.getRequiredFields();
-    this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
+    // Mettre à jour le breadcrumb initial
+    this.updateBreadcrumb();
 
     // Simulate fetching data from a service
     this.fetchDatas();
@@ -84,7 +85,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected abstract getRequiredFields(): string[];
-  
+
   /**
    * Met à jour les valeurs d'une colonne spécifique.
    * @param field - Le champ de la colonne à mettre à jour.
@@ -146,36 +147,36 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
    * @param item - L'objet contenant les informations sur le champ et l'ID.
    */
   protected openItemView(item: { field: string, id: number }) {
-      if (item && item.id != null && item.field) {
-          const { id, field } = item;
+    if (item && item.id != null && item.field) {
+        const { id, field } = item;
 
-          // Trouver la colonne correspondante à partir des colonnes configurées
-          const column = this.cols.find(col => col.field === field);
+        // Trouver la colonne correspondante à partir des colonnes configurées
+        const column = this.cols.find(col => col.field === field);
 
-          if (column) {
-              // Assurer que la colonne a des valeurs à filtrer
-              const values = column.values;
+        if (column) {
+            // Assurer que la colonne a des valeurs à filtrer
+            const values = column.values;
 
-              if (values) {
-                  // Filtrer l'élément en fonction des IDs et du champ clé
-                  const filteredData = this.filterItemById(id, values, 'id');
+            if (values) {
+                // Filtrer l'élément en fonction des IDs et du champ clé
+                const filteredData = this.filterItemById(id, values, 'id');
 
-                  if (filteredData) {
-                      // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
-                      this.selectedItemView = { cols: column.subfield || [], data: filteredData };
-                      this.displayItemDialog = true;
-                  } else {
-                      console.error(`No item found with ID: ${id} in field: ${field}`);
-                  }
-              } else {
-                  console.error(`No values found for field: ${field}`);
-              }
-          } else {
-              console.error(`Column with field: ${field} not found.`);
-          }
-      } else {
-          console.error('Invalid item parameters provided.');
-      }
+                if (filteredData) {
+                    // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
+                    this.selectedItemView = { cols: column.subfield || [], data: filteredData };
+                    this.displayItemDialog = true;
+                } else {
+                    console.error(`No item found with ID: ${id} in field: ${field}`);
+                }
+            } else {
+                console.error(`No values found for field: ${field}`);
+            }
+        } else {
+            console.error(`Column with field: ${field} not found.`);
+        }
+    } else {
+        console.error('Invalid item parameters provided.');
+    }
   }
 
   /**
@@ -194,32 +195,32 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
    * @param item - L'objet contenant les colonnes et les données de l'élément.
    */
   protected openItemListView(item: { field: string, ids: number[] }) {
-      if (item && item.ids && item.field) {
-          const ids = item.ids; // Liste des IDs à filtrer
-          const field = item.field; // Champ de type 'list'
+    if (item && item.ids && item.field) {
+        const ids = item.ids; // Liste des IDs à filtrer
+        const field = item.field; // Champ de type 'list'
 
-          // Trouver la colonne correspondante à partir des colonnes configurées
-          const column = this.cols.find(col => col.field === field);
+        // Trouver la colonne correspondante à partir des colonnes configurées
+        const column = this.cols.find(col => col.field === field);
 
-          if (column) {
-              // Assurer que la colonne a des valeurs à filtrer
-              const values = column.values;
-              if (values) {
-                  // Filtrer les éléments en fonction des IDs et du champ clé
-                  const filteredDatas = this.filterItemsByIds(ids, values, 'id');
-                  
-                  // Configurer la vue de la liste avec les colonnes et les données filtrées
-                  this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
-                  this.displayItemListDialog = true;
-              } else {
-                  console.error(`No values found for field: ${field}`);
-              }
-          } else {
-              console.error(`Column with field: ${field} not found.`);
-          }
-      } else {
-          console.error('Invalid item parameters provided.');
-      }
+        if (column) {
+            // Assurer que la colonne a des valeurs à filtrer
+            const values = column.values;
+            if (values) {
+                // Filtrer les éléments en fonction des IDs et du champ clé
+                const filteredDatas = this.filterItemsByIds(ids, values, 'id');
+                
+                // Configurer la vue de la liste avec les colonnes et les données filtrées
+                this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
+                this.displayItemListDialog = true;
+            } else {
+                console.error(`No values found for field: ${field}`);
+            }
+        } else {
+            console.error(`Column with field: ${field} not found.`);
+        }
+    } else {
+        console.error('Invalid item parameters provided.');
+    }
   }
 
   /**

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Fournisseur } from '../models/fournisseur.model';
 import { Prestation } from '../models/prestation.model';
-import { Sinistre } from '../models/sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
 import { Branche } from '../models/branche.model';
 

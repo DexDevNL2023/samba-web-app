@@ -16,7 +16,7 @@ import { Rule } from '../../models/rule.model';
 @Injectable({ providedIn: 'root' })
 export class AccountService { 
   // Déclaration d'un signal pour stocker l'identité de l'utilisateur
-  private userIdentity: Account | null = exampleAccount;
+  private userIdentity: Account | null;
   // Déclaration d'un sujet de rediffusion pour l'état d'authentification
   private authenticationState = new ReplaySubject<Account | null>(1);
   // Déclaration d'un cache pour les informations du compte
@@ -105,16 +105,6 @@ export class AccountService {
     }
   }
 
-  // Change permission
-  changePermission(form: Permission): Observable<Account> {
-    return this.http.put<Account>(`${environment.apiUrl}/api/account/change/permission`, JSON.stringify(form))
-      .pipe(
-        tap((account: Account) => {
-          this.authenticate(account);
-        })
-      );
-  }
-
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
   hasAccessToModule(moduleKey: string): boolean {
     return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey);
@@ -122,7 +112,7 @@ export class AccountService {
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey && permission?.haveAccess));
+    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
   }
 
   // Méthode pour récupérer les information d'un utilisateur
@@ -144,58 +134,53 @@ export class AccountService {
     }
   }
 }
-
  */
+
 
 
 // Exemple de permissions
 const readPermission: Permission = {
   permissionKey: 'READ_PERMISSION',
-  libelle: 'Consulter',
-  haveAccess: true
+  libelle: 'Consulter'
 };
 
 const writePermission: Permission = {
   permissionKey: 'WRITE_PERMISSION',
-  libelle: 'Ajouter',
-  haveAccess: true
+  libelle: 'Ajouter'
 };
 
 const editPermission: Permission = {
   permissionKey: 'EDIT_PERMISSION',
-  libelle: 'Modifier',
-  haveAccess: true
+  libelle: 'Modifier'
 };
 
 const deletPermission: Permission = {
   permissionKey: 'DELET_PERMISSION',
-  libelle: 'Supprimer',
-  haveAccess: true
+  libelle: 'Supprimer'
 };
 
 const printPermission: Permission = {
   permissionKey: 'PRINT_PERMISSION',
-  libelle: 'Imprimer',
-  haveAccess: true
+  libelle: 'Imprimer'
 };
 
 // Exemple de règles
 const adminRule: Rule = {
   moduleKey: 'SUBSCRIPTION_MODULE',
-  module: 'Gestion des souscription',
+  libelle: 'Gestion des souscription',
   permissions: [readPermission, writePermission, deletPermission, printPermission]
 };
 
 const userRule: Rule = {
   moduleKey: 'SINISTRE_MODULE',
-  module: 'Gestion des sinistres',
+  libelle: 'Gestion des sinistres',
   permissions: [readPermission, editPermission, printPermission]
 };
 
 // Exemple de données pour initialiser un compte
 const exampleAccount = {
   id: 1, // id
-  activated: true, // activated
+  actived: true, // actived
   authorities: ['ROLE_CLIENT'], // authorities
   email: 'victor.nlang@teleo.com', // email
   fullName: 'Victor Nlang', // fullName
@@ -283,11 +268,6 @@ export class AccountService {
     return of(exampleAccount);
   }
 
-  // Change permission
-  changePermission(form: Permission): Observable<Account> {
-    return of(exampleAccount);
-  }
-
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
   hasAccessToModule(moduleKey: string): boolean {
     return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey);
@@ -295,7 +275,7 @@ export class AccountService {
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey && permission?.haveAccess));
+    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
   }
 
   // Méthode pour récupérer les information d'un utilisateur

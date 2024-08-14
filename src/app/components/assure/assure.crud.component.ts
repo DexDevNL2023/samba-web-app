@@ -237,7 +237,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     super(messageService, baseService, accountService, fb, assureService, appMain);
     this.entityName = 'Assuré';
     this.componentLink = '/admin/assures';
-    this.importLink = '/import-assure';
+    this.importLink = '/import/assures';
     this.moduleKey = 'ASSURE_MODULE';
     this.isTable = true;
   }

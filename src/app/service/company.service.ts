@@ -15,7 +15,7 @@ export class CompanyService {
   constructor(private httpCient: HttpClient) { }
 
   getParametres(): Observable<Company> {
-    return this.httpCient.get<Company>(`${this.baseUrl}//company/parametres`);
+    return this.httpCient.get<Company>(`${this.baseUrl}/company/parametres`);
   }
 
   update(company: Company): Observable<Company> {

@@ -14,7 +14,6 @@ import { Account } from '../../models/account.model';
 })
 export class ProfilComponent implements OnInit{
     account: Account | null = null; // Compte utilisateur actuel
-    form: FormGroup | null = null;
     data: UserData | null = {
       registrant: {
         id: 1,
@@ -97,18 +96,5 @@ export class ProfilComponent implements OnInit{
     // Méthode pour rediriger vers les paramètres
     goToSettings(): void {
       this.router.navigate(['/admin/setting']);
-    }
-
-    updatePermission(id: number, event: any){
-      if(this.hasAuthority(['ROLE_ADMIN'])) {
-        this.form = new FormGroup({
-          "id": new FormControl(id),
-          "haveAccess": new FormControl(event.checked, [Validators.required]),
-        })
-  
-        this.accountService.changePermission(this.form.value).subscribe(data => {
-          this.ngOnInit();    
-        });
-      }
     }
 }

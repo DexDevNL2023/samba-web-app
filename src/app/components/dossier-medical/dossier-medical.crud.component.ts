@@ -76,7 +76,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     super(messageService, baseService, accountService, fb, medicalRecordService, appMain);
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
-    this.importLink = '/import-dossier-medical';
+    this.importLink = '/import/dossiers/medicaux';
     this.moduleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }

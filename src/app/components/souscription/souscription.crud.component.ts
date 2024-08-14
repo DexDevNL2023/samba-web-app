@@ -629,7 +629,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     super(messageService, baseService, accountService, fb, souscriptionService, appMain);
     this.entityName = 'Souscription';
     this.componentLink = '/admin/souscriptions';
-    this.importLink = '/import-souscription';
+    this.importLink = '/import/souscriptions';
     this.moduleKey = 'SUBSCRIPTION_MODULE';
     this.isTable = true;
   }

@@ -186,7 +186,7 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
     super(messageService, baseService, accountService, fb, sinistreService, appMain);
     this.entityName = 'Sinistre';
     this.componentLink = '/admin/sinistres';
-    this.importLink = '/import-sinistre';
+    this.importLink = '/import/sinistres';
     this.moduleKey = 'SINISTRE_MODULE';
     this.isTable = true;
   }

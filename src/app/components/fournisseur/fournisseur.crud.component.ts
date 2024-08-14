@@ -97,7 +97,7 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
     super(messageService, baseService, accountService, fb, fournisseurService, appMain);
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
-    this.importLink = '/import-fournisseur';
+    this.importLink = '/import/fournisseurs';
     this.moduleKey = 'FOURNISSEUR_MODULE';
     this.isTable = true;
   }
