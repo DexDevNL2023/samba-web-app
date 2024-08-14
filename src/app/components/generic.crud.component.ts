@@ -608,7 +608,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
   protected hasAccessToPermission(permissionKey: string): boolean {
     return this.accountService.hasAccessToPermission(this.moduleKey, permissionKey);
-  }
+  } 
 
   protected exportExcel(){
     this.baseService.generateExcel(this.entityName, this.items);

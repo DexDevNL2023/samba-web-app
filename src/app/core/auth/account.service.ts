@@ -3,14 +3,19 @@ import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, ReplaySubject, of } from 'rxjs';
+import { forkJoin, Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 
 // Importation des modèles et services spécifiques
 import { StateStorageService } from './state-storage.service';
 import { Account } from '../../models/account.model';
 import { Permission } from '../../models/permission.model';
+import { Notification } from '../../models/notification.model';
+import { Registrant } from '../../models/registrant.model';
+import { UserData } from '../../models/user-data.model';
 import { Rule } from '../../models/rule.model';
+import { DossierMedical } from '../../models/medical-record.model';
+import { Souscription } from '../../models/souscription.model';
 
 /* // Déclaration du service injectable et accessible dans la racine de l'application
 @Injectable({ providedIn: 'root' })
@@ -35,6 +40,11 @@ export class AccountService {
   // Méthode pour obtenir le compte de l'utilisateur actuellement connecté
   getCurrentAccount(): Account | null {
     return this.userIdentity;
+  }
+
+  // Méthode pour obtenir le compte de l'utilisateur actuellement connecté
+  getIdForCurrentAccount(): number | null {
+    return this.userIdentity?.id;
   }
 
   // Méthode pour sauvegarder les informations de compte via une requête POST
@@ -107,12 +117,18 @@ export class AccountService {
 
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
   hasAccessToModule(moduleKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey);
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
+      return rules?.some(rule => rule?.moduleKey === moduleKey);
+    });
+    return false;
   }
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
+      return rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+    });
+    return false;
   }
 
   // Méthode pour récupérer les information d'un utilisateur
@@ -133,49 +149,44 @@ export class AccountService {
       this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
     }
   }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getAutorisations(userId: number): Observable<Rule[]> {
+      return this.http.get<Rule[]>(`${this.baseUrl}/api/account/${userId}/roles`);
+  }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getRegistrant(userId: number): Observable<Registrant> {
+      return this.http.get<Registrant>(`${this.baseUrl}/api/account/${userId}/registrant`);
+  }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getMedicalRecords(userId: number): Observable<DossierMedical[]> {
+      return this.http.get<DossierMedical[]>(`${this.baseUrl}/api/account/${userId}/dossiers`);
+  }
+
+  // Méthode pour récupérer les souscriptions d'un utilisateur
+  getSouscriptions(userId: number): Observable<Souscription[]> {
+      return this.http.get<Souscription[]>(`${this.baseUrl}/api/account/${userId}/souscriptions`);
+  }
+
+  // Méthode pour récupérer les notifications d'un utilisateur
+  getNotifications(userId: number): Observable<Notification[]> {
+      return this.http.get<Notification[]>(`${this.baseUrl}/api/account/${userId}/notifications`);
+  }
+
+  // Méthode pour récupérer les données combinées d'un utilisateur
+  getUserDetails(userId: number): Observable<UserData> {
+      return forkJoin({
+        rules: this.getAutorisations(userId),
+        registrant: this.getRegistrant(userId),
+        dossiers: this.getMedicalRecords(userId),
+        souscriptions: this.getSouscriptions(userId)
+      });
+  }
 }
  */
 
-
-
-// Exemple de permissions
-const readPermission: Permission = {
-  permissionKey: 'READ_PERMISSION',
-  libelle: 'Consulter'
-};
-
-const writePermission: Permission = {
-  permissionKey: 'WRITE_PERMISSION',
-  libelle: 'Ajouter'
-};
-
-const editPermission: Permission = {
-  permissionKey: 'EDIT_PERMISSION',
-  libelle: 'Modifier'
-};
-
-const deletPermission: Permission = {
-  permissionKey: 'DELET_PERMISSION',
-  libelle: 'Supprimer'
-};
-
-const printPermission: Permission = {
-  permissionKey: 'PRINT_PERMISSION',
-  libelle: 'Imprimer'
-};
-
-// Exemple de règles
-const adminRule: Rule = {
-  moduleKey: 'SUBSCRIPTION_MODULE',
-  libelle: 'Gestion des souscription',
-  permissions: [readPermission, writePermission, deletPermission, printPermission]
-};
-
-const userRule: Rule = {
-  moduleKey: 'SINISTRE_MODULE',
-  libelle: 'Gestion des sinistres',
-  permissions: [readPermission, editPermission, printPermission]
-};
 
 // Exemple de données pour initialiser un compte
 const exampleAccount = {
@@ -187,7 +198,7 @@ const exampleAccount = {
   langKey: 'en', // langKey
   login: 'victor.nlang', // login
   imageUrl: '', // imageUrl
-  rules: [adminRule, userRule] // rules
+  ruleIds: [1, 2] // rules
 };
 
 // Déclaration du service injectable et accessible dans la racine de l'application
@@ -211,6 +222,11 @@ export class AccountService {
   // Méthode pour obtenir le compte de l'utilisateur actuellement connecté
   getCurrentAccount(): Account | null {
     return this.userIdentity;
+  }
+
+  // Méthode pour obtenir le compte de l'utilisateur actuellement connecté
+  getIdForCurrentAccount(): number | null {
+    return this.userIdentity?.id;
   }
 
   // Méthode pour sauvegarder les informations de compte via une requête POST
@@ -270,12 +286,18 @@ export class AccountService {
 
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
   hasAccessToModule(moduleKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey);
-  }
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
+      return rules?.some(rule => rule?.moduleKey === moduleKey);
+    });
+    return false;
+  } 
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
   hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    return this.userIdentity?.rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
+      return rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+    });
+    return false;
   }
 
   // Méthode pour récupérer les information d'un utilisateur
@@ -295,6 +317,41 @@ export class AccountService {
       this.userIdentity.authorities = newAuthorities;
       this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
     }
+  }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getAutorisations(userId: number): Observable<Rule[]> {
+      return this.http.get<Rule[]>(`${this.baseUrl}/api/account/${userId}/roles`);
+  }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getRegistrant(userId: number): Observable<Registrant> {
+      return this.http.get<Registrant>(`${this.baseUrl}/api/account/${userId}/registrant`);
+  }
+
+  // Méthode pour récupérer les dossiers médicaux d'un utilisateur
+  getMedicalRecords(userId: number): Observable<DossierMedical[]> {
+      return this.http.get<DossierMedical[]>(`${this.baseUrl}/api/account/${userId}/dossiers`);
+  }
+
+  // Méthode pour récupérer les souscriptions d'un utilisateur
+  getSouscriptions(userId: number): Observable<Souscription[]> {
+      return this.http.get<Souscription[]>(`${this.baseUrl}/api/account/${userId}/souscriptions`);
+  }
+
+  // Méthode pour récupérer les notifications d'un utilisateur
+  getNotifications(userId: number): Observable<Notification[]> {
+      return this.http.get<Notification[]>(`${this.baseUrl}/api/account/${userId}/notifications`);
+  }
+
+  // Méthode pour récupérer les données combinées d'un utilisateur
+  getUserDetails(userId: number): Observable<UserData> {
+      return forkJoin({
+        rules: this.getAutorisations(userId),
+        registrant: this.getRegistrant(userId),
+        dossiers: this.getMedicalRecords(userId),
+        souscriptions: this.getSouscriptions(userId)
+      });
   }
 }
 

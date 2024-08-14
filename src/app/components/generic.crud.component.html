@@ -3,21 +3,21 @@
         <div class="card px-6 py-6">
 			<p-toolbar styleClass="mb-4 gap-2">
 				<ng-template pTemplate="left">
-					<p-fileUpload mode="basic" accept=".xlsx" [customUpload]="true"
+					<p-fileUpload *ngIf="hasAccessToPermission('WRITE_PERMISSION')" mode="basic" accept=".xlsx" [customUpload]="true"
 						(uploadHandler)="onFileChange($event)" [maxFileSize]="1000000" label="Import"
 						chooseLabel="Import" class="mr-2 inline-block" />
-					<button severity="success" pButton pRipple label="New" icon="pi pi-plus"
+					<button *ngIf="hasAccessToPermission('WRITE_PERMISSION')" severity="success" pButton pRipple label="New" icon="pi pi-plus"
 						class="p-button-success mr-2" (click)="openNew()"></button>
-					<button severity="danger" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+					<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" severity="danger" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
 						(click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button>
 				</ng-template>
 
 				<ng-template pTemplate="right">
-					<button severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
+					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
 						(click)="showPrintPreview()" pTooltip="PRINT" tooltipPosition="bottom"></button>
-					<button severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
+					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
 						(click)="dt.exportCSV()" pTooltip="CSV" tooltipPosition="bottom"></button>
-					<button severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
+					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
 						(click)="exportExcel()" pTooltip="XLS" tooltipPosition="bottom"></button>
 				</ng-template>
 			</p-toolbar>
@@ -152,10 +152,10 @@
 									</td>
 								</ng-container>
 								<td>
-									<button pButton pRipple icon="pi pi-pencil"
+									<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
 										class="p-button-rounded p-button-success mr-2"
 										(click)="editItem(item)"></button>
-									<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+									<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
 										(click)="deleteItem(item)"></button>
 								</td>
 							</tr>
@@ -328,10 +328,10 @@
 									</td>
 								</ng-container>
 								<td style="min-width:15rem">
-									<button pButton pRipple icon="pi pi-pencil"
+									<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
 										class="p-button-rounded p-button-success mr-2"
 										(click)="editItem(item)"></button>
-									<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+									<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
 										(click)="deleteItem(item)"></button>
 								</td>
 							</tr>

@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../core/auth/account.service';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from 'src/app/app.main.component';
 import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
 import { UserData } from '../../models/user-data.model';
-import { AssureService } from '../../service/assure.service';
 import { Account } from '../../models/account.model';
 
 @Component({
@@ -13,8 +11,50 @@ import { Account } from '../../models/account.model';
   templateUrl: './profil.component.html'
 })
 export class ProfilComponent implements OnInit{
+  
     account: Account | null = null; // Compte utilisateur actuel
     data: UserData | null = {
+      rules: [
+        {
+          id: 1,
+          moduleKey: 'SINISTRE_MODULE',
+          libelle: 'Gestion des sinistres',
+          permissions: [
+            {
+              id: 1,
+              permissionKey: 'READ_PERMISSION',
+              libelle: 'Consulter'
+            },
+            {
+              id: 2,
+              permissionKey: 'EDIT_PERMISSION',
+              libelle: 'Modifier'
+            },
+            {
+              id: 3,
+              permissionKey: 'PRINT_PERMISSION',
+              libelle: 'Imprimer'
+            }
+          ]
+        },
+        {
+          id: 2,
+          moduleKey: 'SUBSCRIPTION_MODULE',
+          libelle: 'Gestion des souscription',
+          permissions: [
+            {
+              id: 1,
+              permissionKey: 'WRITE_PERMISSION',
+              libelle: 'Ajouter'
+            }, 
+            {
+              id: 2,
+              permissionKey: 'DELET_PERMISSION',
+              libelle: 'Supprimer'
+            }
+          ]
+        }
+      ],
       registrant: {
         id: 1,
         numeroRegistrant: '2024-RG-5678',
@@ -53,7 +93,7 @@ export class ProfilComponent implements OnInit{
       ]
     }; // donnees utilisateur actuel
 
-    constructor(private accountService: AccountService, private assureService: AssureService, private router: Router, public appMain: AppMainComponent){}
+    constructor(private accountService: AccountService, private router: Router, public appMain: AppMainComponent){}
  
     ngOnInit(): void {
         // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
@@ -62,11 +102,9 @@ export class ProfilComponent implements OnInit{
             this.account = account;
             const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
             if (userId) {
-              if(this.hasAuthority(['ROLE_CLIENT'])) {
-                this.assureService.getUserDetails(userId).subscribe((data: UserData) => {
-                  this.data = data;
-                });
-              }
+              this.accountService.getUserDetails(userId).subscribe((data: UserData) => {
+                this.data = data;
+              });
             }
           }
         });

@@ -1,5 +1,4 @@
 import { BaseEntity } from "./base-entity.model";
-import { Rule } from "./rule.model";
 
 export enum Authority {
   CLIENT = 'ROLE_CLIENT',
@@ -18,6 +17,5 @@ export interface Account extends BaseEntity {
   imageUrl?: string | null;
   authorities?: string[] | null;
   actived?: boolean | null;
-  rules?: Rule[] | null;
   ruleIds?: number[] | null;
 }
