@@ -630,7 +630,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     this.entityName = 'Souscription';
     this.componentLink = '/admin/souscriptions';
     this.importLink = '/import/souscriptions';
-    this.moduleKey = 'SUBSCRIPTION_MODULE';
+    this.roleKey = 'SUBSCRIPTION_MODULE';
     this.isTable = true;
   }
   

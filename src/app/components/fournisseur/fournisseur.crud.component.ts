@@ -98,7 +98,7 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
     this.importLink = '/import/fournisseurs';
-    this.moduleKey = 'FOURNISSEUR_MODULE';
+    this.roleKey = 'FOURNISSEUR_MODULE';
     this.isTable = true;
   }
   

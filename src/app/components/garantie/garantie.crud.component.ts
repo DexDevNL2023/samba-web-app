@@ -123,7 +123,7 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     this.entityName = 'Garantie';
     this.componentLink = '/admin/garanties';
     this.importLink = '/import/garanties';
-    this.moduleKey = 'GARANTIE_MODULE';
+    this.roleKey = 'GARANTIE_MODULE';
     this.isTable = true;
   }
   

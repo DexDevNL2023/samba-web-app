@@ -33,7 +33,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
     this.entityName = 'Contrat d\'assurance';
     this.componentLink = '/admin/contrats/assurances';
     this.importLink = '/import/contrats/assurances';
-    this.moduleKey = 'CONTRAT_MODULE';
+    this.roleKey = 'CONTRAT_MODULE';
     this.isTable = true;
   }
   

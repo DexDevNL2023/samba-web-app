@@ -77,7 +77,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
     this.importLink = '/import/dossiers/medicaux';
-    this.moduleKey = 'DOCUMENT_MODULE';
+    this.roleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }
   

@@ -151,7 +151,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
     this.importLink = '/import/paiements';
-    this.moduleKey = 'PAIEMENT_MODULE';
+    this.roleKey = 'PAIEMENT_MODULE';
     this.isTable = true;
   }
   

@@ -35,8 +35,8 @@
         <div class="col-12 md:col-8">
             <p-tabView>
                 <p-tabPanel header="Liste des Permissions">
-                    <p-accordion *ngIf="data?.rules.length" [activeIndex]="0">
-                        <p-accordionTab *ngFor="let rule of data?.rules">
+                    <p-accordion *ngIf="data?.roles.length" [activeIndex]="0">
+                        <p-accordionTab *ngFor="let rule of data?.roles">
                             <ng-template pTemplate="header">
                                 <span class="flex align-items-center gap-2 w-full">
                                     <span class="font-bold white-space-nowrap">{{rule.libelle}}</span>

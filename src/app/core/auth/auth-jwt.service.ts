@@ -11,7 +11,7 @@ import { Login } from '../../login/login.model';
 
 // Définition du type JwtToken pour représenter le jeton JWT
 type JwtToken = {
-  id_token: string;
+  accessToken: string;
 };
 
 // Décoration de la classe comme injectable dans l'injecteur racine
@@ -48,6 +48,6 @@ export class AuthServerProvider {
 
   // Méthode privée pour gérer le succès de l'authentification
   private authenticateSuccess(response: JwtToken, rememberMe: boolean): void {
-    this.stateStorageService.storeAuthenticationToken(response.id_token, rememberMe); // Stockage du jeton JWT dans le stockage de l'état
+    this.stateStorageService.storeAuthenticationToken(response.accessToken, rememberMe); // Stockage du jeton JWT dans le stockage de l'état
   }
 }

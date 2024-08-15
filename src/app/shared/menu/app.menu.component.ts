@@ -31,149 +31,149 @@ export class AppMenuComponent implements OnInit {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
                 items: [
-                    { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
-                    { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
-                    { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
+                    { roleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
+                    { roleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
+                    { roleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
+                    { roleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
+                    { roleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
                 ]
             },
             {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
+                    { roleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { roleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
-            { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
-            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
+            { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
+            { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
             {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
+                    { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             }
         ];
         
         // Menu pour l'Agent :
         this.agentMenu = [
-            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
+            { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
                 items: [
-                    { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
-                    { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
-                    { moduleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
-                    { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
+                    { roleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
+                    { roleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
+                    { roleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
+                    { roleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
+                    { roleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
+                    { roleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
                 ]
             },
             {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
+                    { roleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { roleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
             {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
+                    { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
-            { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
-            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
+            { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
+            { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
          
         // Menu pour l'Administrateur :
         this.adminMenu = [
-            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
+            { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
                 items: [
-                    { moduleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
-                    { moduleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
-                    { moduleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
-                    { moduleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
-                    { moduleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
-                    { moduleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
+                    { roleKey: 'ASSURANCE_MODULE', label: 'Assurances', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/assurances'] },
+                    { roleKey: 'POLICE_ASSURANCE_MODULE', label: 'Polices d\'assurance', icon: 'pi pi-fw pi-briefcase', routerLink: ['/admin/polices/assurances'] },
+                    { roleKey: 'GARANTIE_MODULE', label: 'Garanties', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/garanties'] },
+                    { roleKey: 'ASSURE_MODULE', label: 'Assurés', icon: 'pi pi-fw pi-users', routerLink: ['/admin/assures'] },
+                    { roleKey: 'SUBSCRIPTION_MODULE', label: 'Souscriptions', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/souscriptions'] },
+                    { roleKey: 'CONTRAT_MODULE', label: 'Contrats d\'assurance', icon: 'pi pi-fw pi-mobile', routerLink: ['/admin/contrats/assurances'] }
                 ]
             },
             {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
-                    { moduleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
+                    { roleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] },
+                    { roleKey: 'RECLAMATION_MODULE', label: 'Reclamations', icon: 'pi pi-fw pi-id-card', routerLink: ['/admin/reclamations'] }
                 ]
             },
             {
                 label: 'Gestions des partenaires',
                 icon: 'pi pi-fw pi-sitemap',
                 items: [
-                    { moduleKey: 'FOURNISSEUR_MODULE', label: 'Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/fournisseurs'] },
-                    { moduleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
-                    { moduleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
+                    { roleKey: 'FOURNISSEUR_MODULE', label: 'Partenaires', icon: 'pi pi-fw pi-sitemap', routerLink: ['/admin/fournisseurs'] },
+                    { roleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
+                    { roleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
                 ]
             },
             {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
+                    { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
-            { moduleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
-            { moduleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
-            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
+            { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            { roleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
+            { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
+            { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
             {
                 label: 'Paramètres',
                 icon: 'pi pi-fw pi-cog',
                 items: [
-                    { moduleKey: 'ACCOUNT_MODULE', label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-users', routerLink: ['/admin/accounts'] },
-                    { moduleKey: 'BRANCHE_MODULE', label: 'Gestions des Branches', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/branches'] },
-                    { moduleKey: 'COMPANY_MODULE', label: 'Gestions de la société', icon: 'pi pi-fw pi-building', routerLink: ['/admin/company'] },
+                    { roleKey: 'ACCOUNT_MODULE', label: 'Gestion des Utilisateurs', icon: 'pi pi-fw pi-users', routerLink: ['/admin/accounts'] },
+                    { roleKey: 'BRANCHE_MODULE', label: 'Gestions des Branches', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/branches'] },
+                    { roleKey: 'COMPANY_MODULE', label: 'Gestions de la société', icon: 'pi pi-fw pi-building', routerLink: ['/admin/company'] },
                 ]
             }
         ];
         
         // Menu pour le Fournisseur de Services :
         this.fournisseurMenu = [
-            { moduleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
+            { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des sinistres',
                 icon: 'pi pi-fw pi-exclamation-triangle',
                 items: [
-                    { moduleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] }
+                    { roleKey: 'SINISTRE_MODULE', label: 'Sinistres', icon: 'pi pi-fw pi-exclamation-triangle', routerLink: ['/admin/sinistres'] }
                 ]
             },
             {
                 label: 'Gestions des partenaires',
                 icon: 'pi pi-fw pi-sitemap',
                 items: [
-                    { moduleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
-                    { moduleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
+                    { roleKey: 'PRESTATION_MODULE', label: 'Prestations', icon: 'pi pi-fw pi-wrench', routerLink: ['/admin/prestations'] },
+                    { roleKey: 'FINANCEUR_MODULE', label: 'Finanseurs', icon: 'pi pi-fw pi-paypal', routerLink: ['/admin/financeurs'] }
                 ]
             },
             {
                 label: 'Partie santé',
                 icon: 'pi pi-fw pi-heart',
                 items: [
-                    { moduleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
+                    { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
-            { moduleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
-            { moduleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
+            { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
+            { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
 
         // Construire le menu
@@ -191,7 +191,7 @@ export class AppMenuComponent implements OnInit {
     buildMenu(menu: any[]) {
         this.model = menu;
         /* menu.forEach(item => {
-            if (this.hasModuleAccess(item?.moduleKey)) {
+            if (this.hasModuleAccess(item?.roleKey)) {
                 this.model.push(item);
             }
         }); */
@@ -202,9 +202,9 @@ export class AppMenuComponent implements OnInit {
     }
 
     // Vérifie si l'utilisateur possède l'autorisation d'accéder à un module donné
-    hasModuleAccess(moduleKey: string): boolean {
-        //console.log(moduleKey);
-      return this.accountService.hasAccessToModule(moduleKey);
+    hasModuleAccess(roleKey: string): boolean {
+        //console.log(roleKey);
+      return this.accountService.hasAccessToModule(roleKey);
     }
 
     // Vérifie si l'utilisateur possède l'autorisation indiquer

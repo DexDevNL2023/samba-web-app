@@ -250,7 +250,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     this.entityName = 'Prestation';
     this.componentLink = '/admin/prestations';
     this.importLink = '/import/prestations';
-    this.moduleKey = 'PRESTATION_MODULE';
+    this.roleKey = 'PRESTATION_MODULE';
     this.isTable = true;
   }
   

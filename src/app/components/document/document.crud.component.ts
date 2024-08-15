@@ -26,7 +26,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     this.entityName = 'Document';
     this.componentLink = '/admin/documents';
     this.importLink = '/import/documents';
-    this.moduleKey = 'DOCUMENT_MODULE';
+    this.roleKey = 'DOCUMENT_MODULE';
     this.isTable = true;
   }
   

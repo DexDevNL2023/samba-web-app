@@ -49,7 +49,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     this.entityName = 'Branche';
     this.componentLink = '/admin/branches';
     this.importLink = '/import/branches';
-    this.moduleKey = 'BRANCHE_MODULE';
+    this.roleKey = 'BRANCHE_MODULE';
     this.isTable = true;
   }
   

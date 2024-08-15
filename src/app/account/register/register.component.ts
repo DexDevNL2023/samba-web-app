@@ -96,7 +96,7 @@ export default class RegisterComponent implements AfterViewInit {
       const { login, email } = this.registerForm.getRawValue();
 
       // Appel du service pour sauvegarder l'inscription avec les données fournies
-      this.registerService.save({ login, email, password, langKey: 'fr' })
+      this.registerService.save({ login, email, password, imageUrl: '' })
         .subscribe({
           next: () => this.success = true, // Affichage du succès si l'inscription est réussie
           error: response => this.processError(response) // Gestion des erreurs en cas d'échec

@@ -25,7 +25,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       langKey: 'en',
       login: 'victor.nlang',
       imageUrl: 'https://example.com/image1.jpg',
-      rules: null
+      roles: null
     },
     
     // Compte pour un agent
@@ -38,7 +38,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       langKey: 'fr',
       login: 'jane.smith',
       imageUrl: 'https://example.com/image2.jpg',
-      rules: null
+      roles: null
     },
     {
       id: 3,
@@ -49,7 +49,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       langKey: 'en',
       login: 'john.doe',
       imageUrl: 'https://example.com/image1.jpg',
-      rules: null
+      roles: null
     },
     
     // Compte pour un administrateur
@@ -62,7 +62,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       langKey: 'en',
       login: 'admin.samba',
       imageUrl: 'https://example.com/image3.jpg',
-      rules: null
+      roles: null
     },
     
     // Compte pour un fournisseur de soins
@@ -75,7 +75,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       langKey: 'fr',
       login: 'care.provider',
       imageUrl: 'https://example.com/image4.jpg',
-      rules: null
+      roles: null
     }
   ];
 
@@ -100,7 +100,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
     this.importLink = '/import/notifications';
-    this.moduleKey = 'NOTIFICATION_MODULE';
+    this.roleKey = 'NOTIFICATION_MODULE';
     this.isTable = true;
   }
   
@@ -116,12 +116,16 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       { field: 'dateEnvoi', header: 'Envoyé le', type: 'date' },
       { field: 'destinataire', header: 'Destinataire', type: 'objet', values: [], label: 'fullName', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'fullName', header: 'Nom', type: 'text' }
+          { field: 'imageUrl', header: 'Avatar', type: 'image' },
+          { field: 'fullName', header: 'Nom complet', type: 'text' },
+          { field: 'email', header: 'Email', type: 'text' }
         ]
       },
       { field: 'emetteur', header: 'Emetteur', type: 'objet', values: [], label: 'fullName', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'fullName', header: 'Nom', type: 'text' }
+          { field: 'imageUrl', header: 'Avatar', type: 'image' },
+          { field: 'fullName', header: 'Nom complet', type: 'text' },
+          { field: 'email', header: 'Email', type: 'text' }
         ]
       },
     ];

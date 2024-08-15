@@ -101,7 +101,7 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     this.entityName = 'Reclamation';
     this.componentLink = '/admin/reclamations';
     this.importLink = '/import/reclamations';
-    this.moduleKey = 'RECLAMATION_MODULE';
+    this.roleKey = 'RECLAMATION_MODULE';
     this.isTable = true;
   }
   

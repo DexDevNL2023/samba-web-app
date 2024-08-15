@@ -187,7 +187,7 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
     this.entityName = 'Sinistre';
     this.componentLink = '/admin/sinistres';
     this.importLink = '/import/sinistres';
-    this.moduleKey = 'SINISTRE_MODULE';
+    this.roleKey = 'SINISTRE_MODULE';
     this.isTable = true;
   }
   

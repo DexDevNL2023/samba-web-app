@@ -13,9 +13,9 @@ import { Permission } from '../../models/permission.model';
 import { Notification } from '../../models/notification.model';
 import { Registrant } from '../../models/registrant.model';
 import { UserData } from '../../models/user-data.model';
-import { Rule } from '../../models/rule.model';
 import { DossierMedical } from '../../models/medical-record.model';
 import { Souscription } from '../../models/souscription.model';
+import { RuleReponse } from '../../models/rule.reponse.model';
 
 /* // Déclaration du service injectable et accessible dans la racine de l'application
 @Injectable({ providedIn: 'root' })
@@ -116,17 +116,17 @@ export class AccountService {
   }
 
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
-  hasAccessToModule(moduleKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
-      return rules?.some(rule => rule?.moduleKey === moduleKey);
+  hasAccessToModule(roleKey: string): boolean {
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
+      return roles?.some(rule => rule?.roleKey === roleKey);
     });
     return false;
   }
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
-  hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
-      return rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+  hasAccessToPermission(roleKey: string, permissionKey: string): boolean {
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
+      return roles?.some(rule => rule?.roleKey === roleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
     });
     return false;
   }
@@ -151,8 +151,8 @@ export class AccountService {
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
-  getAutorisations(userId: number): Observable<Rule[]> {
-      return this.http.get<Rule[]>(`${this.baseUrl}/api/account/${userId}/roles`);
+  getAutorisations(userId: number): Observable<RuleReponse[]> {
+      return this.http.get<RuleReponse[]>(`${this.baseUrl}/api/account/${userId}/roles`);
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
@@ -178,7 +178,7 @@ export class AccountService {
   // Méthode pour récupérer les données combinées d'un utilisateur
   getUserDetails(userId: number): Observable<UserData> {
       return forkJoin({
-        rules: this.getAutorisations(userId),
+        roles: this.getAutorisations(userId),
         registrant: this.getRegistrant(userId),
         dossiers: this.getMedicalRecords(userId),
         souscriptions: this.getSouscriptions(userId)
@@ -198,7 +198,7 @@ const exampleAccount = {
   langKey: 'en', // langKey
   login: 'victor.nlang', // login
   imageUrl: '', // imageUrl
-  ruleIds: [1, 2] // rules
+  roles: [1, 2] // roles
 };
 
 // Déclaration du service injectable et accessible dans la racine de l'application
@@ -285,17 +285,17 @@ export class AccountService {
   }
 
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
-  hasAccessToModule(moduleKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
-      return rules?.some(rule => rule?.moduleKey === moduleKey);
+  hasAccessToModule(roleKey: string): boolean {
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
+      return roles?.some(rule => rule?.roleKey === roleKey);
     });
     return false;
   } 
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
-  hasAccessToPermission(moduleKey: string, permissionKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((rules: Rule[]) => {
-      return rules?.some(rule => rule?.moduleKey === moduleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
+  hasAccessToPermission(roleKey: string, permissionKey: string): boolean {
+    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
+      return roles?.some(rule => rule?.roleKey === roleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
     });
     return false;
   }
@@ -320,8 +320,8 @@ export class AccountService {
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
-  getAutorisations(userId: number): Observable<Rule[]> {
-      return this.http.get<Rule[]>(`${this.baseUrl}/api/account/${userId}/roles`);
+  getAutorisations(userId: number): Observable<RuleReponse[]> {
+      return this.http.get<RuleReponse[]>(`${this.baseUrl}/api/account/${userId}/roles`);
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
@@ -347,7 +347,7 @@ export class AccountService {
   // Méthode pour récupérer les données combinées d'un utilisateur
   getUserDetails(userId: number): Observable<UserData> {
       return forkJoin({
-        rules: this.getAutorisations(userId),
+        roles: this.getAutorisations(userId),
         registrant: this.getRegistrant(userId),
         dossiers: this.getMedicalRecords(userId),
         souscriptions: this.getSouscriptions(userId)

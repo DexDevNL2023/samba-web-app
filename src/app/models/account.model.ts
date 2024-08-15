@@ -17,5 +17,5 @@ export interface Account extends BaseEntity {
   imageUrl?: string | null;
   authorities?: string[] | null;
   actived?: boolean | null;
-  ruleIds?: number[] | null;
+  roles?: number[] | null;
 }

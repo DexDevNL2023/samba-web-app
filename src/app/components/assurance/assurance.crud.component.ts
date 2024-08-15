@@ -124,7 +124,7 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     this.entityName = 'Assurance';
     this.componentLink = '/admin/assurances';
     this.importLink = '/import/assurances';
-    this.moduleKey = 'ASSURANCE_MODULE';
+    this.roleKey = 'ASSURANCE_MODULE';
     this.isTable = true;
   }
   

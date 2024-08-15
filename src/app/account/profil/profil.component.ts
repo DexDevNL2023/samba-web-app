@@ -14,10 +14,10 @@ export class ProfilComponent implements OnInit{
   
     account: Account | null = null; // Compte utilisateur actuel
     data: UserData | null = {
-      rules: [
+      roles: [
         {
           id: 1,
-          moduleKey: 'SINISTRE_MODULE',
+          roleKey: 'SINISTRE_MODULE',
           libelle: 'Gestion des sinistres',
           permissions: [
             {
@@ -39,7 +39,7 @@ export class ProfilComponent implements OnInit{
         },
         {
           id: 2,
-          moduleKey: 'SUBSCRIPTION_MODULE',
+          roleKey: 'SUBSCRIPTION_MODULE',
           libelle: 'Gestion des souscription',
           permissions: [
             {

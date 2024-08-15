@@ -19,297 +19,297 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     // Menu pour l'Administrateur :
     {
       id: 1,
-      moduleKey: 'ASSURANCE_MODULE',
+      roleKey: 'ASSURANCE_MODULE',
       libelle: 'Gestion des assurances',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 2,
-      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      roleKey: 'POLICE_ASSURANCE_MODULE',
       libelle: 'Gestion des polices d\'assurance',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 3,
-      moduleKey: 'GARANTIE_MODULE',
+      roleKey: 'GARANTIE_MODULE',
       libelle: 'Gestion des garanties',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 4,
-      moduleKey: 'ASSURE_MODULE',
+      roleKey: 'ASSURE_MODULE',
       libelle: 'Gestion des assurés',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 5,
-      moduleKey: 'SUBSCRIPTION_MODULE',
+      roleKey: 'SUBSCRIPTION_MODULE',
       libelle: 'Gestion des souscriptions',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 6,
-      moduleKey: 'SINISTRE_MODULE',
+      roleKey: 'SINISTRE_MODULE',
       libelle: 'Gestion des sinistres',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 7,
-      moduleKey: 'RECLAMATION_MODULE',
+      roleKey: 'RECLAMATION_MODULE',
       libelle: 'Gestion des réclamations',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 8,
-      moduleKey: 'DOCUMENT_MODULE',
+      roleKey: 'DOCUMENT_MODULE',
       libelle: 'Gestion des documents',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 9,
-      moduleKey: 'NOTIFICATION_MODULE',
+      roleKey: 'NOTIFICATION_MODULE',
       libelle: 'Gestion des notifications',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 10,
-      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      roleKey: 'DOSSIER_MEDICAUX_MODULE',
       libelle: 'Gestion des dossiers médicaux',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 11,
-      moduleKey: 'PAIEMENT_MODULE',
+      roleKey: 'PAIEMENT_MODULE',
       libelle: 'Gestion des paiements',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 12,
-      moduleKey: 'REPORTING_MODULE',
+      roleKey: 'REPORTING_MODULE',
       libelle: 'Gestion des rapports',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 13,
-      moduleKey: 'USERS_MODULE',
+      roleKey: 'USERS_MODULE',
       libelle: 'Gestion des utilisateurs',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 14,
-      moduleKey: 'BRANCHE_MODULE',
+      roleKey: 'BRANCHE_MODULE',
       libelle: 'Gestion des branches',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 15,
-      moduleKey: 'COMPANY_MODULE',
+      roleKey: 'COMPANY_MODULE',
       libelle: 'Gestion de la société',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 16,
-      moduleKey: 'FOURNISSEUR_MODULE',
+      roleKey: 'FOURNISSEUR_MODULE',
       libelle: 'Gestion des partenaires',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 17,
-      moduleKey: 'PRESTATION_MODULE',
+      roleKey: 'PRESTATION_MODULE',
       libelle: 'Gestion des prestations',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 18,
-      moduleKey: 'FINANCEUR_MODULE',
+      roleKey: 'FINANCEUR_MODULE',
       libelle: 'Gestion des financeurs',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 19,
-      moduleKey: 'DASHBOARD_MODULE',
+      roleKey: 'DASHBOARD_MODULE',
       libelle: 'Dashboard',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
 
     // Menu pour le Fournisseur de Services :
     {
       id: 20,
-      moduleKey: 'DASHBOARD_MODULE',
+      roleKey: 'DASHBOARD_MODULE',
       libelle: 'Dashboard',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 21,
-      moduleKey: 'SINISTRE_MODULE',
+      roleKey: 'SINISTRE_MODULE',
       libelle: 'Gestion des sinistres',
-      permissionIds: [1, 4, 5]
+      permissions: [1, 4, 5]
     },
     {
       id: 22,
-      moduleKey: 'PRESTATION_MODULE',
+      roleKey: 'PRESTATION_MODULE',
       libelle: 'Gestion des prestations',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 23,
-      moduleKey: 'FINANCEUR_MODULE',
+      roleKey: 'FINANCEUR_MODULE',
       libelle: 'Gestion des financeurs',
-      permissionIds: [1, 4, 5]
+      permissions: [1, 4, 5]
     },
     {
       id: 24,
-      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      roleKey: 'DOSSIER_MEDICAUX_MODULE',
       libelle: 'Gestion des dossiers médicaux',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 25,
-      moduleKey: 'DOCUMENT_MODULE',
+      roleKey: 'DOCUMENT_MODULE',
       libelle: 'Gestion des documents',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 26,
-      moduleKey: 'NOTIFICATION_MODULE',
+      roleKey: 'NOTIFICATION_MODULE',
       libelle: 'Gestion des notifications',
-      permissionIds: [1, 4, 5]
+      permissions: [1, 4, 5]
     },
 
     // Menu pour l'Agent :
     {
       id: 27,
-      moduleKey: 'DASHBOARD_MODULE',
+      roleKey: 'DASHBOARD_MODULE',
       libelle: 'Dashboard',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 28,
-      moduleKey: 'ASSURANCE_MODULE',
+      roleKey: 'ASSURANCE_MODULE',
       libelle: 'Gestion des assurances',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 29,
-      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      roleKey: 'POLICE_ASSURANCE_MODULE',
       libelle: 'Gestion des polices d\'assurance',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 30,
-      moduleKey: 'GARANTIE_MODULE',
+      roleKey: 'GARANTIE_MODULE',
       libelle: 'Gestion des garanties',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 31,
-      moduleKey: 'ASSURE_MODULE',
+      roleKey: 'ASSURE_MODULE',
       libelle: 'Gestion des assurés',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 32,
-      moduleKey: 'SUBSCRIPTION_MODULE',
+      roleKey: 'SUBSCRIPTION_MODULE',
       libelle: 'Gestion des souscriptions',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 33,
-      moduleKey: 'SINISTRE_MODULE',
+      roleKey: 'SINISTRE_MODULE',
       libelle: 'Gestion des sinistres',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 34,
-      moduleKey: 'RECLAMATION_MODULE',
+      roleKey: 'RECLAMATION_MODULE',
       libelle: 'Gestion des réclamations',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 35,
-      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      roleKey: 'DOSSIER_MEDICAUX_MODULE',
       libelle: 'Gestion des dossiers médicaux',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 36,
-      moduleKey: 'PAIEMENT_MODULE',
+      roleKey: 'PAIEMENT_MODULE',
       libelle: 'Gestion des paiements',
-      permissionIds: [1, 2, 4, 5]
+      permissions: [1, 2, 4, 5]
     },
     {
       id: 37,
-      moduleKey: 'DOCUMENT_MODULE',
+      roleKey: 'DOCUMENT_MODULE',
       libelle: 'Gestion des documents',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 38,
-      moduleKey: 'NOTIFICATION_MODULE',
+      roleKey: 'NOTIFICATION_MODULE',
       libelle: 'Gestion des notifications',
-      permissionIds: [1, 4, 5]
+      permissions: [1, 4, 5]
     },
 
     // Menu pour le Client (Assuré) :
     {
       id: 39,
-      moduleKey: 'ASSURANCE_MODULE',
+      roleKey: 'ASSURANCE_MODULE',
       libelle: 'Gestion des assurances',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 40,
-      moduleKey: 'POLICE_ASSURANCE_MODULE',
+      roleKey: 'POLICE_ASSURANCE_MODULE',
       libelle: 'Gestion des polices d\'assurance',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 41,
-      moduleKey: 'GARANTIE_MODULE',
+      roleKey: 'GARANTIE_MODULE',
       libelle: 'Gestion des garanties',
-      permissionIds: [4, 5]
+      permissions: [4, 5]
     },
     {
       id: 42,
-      moduleKey: 'SUBSCRIPTION_MODULE',
+      roleKey: 'SUBSCRIPTION_MODULE',
       libelle: 'Gestion des souscriptions',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 43,
-      moduleKey: 'SINISTRE_MODULE',
+      roleKey: 'SINISTRE_MODULE',
       libelle: 'Gestion des sinistres',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 44,
-      moduleKey: 'RECLAMATION_MODULE',
+      roleKey: 'RECLAMATION_MODULE',
       libelle: 'Gestion des réclamations',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 45,
-      moduleKey: 'DOCUMENT_MODULE',
+      roleKey: 'DOCUMENT_MODULE',
       libelle: 'Gestion des documents',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 46,
-      moduleKey: 'NOTIFICATION_MODULE',
+      roleKey: 'NOTIFICATION_MODULE',
       libelle: 'Gestion des notifications',
-      permissionIds: [1, 4, 5]
+      permissions: [1, 4, 5]
     },
     {
       id: 47,
-      moduleKey: 'DOSSIER_MEDICAUX_MODULE',
+      roleKey: 'DOSSIER_MEDICAUX_MODULE',
       libelle: 'Gestion des dossiers médicaux',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     },
     {
       id: 48,
-      moduleKey: 'PAIEMENT_MODULE',
+      roleKey: 'PAIEMENT_MODULE',
       libelle: 'Gestion des paiements',
-      permissionIds: [1, 2, 3, 4, 5]
+      permissions: [1, 2, 3, 4, 5]
     }
   ];   
   permissions: Permission[] = [
@@ -376,7 +376,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     this.entityName = 'Account';
     this.componentLink = '/admin/accounts';
     this.importLink = '/import/accounts';
-    this.moduleKey = 'ACCOUNT_MODULE';
+    this.roleKey = 'ACCOUNT_MODULE';
     this.isTable = true;
   }
 
@@ -392,11 +392,11 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       { field: 'login', header: 'Login', type: 'text' },
       { field: 'authorities', header: 'Authorisations', type: 'enum', values: [], label: 'label', key: 'value' },
       { field: 'actived', header: 'Actif', type: 'boolean' },
-      { field: 'ruleIds', header: 'Rôles', type: 'list', values: [], label: 'moduleKey', key: 'id', subfield: [
+      { field: 'roles', header: 'Rôles', type: 'list', values: [], label: 'roleKey', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'moduleKey', header: 'Clé', type: 'text' },
+          { field: 'roleKey', header: 'Clé', type: 'text' },
           { field: 'libelle', header: 'Libelle', type: 'text' },
-          { field: 'permissionIds', header: 'Permissions', type: 'list', values: [], label: 'libelle', key: 'id' }
+          { field: 'permissions', header: 'Permissions', type: 'list', values: [], label: 'libelle', key: 'id' }
         ]
       }
     ];
@@ -415,7 +415,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         langKey: 'en',
         login: 'victor.nlang',
         imageUrl: 'assets/demo/images/avatar/amyelsner.png',
-        ruleIds: [39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+        roles: [39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
       },
       
       // Compte pour un agent
@@ -428,7 +428,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         langKey: 'fr',
         login: 'jane.smith',
         imageUrl: 'assets/demo/images/avatar/annafali.png',
-        ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
+        roles: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
       },
       {
         id: 3,
@@ -439,7 +439,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         langKey: 'en',
         login: 'john.doe',
         imageUrl: 'assets/demo/images/avatar/asiyajavayant.png',
-        ruleIds: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
+        roles: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
       },
       
       // Compte pour un administrateur
@@ -452,7 +452,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         langKey: 'en',
         login: 'admin.samba',
         imageUrl: 'assets/demo/images/avatar/bernardodominic.png',
-        ruleIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        roles: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
       },
       
       // Compte pour un fournisseur de soins
@@ -465,7 +465,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         langKey: 'fr',
         login: 'care.provider',
         imageUrl: 'assets/demo/images/avatar/elwinsharvill.png',
-        ruleIds: [20, 21, 22, 23, 24, 25, 26]
+        roles: [20, 21, 22, 23, 24, 25, 26]
       }
     ];
     this.branches = [
@@ -508,8 +508,8 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
    * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
    */
   protected assignColumnsValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('ruleIds', this.roles);
-    this.setSubFieldValues('ruleIds', 'permissionIds', this.permissions);
+    this.setColumnValues('roles', this.roles);
+    this.setSubFieldValues('roles', 'permissions', this.permissions);
   }
 
   updatePermission(id: number, event: any){
@@ -517,10 +517,10 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       const form: any = {
         "accountId": this.selectedItem?.id,
         "moduleId": event?.id,
-        "permissionIds": event?.permissionIds
+        "permissionIds": event?.permissions
       };
 
-      this.accountCrudService.changePermission(form).subscribe(data => {
+      this.accountCrudService.changePermission(form).subscribe(() => {
         this.ngOnInit();    
       });
     }

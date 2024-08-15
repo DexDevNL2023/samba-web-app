@@ -33,7 +33,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   componentLink: string = '';
   importLink: string = '';
   entityName: string = '';
-  moduleKey: string = '';
+  roleKey: string = '';
   isTable = true;
   expandedRows: { [key: string]: boolean } = {};
   isExpanded = false;
@@ -607,7 +607,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
   protected hasAccessToPermission(permissionKey: string): boolean {
-    return this.accountService.hasAccessToPermission(this.moduleKey, permissionKey);
+    return this.accountService.hasAccessToPermission(this.roleKey, permissionKey);
   } 
 
   protected exportExcel(){
