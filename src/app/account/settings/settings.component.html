@@ -59,21 +59,9 @@
 
           <div *ngIf="accountService.hasAnyAuthority(['ROLE_ADMIN'])" class="mb-4">
             <label for="authority" class="block font-normal text-900 mb-2">Rôles</label>
-            <p-multiSelect
-              id="authority"
-              name="authority"
-              [options]="authority"
-              [(ngModel)]="selectedAuthority"
-              formControlName="authority"
-              [defaultLabel]="'Sélectionnez les rôles'"
-              [style]="{'width':'100%'}"
-              [panelStyle]="{'max-height':'200px'}"
-              optionLabel="label"
-              optionValue="value"
-              dataKey="value"
-              appendTo="body"
-              data-cy="authority">
-            </p-multiSelect>
+            <p-multiSelect name="authority" id="authority" [options]="authorities" formControlName="authority"
+              optionLabel="label" optionValue="value" [showClear]="true" appendTo="body" [style]="{'width':'100%'}"
+              [panelStyle]="{'max-height':'200px'}"></p-multiSelect>
           </div>
         </div>
 

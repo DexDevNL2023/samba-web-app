@@ -50,13 +50,12 @@ export default class SettingsComponent implements OnInit {
     { label: 'Female', value: 'FEMALE' },
     { label: 'Other', value: 'OTHER' }
   ];
-  authority = [
+  authorities = [
     { label: 'Assuré', value: Authority.CLIENT },
     { label: 'Agent', value: Authority.AGENT },
     { label: 'Administrateur', value: Authority.ADMIN },
     { label: 'Fournisseur', value: Authority.PROVIDER }
   ];
-  selectedAuthority: string = null;
   imageUrlPreview: string | ArrayBuffer | null = null;
   signatureUrlPreview: string | ArrayBuffer | null = null;
   account: Account | null = null;
@@ -75,8 +74,6 @@ export default class SettingsComponent implements OnInit {
     this.accountService.identity().subscribe(account => {
       this.account = account;
       console.log(this.account.authority);
-      this.selectedAuthority = this.account.authority;
-      console.log(this.selectedAuthority);
       if (this.account) {
         const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
@@ -157,8 +154,6 @@ export default class SettingsComponent implements OnInit {
       this.accountService.identity().subscribe(account => {
         this.account = account;
         console.log(this.account.authority);
-        this.selectedAuthority = this.account.authority;
-        console.log(this.selectedAuthority);
         if (this.account) {
           const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
           if (userId) {
