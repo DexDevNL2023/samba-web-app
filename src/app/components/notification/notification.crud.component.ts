@@ -19,7 +19,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     {
       id: 1,
       actived: true,
-      authorities: ['ROLE_CLIENT'],
+      authority: 'ROLE_CLIENT',
       email: 'john.doe@example.com',
       fullName: 'Victor Nlang',
       langKey: 'en',
@@ -32,7 +32,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     {
       id: 2,
       actived: true,
-      authorities: ['ROLE_AGENT'],
+      authority: 'ROLE_AGENT',
       email: 'jane.smith@example.com',
       fullName: 'Jane Smith',
       langKey: 'fr',
@@ -43,7 +43,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     {
       id: 3,
       actived: true,
-      authorities: ['ROLE_AGENT'],
+      authority: 'ROLE_AGENT',
       email: 'john.doe@example.com',
       fullName: 'John Doe',
       langKey: 'en',
@@ -56,7 +56,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     {
       id: 4,
       actived: true,
-      authorities: ['ROLE_ADMIN'],
+      authority: 'ROLE_ADMIN',
       email: 'admin.abc@example.com',
       fullName: 'SAMB\'A Assurances Gabon S.A',
       langKey: 'en',
@@ -69,7 +69,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     {
       id: 5,
       actived: true,
-      authorities: ['ROLE_PROVIDER'],
+      authority: 'ROLE_PROVIDER',
       email: 'care.provider@example.com',
       fullName: 'Care Provider',
       langKey: 'fr',

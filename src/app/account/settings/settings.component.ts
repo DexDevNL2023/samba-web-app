@@ -21,7 +21,7 @@ export default class SettingsComponent implements OnInit {
 
     // Admin et agent
     actived: true,
-    authorities: ['ROLE_CLIENT'],
+    authority: ['ROLE_CLIENT'],
     fullName: 'Victor Nlang',
     langKey: 'en',
     login: 'victor.nlang',
@@ -50,19 +50,19 @@ export default class SettingsComponent implements OnInit {
     { label: 'Female', value: 'FEMALE' },
     { label: 'Other', value: 'OTHER' }
   ];
-  authorities = [
+  authority = [
     { label: 'Assuré', value: Authority.CLIENT },
     { label: 'Agent', value: Authority.AGENT },
     { label: 'Administrateur', value: Authority.ADMIN },
     { label: 'Fournisseur', value: Authority.PROVIDER }
   ];
-  selectedAuthorities: string[] = [];
+  selectedAuthority: string = null;
   imageUrlPreview: string | ArrayBuffer | null = null;
   signatureUrlPreview: string | ArrayBuffer | null = null;
   account: Account | null = null;
 
   constructor(
-    private accountService: AccountService, // Service pour la gestion du compte utilisateur
+    public accountService: AccountService, // Service pour la gestion du compte utilisateur
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction du formulaire
     public appMain: AppMainComponent
   ) {
@@ -74,9 +74,9 @@ export default class SettingsComponent implements OnInit {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
     this.accountService.identity().subscribe(account => {
       this.account = account;
-      console.log(this.account.authorities);
-      this.selectedAuthorities = this.account.authorities;
-      console.log(this.selectedAuthorities);
+      console.log(this.account.authority);
+      this.selectedAuthority = this.account.authority;
+      console.log(this.selectedAuthority);
       if (this.account) {
         const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
@@ -93,9 +93,9 @@ export default class SettingsComponent implements OnInit {
   }
 
   private rebuildFormBasedOnAuthorities(): void {
-    if (this.account?.authorities.includes(Authority.PROVIDER)) {
+    if (this.account?.authority.includes(Authority.PROVIDER)) {
       this.buildProviderForm();
-    } else if (this.account?.authorities.includes(Authority.CLIENT)) {
+    } else if (this.account?.authority.includes(Authority.CLIENT)) {
       this.buildAssureForm();
     } else {
       this.buildDefaultUserForm();
@@ -130,7 +130,7 @@ export default class SettingsComponent implements OnInit {
     this.settingsForm.addControl('email', this.formBuilder.control('', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(254)]));
     this.settingsForm.addControl('langKey', this.formBuilder.control('', Validators.required));
     this.settingsForm.addControl('actived', this.formBuilder.control(false, Validators.required));
-    this.settingsForm.addControl('authorities', this.formBuilder.control([]));
+    this.settingsForm.addControl('authority', this.formBuilder.control([]));
     this.settingsForm.addControl('imageUrl', this.formBuilder.control(''));
     this.settingsForm.addControl('login', this.formBuilder.control(''));
   }
@@ -156,9 +156,9 @@ export default class SettingsComponent implements OnInit {
       // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
       this.accountService.identity().subscribe(account => {
         this.account = account;
-        console.log(this.account.authorities);
-        this.selectedAuthorities = this.account.authorities;
-        console.log(this.selectedAuthorities);
+        console.log(this.account.authority);
+        this.selectedAuthority = this.account.authority;
+        console.log(this.selectedAuthority);
         if (this.account) {
           const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
           if (userId) {
@@ -185,9 +185,5 @@ export default class SettingsComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  hasAuthority(authorities: string[]): boolean {
-    return this.account.authorities?.some(auth => authorities.includes(auth)) || false;
   }
 }

@@ -357,7 +357,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
   ];
 
   // Liste pour InsuranceType
-  authorities = [
+  authority = [
     { label: 'Assuré', value: Authority.CLIENT },
     { label: 'Agent', value: Authority.AGENT },
     { label: 'Administrateur', value: Authority.ADMIN },
@@ -390,7 +390,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       { field: 'email', header: 'Email', type: 'text' },
       { field: 'langKey', header: 'Langue', type: 'text' },
       { field: 'login', header: 'Login', type: 'text' },
-      { field: 'authorities', header: 'Authorisations', type: 'enum', values: [], label: 'label', key: 'value' },
+      { field: 'authority', header: 'Authorisations', type: 'enum', values: [], label: 'label', key: 'value' },
       { field: 'actived', header: 'Actif', type: 'boolean' },
       { field: 'roles', header: 'Rôles', type: 'list', values: [], label: 'roleKey', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
@@ -409,7 +409,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       {
         id: 1,
         actived: true,
-        authorities: ['ROLE_CLIENT'],
+        authority: 'ROLE_CLIENT',
         email: 'john.doe@example.com',
         fullName: 'Victor Nlang',
         langKey: 'en',
@@ -422,7 +422,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       {
         id: 2,
         actived: true,
-        authorities: ['ROLE_AGENT'],
+        authority: 'ROLE_AGENT',
         email: 'jane.smith@example.com',
         fullName: 'Jane Smith',
         langKey: 'fr',
@@ -433,7 +433,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       {
         id: 3,
         actived: true,
-        authorities: ['ROLE_AGENT'],
+        authority: 'ROLE_AGENT',
         email: 'john.doe@example.com',
         fullName: 'John Doe',
         langKey: 'en',
@@ -446,7 +446,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       {
         id: 4,
         actived: true,
-        authorities: ['ROLE_ADMIN'],
+        authority: 'ROLE_ADMIN',
         email: 'admin.abc@example.com',
         fullName: 'SAMB\'A Assurances Gabon S.A',
         langKey: 'en',
@@ -459,7 +459,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       {
         id: 5,
         actived: true,
-        authorities: ['ROLE_PROVIDER'],
+        authority: 'ROLE_PROVIDER',
         email: 'care.provider@example.com',
         fullName: 'Care Provider',
         langKey: 'fr',
@@ -501,7 +501,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['fullName', 'email', 'login', 'authorities'];
+    return ['fullName', 'email', 'login', 'authority'];
   }
 
   /**
@@ -526,13 +526,8 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     }
   }
 
-  // Méthode pour obtenir les autorisations de l'utilisateur sous forme de texte
-  getAuthoritiesAsText(): string {
-    return this.selectedItem?.authorities?.join(', ');
-  }
-
   // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
   hasAuthority(authorities: string[]): boolean {
-    return this.selectedItem?.authorities?.some(auth => authorities.includes(auth)) || false;
+    return authorities.some(authority => this.selectedItem?.authority === authority) || false;
   }
 }

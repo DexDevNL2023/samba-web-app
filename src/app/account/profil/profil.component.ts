@@ -93,7 +93,7 @@ export class ProfilComponent implements OnInit{
       ]
     }; // donnees utilisateur actuel
 
-    constructor(private accountService: AccountService, private router: Router, public appMain: AppMainComponent){}
+    constructor(public accountService: AccountService, private router: Router, public appMain: AppMainComponent){}
  
     ngOnInit(): void {
         // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
@@ -119,16 +119,6 @@ export class ProfilComponent implements OnInit{
       ];
   
       this.appMain.setBreadcrumbItems(breadcrumbItems); // Call the public method instead
-    }
-
-    // Méthode pour obtenir les autorisations de l'utilisateur sous forme de texte
-    getAuthoritiesAsText(): string {
-      return this.account.authorities.join(', ');
-    }
-
-    // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
-    hasAuthority(authorities: string[]): boolean {
-      return this.account.authorities?.some(auth => authorities.includes(auth)) || false;
     }
  
     // Méthode pour rediriger vers les paramètres

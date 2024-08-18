@@ -115,6 +115,6 @@ export class AppTopBarComponent implements OnInit {
   // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
   hasAuthority(roles: string[]): boolean {
     // Vérifie si l'autorité spécifiée est présente dans la liste des autorisations
-    return roles.every(authority => this.account.authorities?.includes(authority));
+    return roles.every(authority => this.account.authority?.includes(authority));
   }
 }

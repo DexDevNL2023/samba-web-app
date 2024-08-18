@@ -15,7 +15,7 @@ export interface Account extends BaseEntity {
   usingQr?: boolean | null;
   loginUrl?: string | null;
   imageUrl?: string | null;
-  authorities?: string[] | null;
+  authority?: string | null;
   actived?: boolean | null;
   roles?: number[] | null;
 }

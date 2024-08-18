@@ -25,7 +25,7 @@
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Role : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{getAuthoritiesAsText()}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account.authority}}</span></div>
                             </li>
                         </ul>
                     </div>
@@ -64,7 +64,7 @@
                 </p-tabPanel>
 
                 <!-- Ajouter des onglets pour registrant, dossiers, et souscriptions -->
-                <p-tabPanel header="Registrant" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.registrant">
+                <p-tabPanel header="Registrant" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.registrant">
                     <div class="p-3">
                         <label class="block font-normal text-900 mb-2">Registrant No: {{ data.registrant.numeroRegistrant }}</label>
                         <p>Branche: {{ data.registrant.branche.ville }}</p>
@@ -72,7 +72,7 @@
                     </div>
                 </p-tabPanel>
 
-                <p-tabPanel header="Dossiers" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.dossiers?.length">
+                <p-tabPanel header="Dossiers" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.dossiers?.length">
                     <p-table [value]="data.dossiers" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>
@@ -89,7 +89,7 @@
                     </p-table>
                 </p-tabPanel>
 
-                <p-tabPanel header="Souscriptions" *ngIf="hasAuthority(['ROLE_CLIENT']) && data?.souscriptions?.length">
+                <p-tabPanel header="Souscriptions" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.souscriptions?.length">
                     <p-table [value]="data.souscriptions" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>

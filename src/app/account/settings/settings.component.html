@@ -10,7 +10,7 @@
       <form name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
         
         <!-- Default User Form Fields -->
-        <div *ngIf="hasAuthority(['ROLE_AGENT', 'ROLE_ADMIN'])">
+        <div *ngIf="accountService.hasAnyAuthority(['ROLE_AGENT', 'ROLE_ADMIN'])">
           <div class="mb-4">
             <label for="fullName" class="block font-normal text-900 mb-2">Nom complet</label>
             <input
@@ -45,7 +45,7 @@
             ></p-dropdown>
           </div>
 
-          <div *ngIf="hasAuthority(['ROLE_ADMIN'])" class="mb-4">
+          <div *ngIf="accountService.hasAnyAuthority(['ROLE_ADMIN'])" class="mb-4">
             <label for="actived" class="block font-normal text-900 mb-2">Statut du compte de l'utilisateur</label>
             <p-checkbox
               id="actived"
@@ -57,14 +57,14 @@
             ></p-checkbox>
           </div>
 
-          <div *ngIf="hasAuthority(['ROLE_ADMIN'])" class="mb-4">
-            <label for="authorities" class="block font-normal text-900 mb-2">Rôles</label>
+          <div *ngIf="accountService.hasAnyAuthority(['ROLE_ADMIN'])" class="mb-4">
+            <label for="authority" class="block font-normal text-900 mb-2">Rôles</label>
             <p-multiSelect
-              id="authorities"
-              name="authorities"
-              [options]="authorities"
-              [(ngModel)]="selectedAuthorities"
-              formControlName="authorities"
+              id="authority"
+              name="authority"
+              [options]="authority"
+              [(ngModel)]="selectedAuthority"
+              formControlName="authority"
               [defaultLabel]="'Sélectionnez les rôles'"
               [style]="{'width':'100%'}"
               [panelStyle]="{'max-height':'200px'}"
@@ -72,13 +72,13 @@
               optionValue="value"
               dataKey="value"
               appendTo="body"
-              data-cy="authorities">
+              data-cy="authority">
             </p-multiSelect>
           </div>
         </div>
 
         <!-- Assure Form Fields -->
-        <div *ngIf="hasAuthority(['ROLE_CLIENT'])">
+        <div *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT'])">
           <div class="mb-4">
             <label for="lastName" class="block font-normal text-900 mb-2">Nom de famille</label>
             <input
@@ -195,7 +195,7 @@
         </div>
 
         <!-- Provider Form Fields -->
-        <div *ngIf="hasAuthority(['ROLE_PROVIDER'])">
+        <div *ngIf="accountService.hasAnyAuthority(['ROLE_PROVIDER'])">
           <div class="mb-4">
             <label for="nom" class="block font-normal text-900 mb-2">Nom</label>
             <input

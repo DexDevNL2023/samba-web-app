@@ -63,15 +63,14 @@ export class AccountService {
 
   // Méthode pour vérifier si l'utilisateur possède l'une des autorisations spécifiées
   hasAnyAuthority(authorities: string[] | string): boolean {
-    const userIdentity = this.userIdentity;
-    if (!userIdentity) {
+    if (!this.userIdentity) {
       return false; // Retourne false si l'utilisateur n'est pas authentifié
     }
     if (!Array.isArray(authorities)) {
       authorities = [authorities]; // Convertit les autorisations en tableau si nécessaire
     }
     // Vérifie si l'utilisateur possède l'une des autorisations
-    return userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+    return authorities.some((authority: string) => this.userIdentity.authority === authority);
   }
 
   // Méthode pour récupérer l'identité de l'utilisateur, éventuellement avec force
@@ -142,10 +141,10 @@ export class AccountService {
     return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
   }
 
-  // Nouvelle méthode pour changer les authorities
-  changeAuthorities(newAuthorities: string[]): void {
+  // Nouvelle méthode pour changer les authority
+  changeAuthorities(newAuthority: string): void {
     if (this.userIdentity) {
-      this.userIdentity.authorities = newAuthorities;
+      this.userIdentity.authority = newAuthority;
       this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
     }
   }
@@ -184,15 +183,15 @@ export class AccountService {
         souscriptions: this.getSouscriptions(userId)
       });
   }
-}
- */
+} */
+
 
 
 // Exemple de données pour initialiser un compte
 const exampleAccount = {
   id: 1, // id
   actived: true, // actived
-  authorities: ['ROLE_CLIENT'], // authorities
+  authority: 'ROLE_CLIENT', // authority
   email: 'victor.nlang@teleo.com', // email
   fullName: 'Victor Nlang', // fullName
   langKey: 'en', // langKey
@@ -245,15 +244,14 @@ export class AccountService {
 
   // Méthode pour vérifier si l'utilisateur possède l'une des autorisations spécifiées
   hasAnyAuthority(authorities: string[] | string): boolean {
-    const userIdentity = this.userIdentity;
-    if (!userIdentity) {
+    if (!this.userIdentity) {
       return false; // Retourne false si l'utilisateur n'est pas authentifié
     }
     if (!Array.isArray(authorities)) {
       authorities = [authorities]; // Convertit les autorisations en tableau si nécessaire
     }
     // Vérifie si l'utilisateur possède l'une des autorisations
-    return userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+    return authorities.some((authority: string) => this.userIdentity.authority === authority);
   }
 
   // Méthode pour récupérer l'identité de l'utilisateur, éventuellement avec force
@@ -311,10 +309,10 @@ export class AccountService {
     return this.http.put<any>(`${this.baseUrl}/api/account/${userId}/user`, user);
   }
 
-  // Nouvelle méthode pour changer les authorities
-  changeAuthorities(newAuthorities: string[]): void {
+  // Nouvelle méthode pour changer les authority
+  changeAuthorities(newAuthority: string): void {
     if (this.userIdentity) {
-      this.userIdentity.authorities = newAuthorities;
+      this.userIdentity.authority = newAuthority;
       this.authenticationState.next(this.userIdentity); // Met à jour l'état d'authentification
     }
   }
@@ -354,4 +352,3 @@ export class AccountService {
       });
   }
 }
-

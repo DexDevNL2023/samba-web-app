@@ -90,19 +90,19 @@ export default class LoginComponent implements OnInit, AfterViewInit {
     // Récupère les valeurs du formulaire
     const credentials: Login = this.loginForm.getRawValue();
     
-    // Change les authorities de l'utilisateur en fonction du nom d'utilisateur
+    // Change les authority de l'utilisateur en fonction du nom d'utilisateur
     switch (credentials.username) {
       case 'admin':
-        this.accountService.changeAuthorities(['ROLE_ADMIN']);
+        this.accountService.changeAuthorities('ROLE_ADMIN');
         break;
       case 'agent':
-        this.accountService.changeAuthorities(['ROLE_AGENT']);
+        this.accountService.changeAuthorities('ROLE_AGENT');
         break;
       case 'provider':
-        this.accountService.changeAuthorities(['ROLE_PROVIDER']);
+        this.accountService.changeAuthorities('ROLE_PROVIDER');
         break;
       default:
-        this.accountService.changeAuthorities(['ROLE_CLIENT']);
+        this.accountService.changeAuthorities('ROLE_CLIENT');
         break;
     }
 

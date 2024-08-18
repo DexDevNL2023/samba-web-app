@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class StateStorageService {
   // Déclaration des clés de stockage pour les différentes données
   private previousUrlKey = 'previousUrl';
-  private authenticationKey = 'authenticationToken';
+  private authenticationKey = 'Authorization';
   private localeKey = 'locale';
 
   // Méthode pour stocker une URL dans le sessionStorage
