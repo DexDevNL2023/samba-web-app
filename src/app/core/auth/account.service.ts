@@ -287,7 +287,7 @@ export class AccountService {
     this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
       return roles?.some(rule => rule?.roleKey === roleKey);
     });
-    return false;
+    return true;
   } 
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
@@ -295,7 +295,7 @@ export class AccountService {
     this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
       return roles?.some(rule => rule?.roleKey === roleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
     });
-    return false;
+    return true;
   }
 
   // Méthode pour récupérer les information d'un utilisateur
