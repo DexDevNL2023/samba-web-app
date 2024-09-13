@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -11,8 +12,8 @@ import { Document } from '../models/document.model';
 @Injectable({ providedIn: 'root' })
 export class PrestationService extends GenericCrudService<Prestation> {
 
-    constructor(http: HttpClient) {
-        super(http, 'prestations');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'prestations');
     }
 
     // Méthode pour récupérer le fournisseur associé à une prestation de soin spécifique

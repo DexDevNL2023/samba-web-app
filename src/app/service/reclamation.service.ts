@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,8 +9,8 @@ import { Souscription } from '../models/souscription.model';
 @Injectable({ providedIn: 'root' })
 export class ReclamationService extends GenericCrudService<Reclamation> {
 
-    constructor(http: HttpClient) {
-        super(http, 'reclamations');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'reclamations');
     }
 
     // Méthode pour récupérer les souscriptions associé à une réclamation spécifique

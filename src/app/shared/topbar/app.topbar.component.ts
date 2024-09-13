@@ -66,15 +66,15 @@ export class AppTopBarComponent implements OnInit {
       emetteur: 0
     }
   ];
-  
+
   constructor(
-    private accountService: AccountService, 
-    private notificationService: NotificationService, 
-    private loginService: LoginService, 
+    private accountService: AccountService,
+    private notificationService: NotificationService,
+    private loginService: LoginService,
     private router: Router,
     public app: AppMainComponent
   ) {}
-  
+
   ngOnInit(): void {
     // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
     this.accountService.getAuthenticationState().subscribe(account => {
@@ -106,7 +106,7 @@ export class AppTopBarComponent implements OnInit {
     this.loginService.logout();
     this.router.navigate(['/login']);
   }
- 
+
   // Ouvre les notifications
   openNotifications(): void {
     this.router.navigate(['/admin/notifications']);

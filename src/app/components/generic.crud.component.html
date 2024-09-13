@@ -22,327 +22,150 @@
 				</ng-template>
 			</p-toolbar>
 
-			<ng-container *ngIf="isTable; else notTable">
-				<p-table #dt [value]="items" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-					[globalFilterFields]="getAllFields()" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions"
-					[showCurrentPageReport]="true"
-					currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-					[(selection)]="selectedItems" selectionMode="multiple" [rowHover]="true" dataKey="id">
-					<ng-template pTemplate="caption">
-						<div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-							<h5 class="m-0">{{entityName}}s</h5>
-							<span class="block mt-2 md:mt-0 p-input-icon-left">
-								<i class="pi pi-search"></i>
-								<input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-									placeholder="Search..." class="w-full sm:w-auto" />
-							</span>
-						</div>
-					</ng-template>
-					<ng-template pTemplate="header">
-						<tr>
-							<th style="width: 3rem">
-								<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+			<p-table #dt [value]="items" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+				[globalFilterFields]="getAllFields()" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions"
+				[showCurrentPageReport]="true"
+				currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+				[(selection)]="selectedItems" selectionMode="multiple" [rowHover]="true" dataKey="id">
+				<ng-template pTemplate="caption">
+					<div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+						<h5 class="m-0">{{entityName}}s</h5>
+						<span class="block mt-2 md:mt-0 p-input-icon-left">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+								placeholder="Search..." class="w-full sm:w-auto" />
+						</span>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr>
+						<th style="width: 3rem">
+							<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+						</th>
+						<ng-container *ngFor="let col of cols">
+							<th style="min-width:15rem"
+								*ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'"
+								[pSortableColumn]="col.field">
+								{{ col.header }}
+								<p-sortIcon [field]="col.field"></p-sortIcon>
 							</th>
-							<ng-container *ngFor="let col of cols">
-								<th style="min-width:15rem"
-									*ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:15rem" *ngIf="col.type === 'image'">
-									{{ col.header }}
-								</th>
-								<th style="min-width:25rem" *ngIf="col.type === 'textarea'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:15rem" *ngIf="col.type === 'currency'"
-									[pSortableColumn]="col.field">
-									{{ col.header }} XAF
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:5rem" *ngIf="col.type === 'id'" [pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:5rem" *ngIf="col.type === 'objet' || col.type === 'list'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-								</th>
-								<th style="min-width:8rem"
-									*ngIf="col.type === 'boolean' || col.type === 'date' || col.type === 'enum'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-							</ng-container>
-							<th style="min-width:15rem"></th>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="body" let-item>
-						<ng-container *ngIf="loading; else data">
-							<tr>
-								<td>
-									<p-skeleton></p-skeleton>
-								</td>
-								<ng-container *ngFor="let col of cols">
-									<td>
-										<span class="p-column-title">{{ col.header }}</span>
-										<p-skeleton></p-skeleton>
-									</td>
-								</ng-container>
-								<td>
-									<p-skeleton></p-skeleton>
-								</td>
-							</tr>
+							<th style="min-width:15rem" *ngIf="col.type === 'image'">
+								{{ col.header }}
+							</th>
+							<th style="min-width:25rem" *ngIf="col.type === 'textarea'"
+								[pSortableColumn]="col.field">
+								{{ col.header }}
+								<p-sortIcon [field]="col.field"></p-sortIcon>
+							</th>
+							<th style="min-width:15rem" *ngIf="col.type === 'currency'"
+								[pSortableColumn]="col.field">
+								{{ col.header }} XAF
+								<p-sortIcon [field]="col.field"></p-sortIcon>
+							</th>
+							<th style="min-width:5rem" *ngIf="col.type === 'id'" [pSortableColumn]="col.field">
+								{{ col.header }}
+								<p-sortIcon [field]="col.field"></p-sortIcon>
+							</th>
+							<th style="min-width:5rem" *ngIf="col.type === 'objet' || col.type === 'list'"
+								[pSortableColumn]="col.field">
+								{{ col.header }}
+							</th>
+							<th style="min-width:8rem"
+								*ngIf="col.type === 'boolean' || col.type === 'date' || col.type === 'enum'"
+								[pSortableColumn]="col.field">
+								{{ col.header }}
+								<p-sortIcon [field]="col.field"></p-sortIcon>
+							</th>
 						</ng-container>
-						<ng-template #data>
-							<tr>
-								<td>
-									<p-tableCheckbox [value]="item"></p-tableCheckbox>
-								</td>
-								<ng-container *ngFor="let col of cols">
-									<td [ngSwitch]="col.type">
-										<ng-container *ngSwitchCase="'currency'">
-											<span class="p-column-title">{{ col.header }} XAF</span>
-											{{ item[col.field] }}
-										</ng-container>
-										<ng-container *ngSwitchCase="'image'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<img [src]="item[col.field]" [alt]="item[col.altField]" width="100"
-												class="shadow-4" />
-										</ng-container>
-										<ng-container *ngSwitchCase="'enum'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<p-tag [value]="getEnumLabel(col.values, item[col.field])"
-												[severity]="getSeverity(item[col.field])" [rounded]="true"></p-tag>
-										</ng-container>
-										<ng-container *ngSwitchCase="'date'">
-											<span class="p-column-title">{{ col.header }}</span>
-											{{ item[col.field] | date }}
-										</ng-container>
-										<ng-container *ngSwitchCase="'boolean'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<p-checkbox [(ngModel)]="item[col.field]" [binary]="true"></p-checkbox>
-										</ng-container>
-										<ng-container *ngSwitchCase="'textarea'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<p>
-												{{ item[col.field] }}
-											</p>
-										</ng-container>
-										<ng-container *ngSwitchCase="'objet'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<button pButton pRipple icon="pi pi-eye"
-												class="p-button-rounded p-button-info"
-												(click)="openItemView({ field: col.field, id: item[col.field] })"></button>
-										</ng-container>
-										<ng-container *ngSwitchCase="'list'">
-											<span class="p-column-title">{{ col.header }}</span>
-											<button pButton pRipple icon="pi pi-list"
-												class="p-button-rounded p-button-info"
-												(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button>
-										</ng-container>
-										<ng-container *ngSwitchDefault>
-											<span class="p-column-title">{{ col.header }}</span>
-											{{ item[col.field] }}
-										</ng-container>
-									</td>
-								</ng-container>
-								<td>
-									<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
-										class="p-button-rounded p-button-success mr-2"
-										(click)="editItem(item)"></button>
-									<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-										(click)="deleteItem(item)"></button>
-								</td>
-							</tr>
-						</ng-template>
-					</ng-template>
-					<ng-template pTemplate="emptymessage">
+						<th style="min-width:15rem"></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-item>
+					<ng-container *ngIf="loading; else data">
 						<tr>
-							<td colspan="{{ cols.length + 2 }}" class="text-center">No records found</td>
-						</tr>
-					</ng-template>
-				</p-table>
-			</ng-container>
-
-			<ng-template #notTable>
-				<p-table #et [value]="branches" [columns]="cols" sortField="name" sortMode="single"
-					rowGroupMode="subheader" groupRowsBy="name" responsiveLayout="scroll"
-					[expandedRowKeys]="expandedRows" [rows]="10" [globalFilterFields]="getAllFields()"
-					[paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions" [showCurrentPageReport]="true"
-					currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" dataKey="name"
-					[tableStyle]="{'min-width': '70rem'}">
-					<ng-template pTemplate="caption">
-						<div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-							<h5 class="m-0">{{entityName}}s</h5>
-							<span class="block mt-2 md:mt-0 p-input-icon-left">
-								<i class="pi pi-search"></i>
-								<input pInputText type="text" (input)="onGlobalFilter(et, $event)"
-									placeholder="Search..." class="w-full sm:w-auto" />
-							</span>
-						</div>
-						<div class="flex table-header"></div>
-						<button pButton icon="pi pi-fw {{isExpanded ? 'pi-minus' : 'pi-plus'}}"
-							label="{{isExpanded ? 'Collapse All' : 'Expand All'}}" (click)="expandAll()"></button>
-						<div class="flex table-header"></div>
-					</ng-template>
-					<ng-template pTemplate="header">
-						<tr>
+							<td>
+								<p-skeleton></p-skeleton>
+							</td>
 							<ng-container *ngFor="let col of cols">
-								<th style="min-width:15rem"
-									*ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:15rem" *ngIf="col.type === 'image'">
-									{{ col.header }}
-								</th>
-								<th style="min-width:25rem" *ngIf="col.type === 'textarea'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:15rem" *ngIf="col.type === 'currency'"
-									[pSortableColumn]="col.field">
-									{{ col.header }} XAF
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
-								<th style="min-width:5rem" *ngIf="col.type === 'objet' || col.type === 'list'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-								</th>
-								<th style="min-width:8rem"
-									*ngIf="col.type === 'boolean' || col.type === 'date' || col.type === 'enum'"
-									[pSortableColumn]="col.field">
-									{{ col.header }}
-									<p-sortIcon [field]="col.field"></p-sortIcon>
-								</th>
+								<td>
+									<span class="p-column-title">{{ col.header }}</span>
+									<p-skeleton></p-skeleton>
+								</td>
 							</ng-container>
-							<th style="min-width:15rem"></th>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="groupheader" let-branch let-rowIndex="rowIndex" let-expanded="expanded">
-						<tr>
-							<td colspan="6" style="display: flex; align-items: center;">
-								<button type="button" pButton pRipple [pRowToggler]="branch"
-									class="p-button-text p-button-rounded p-button-plain mr-2"
-									[icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-								</button>
-								<span class="font-bold ml-2">{{branch.name}}</span>
+							<td>
+								<p-skeleton></p-skeleton>
 							</td>
 						</tr>
-					</ng-template>
-					<ng-template pTemplate="groupfooter" let-branch>
-						<tr class="p-rowgroup-footer">
-							<td colspan="5" style="text-align: right">Total {{entityName}}s</td>
-							<td>{{calculateTotalSubscriptions(branch)}}</td>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="rowexpansion" let-branch>
+					</ng-container>
+					<ng-template #data>
 						<tr>
-							<td colspan="6">
-								<p-table [value]="branch.partenaires" sortField="name" sortMode="single" dataKey="name"
-									rowGroupMode="subheader" [expandedRowKeys]="expandedRows" groupRowsBy="name">
-									<ng-template pTemplate="groupheader" let-registrant let-rowIndex="rowIndex"
-										let-expanded="expanded">
-						<tr>
-							<td colspan="5" style="display: flex; align-items: center;">
-								<button type="button" pButton pRipple [pRowToggler]="registrant"
-									class="p-button-text p-button-rounded p-button-plain mr-2"
-									[icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
-								</button>
-								<span class="font-bold ml-2">{{registrant.name}}</span>
+							<td>
+								<p-tableCheckbox [value]="item"></p-tableCheckbox>
 							</td>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="groupfooter" let-registrant>
-						<tr class="p-rowgroup-footer">
-							<td colspan="4" style="text-align: right">Total {{entityName}}s</td>
-							<td>{{registrant.data?.length}}</td>
-						</tr>
-					</ng-template>
-					<ng-template pTemplate="rowexpansion" let-registrant>
-						<ng-container *ngIf="loading; else data">
-							<tr>
-								<ng-container *ngFor="let col of cols">
-									<td>
-										<span class="p-column-title">{{ col.header }}</span>
-										<p-skeleton></p-skeleton>
-									</td>
-								</ng-container>
-								<td>
-									<p-skeleton></p-skeleton>
-								</td>
-							</tr>
-						</ng-container>
-						<ng-template #data>
-							<tr *ngFor="let item of registrant.data">
-								<ng-container *ngFor="let col of cols">
-									<td style="min-width:15rem"
-										*ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'">
-										<span class="p-column-title">{{ col.header }}</span>
-										{{ item[col.field] }}
-									</td>
-									<td style="min-width:15rem" *ngIf="col.type === 'currency'">
+							<ng-container *ngFor="let col of cols">
+								<td [ngSwitch]="col.type">
+									<ng-container *ngSwitchCase="'currency'">
 										<span class="p-column-title">{{ col.header }} XAF</span>
 										{{ item[col.field] }}
-									</td>
-									<td style="min-width:15rem" *ngIf="col.type === 'image'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'image'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<img [src]="item[col.field]" [alt]="item[col.altField]" width="100"
 											class="shadow-4" />
-									</td>
-									<td style="min-width:8rem" *ngIf="col.type === 'enum'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'enum'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<p-tag [value]="getEnumLabel(col.values, item[col.field])"
 											[severity]="getSeverity(item[col.field])" [rounded]="true"></p-tag>
-									</td>
-									<td style="min-width:8rem" *ngIf="col.type === 'date'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'date'">
 										<span class="p-column-title">{{ col.header }}</span>
 										{{ item[col.field] | date }}
-									</td>
-									<td style="min-width:8rem" *ngIf="col.type === 'boolean'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'boolean'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<p-checkbox [(ngModel)]="item[col.field]" [binary]="true"></p-checkbox>
-									</td>
-									<td style="min-width:25rem" *ngIf="col.type === 'textarea'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'textarea'">
 										<span class="p-column-title">{{ col.header }}</span>
 										<p>
 											{{ item[col.field] }}
 										</p>
-									</td>
-									<td style="min-width:5rem" *ngIf="col.type === 'objet'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'objet'">
 										<span class="p-column-title">{{ col.header }}</span>
-										<button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
+										<button pButton pRipple icon="pi pi-eye"
+											class="p-button-rounded p-button-info"
 											(click)="openItemView({ field: col.field, id: item[col.field] })"></button>
-									</td>
-									<td style="min-width:5rem" *ngIf="col.type === 'list'">
+									</ng-container>
+									<ng-container *ngSwitchCase="'list'">
 										<span class="p-column-title">{{ col.header }}</span>
-										<button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info"
+										<button pButton pRipple icon="pi pi-list"
+											class="p-button-rounded p-button-info"
 											(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button>
-									</td>
-								</ng-container>
-								<td style="min-width:15rem">
-									<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
-										class="p-button-rounded p-button-success mr-2"
-										(click)="editItem(item)"></button>
-									<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-										(click)="deleteItem(item)"></button>
+									</ng-container>
+									<ng-container *ngSwitchDefault>
+										<span class="p-column-title">{{ col.header }}</span>
+										{{ item[col.field] }}
+									</ng-container>
 								</td>
-							</tr>
-						</ng-template>
+							</ng-container>
+							<td>
+								<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
+									class="p-button-rounded p-button-success mr-2"
+									(click)="editItem(item)"></button>
+								<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+									(click)="deleteItem(item)"></button>
+							</td>
+						</tr>
 					</ng-template>
-				</p-table>
-				</td>
-				</tr>
-			</ng-template>
+				</ng-template>
+				<ng-template pTemplate="emptymessage">
+					<tr>
+						<td colspan="{{ cols.length + 2 }}" class="text-center">No records found</td>
+					</tr>
+				</ng-template>
 			</p-table>
-			</ng-template>
 
             <p-dialog header="{{ selectedItem && selectedItem.id ? 'Edit ' + entityName : 'New ' + entityName }}"
                 [(visible)]="displayDialog" [modal]="true" [style]="{ width: '50vw' }"
@@ -355,7 +178,7 @@
                                     class="block font-normal text-900 mb-2">{{ field.header }}</label>
                                 <span *ngIf="field.type === 'id' && selectedItem?.id" class="block font-normal text-900 mb-2">{{
                                     selectedItem?.id }}</span>
-        
+
                                 <ng-container [ngSwitch]="field.type">
                                     <input *ngSwitchCase="'text'" type="text" class="p-inputtext p-component p-element"
                                         pInputText name="{{ field.field }}" id="{{ field.field }}"
@@ -414,10 +237,10 @@
                             <button class="p-button-danger" pButton type="button" label="Cancel" icon="pi pi-times"
                                 (click)="hideDialog()"></button>
                         </div>
-                    </p-footer>			
+                    </p-footer>
                 </form>
             </p-dialog>
-        
+
             <p-dialog [(visible)]="displayItemDialog" [style]="{width: '450px'}" header="Details" [modal]="true" class="p-fluid"
                 [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <ng-template pTemplate="content">
@@ -427,40 +250,36 @@
                             [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">
                             {{ col.header }}
                         </label>
-        
+
                         <!-- Affichage des différentes valeurs en fonction du type -->
                         <ng-container [ngSwitch]="col.type">
                             <!-- ID -->
                             <span *ngSwitchCase="'id'" class="block font-normal text-900 mb-2">
                                 {{ selectedItemView?.data[col.field] }}
                             </span>
-        
+
                             <!-- Valeurs générales -->
                             <span *ngSwitchDefault>
                                 {{ selectedItemView?.data[col.field] }}
                             </span>
-        
+
                             <!-- Currency -->
                             <span *ngSwitchCase="'currency'">{{ selectedItemView?.data[col.field] |
                                 currency:'XAF ' }}</span>
-        
+
                             <!-- Image -->
                             <img *ngSwitchCase="'image'" [src]="selectedItemView?.data[col.field]"
                                 [alt]="selectedItemView?.data[col.field]" width="100" class="shadow-4" />
-        
                             <!-- Enum -->
                             <p-tag *ngSwitchCase="'enum'" [value]="getEnumLabel(col.values, selectedItemView?.data[col.field])"
                                 [severity]="getSeverity(selectedItemView?.data[col.field])" [rounded]="true"></p-tag>
-        
                             <!-- Date -->
                             <span *ngSwitchCase="'date'">
                                 {{ selectedItemView?.data[col.field] | date }}
                             </span>
-        
                             <!-- Boolean -->
                             <p-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="selectedItemView?.data[col.field]"
                                 [label]="col.header" [binary]="true" inputId="binary"></p-checkbox>
-        
                             <!-- Textarea -->
                             <p-panel *ngSwitchCase="'textarea'" header="{{ col.header }}" [toggleable]="true">
                                 <p>{{ selectedItemView?.data[col.field] }}</p>

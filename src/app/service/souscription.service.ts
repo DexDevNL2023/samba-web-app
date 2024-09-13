@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,8 +14,8 @@ import { ContratAssurance } from '../models/contrat-assurance.model';
 @Injectable({ providedIn: 'root' })
 export class SouscriptionService extends GenericCrudService<Souscription> {
 
-    constructor(http: HttpClient) {
-        super(http, 'souscriptions');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'souscriptions');
     }
 
     // Méthode pour récupérer l'utilisateur associé à une souscription spécifique

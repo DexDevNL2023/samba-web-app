@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DossierMedical } from '../models/medical-record.model';
@@ -12,8 +13,8 @@ import { Fournisseur } from '../models/fournisseur.model';
 @Injectable({ providedIn: 'root' })
 export class AssureService extends GenericCrudService<Assure> {
 
-    constructor(http: HttpClient) {
-        super(http, 'assures');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'assures');
     }
 
     // Méthode pour récupérer les dossiers médicaux d'un utilisateur

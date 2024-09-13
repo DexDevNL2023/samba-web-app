@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { MessageService } from 'primeng/api';
 import { Branche } from '../../models/branche.model';
@@ -43,14 +44,15 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private brancheService: BrancheService
   ) {
-    super(messageService, baseService, accountService, fb, brancheService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, brancheService, appMain);
     this.entityName = 'Branche';
     this.componentLink = '/admin/branches';
     this.importLink = '/import/branches';
     this.roleKey = 'BRANCHE_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -89,26 +91,6 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
         isDefaut: true,
         partenaires: [2,3]
       }
-    ]; 
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPartenaires();
     this.loading = false;

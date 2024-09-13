@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -95,14 +96,15 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private reclamationService: ReclamationService
   ) {
-    super(messageService, baseService, accountService, fb, reclamationService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, reclamationService, appMain);
     this.entityName = 'Reclamation';
     this.componentLink = '/admin/reclamations';
     this.importLink = '/import/reclamations';
     this.roleKey = 'RECLAMATION_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -247,26 +249,6 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
         justification: null,
         souscription: 4
       }
-    ]; 
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadSouscriptions();
     this.loading = false;

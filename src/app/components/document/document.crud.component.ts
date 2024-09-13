@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -20,14 +21,15 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private documentService: DocumentService
   ) {
-    super(messageService, baseService, accountService, fb, documentService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, documentService, appMain);
     this.entityName = 'Document';
     this.componentLink = '/admin/documents';
     this.importLink = '/import/documents';
     this.roleKey = 'DOCUMENT_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -73,26 +75,6 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
         description: 'Rapport médical décrivant les blessures subies',
         url: 'http://example.com/rapport-medical.pdf'
       }
-    ]; 
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loading = false;
   }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -118,14 +119,15 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private assuranceService: AssuranceService
   ) {
-    super(messageService, baseService, accountService, fb, assuranceService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, assuranceService, appMain);
     this.entityName = 'Assurance';
     this.componentLink = '/admin/assurances';
     this.importLink = '/import/assurances';
     this.roleKey = 'ASSURANCE_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -212,26 +214,6 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
         type: InsuranceType.PERSONNE,
         polices: [8]
       }
-    ];  
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPolices();
     this.loading = false;

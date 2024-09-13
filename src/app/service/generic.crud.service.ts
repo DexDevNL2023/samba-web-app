@@ -1,65 +1,81 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { ToastService } from './toast.service';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { BaseEntity } from '../models/base-entity.model';
-import { EntityByBranch } from '../models/entity-by-branch.model';
+import { RessourceResponse } from '../models/ressource.response.model';
+import { map, catchError } from 'rxjs/operators';
 
 
-// Marque le service comme injectable et disponible pour l'injection de dépendances.
 @Injectable({
   providedIn: 'root'
 })
 export abstract class GenericCrudService<Entity extends BaseEntity> {
-  // URL de base pour les requêtes API, lue à partir de l'environnement.
   protected baseUrl = environment.apiUrl;
-  // URL complète de la ressource, initialisée dans le constructeur.
   protected resourceUrl: string;
 
-  // Constructeur injectant HttpClient et définissant l'URL de la ressource.
-  constructor(protected http: HttpClient, protected endpoint: string) {
+  constructor(protected http: HttpClient, private toastService: ToastService, protected endpoint: string) {
     this.resourceUrl = `${this.baseUrl}/${endpoint}`;
   }
 
   // Méthode générique pour créer une nouvelle entité.
   create(entity: Entity): Observable<Entity> {
-    // Effectue une requête POST et mappe la réponse pour convertir les dates du serveur.
-    return this.http.post<Entity>(this.resourceUrl, entity);
+    return this.http.post<RessourceResponse<Entity>>(this.resourceUrl, entity).pipe(
+      map(response => this.handleResponse(response, 'Création')),
+      catchError(error => this.handleError(error, 'Création'))
+    );
   }
 
   // Méthode générique pour mettre à jour une entité existante.
   update(entity: Entity): Observable<Entity> {
-    // Effectue une requête PUT et mappe la réponse pour convertir les dates du serveur.
-    return this.http.put<Entity>(`${this.resourceUrl}/${this.getEntityIdentifier(entity)}`, entity);
+    return this.http.put<RessourceResponse<Entity>>(`${this.resourceUrl}/${this.getEntityIdentifier(entity)}`, entity).pipe(
+      map(response => this.handleResponse(response, 'Mise à jour')),
+      catchError(error => this.handleError(error, 'Mise à jour'))
+    );
   }
 
   // Méthode générique pour récupérer une entité par son ID.
   find(id: number): Observable<Entity> {
-    // Effectue une requête GET et mappe la réponse pour convertir les dates du serveur.
-    return this.http.get<Entity>(`${this.resourceUrl}/${id}`);
+    return this.http.get<RessourceResponse<Entity>>(`${this.resourceUrl}/${id}`).pipe(
+      map(response => this.handleResponse(response, 'Récupération')),
+      catchError(error => this.handleError(error, 'Récupération'))
+    );
   }
 
   // Méthode générique pour récupérer une liste d'entités.
   query(): Observable<Entity[]> {
-    // Effectue une requête GET et mappe la réponse pour convertir les dates du serveur.
-    return this.http.get<Entity[]>(this.resourceUrl);
-  }
-
-  // Méthode générique pour récupérer une liste d'entités.par branche
-  queryByBranch(): Observable<EntityByBranch<Entity>[]> {
-    // Effectue une requête GET et mappe la réponse pour convertir les dates du serveur.
-    return this.http.get<EntityByBranch<Entity>[]>(this.resourceUrl);
+    return this.http.get<RessourceResponse<Entity[]>>(this.resourceUrl).pipe(
+      map(response => this.handleResponse(response, 'Liste')),
+      catchError(error => this.handleError(error, 'Liste'))
+    );
   }
 
   // Méthode générique pour supprimer une entité par son ID.
   delete(id: number): Observable<void> {
-    // Effectue une requête DELETE.
-    return this.http.delete<void>(`${this.resourceUrl}/${id}`);
+    return this.http.delete<RessourceResponse<void>>(`${this.resourceUrl}/${id}`).pipe(
+      map(response => this.handleResponse(response, 'Suppression')),
+      catchError(error => this.handleError(error, 'Suppression'))
+    );
   }
 
-  // Méthode pour obtenir l'identifiant d'une entité (à implémenter dans les services dérivés).
+  // Gestion de la réponse API
+  protected handleResponse<T>(response: RessourceResponse<T>, action: string): T {
+    if (response.success) {
+      this.toastService.showToast('success', `${action} réussie`, response.message);
+    } else {
+      this.toastService.showToast('error', `${action} échouée`, response.message);
+    }
+    return response.content;
+  }
+
+  // Gestion des erreurs
+  protected handleError(error: any, action: string): Observable<never> {
+    this.toastService.showToast('error', `${action} échouée`, 'Une erreur est survenue.');
+    return throwError(error);
+  }
+
   protected getEntityIdentifier(entity: Pick<Entity, 'id'>): number {
-    // Retourne l'identifiant de l'entité.
     return entity.id;
   }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -92,14 +93,15 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private fournisseurService: FournisseurService
   ) {
-    super(messageService, baseService, accountService, fb, fournisseurService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, fournisseurService, appMain);
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
     this.importLink = '/import/fournisseurs';
     this.roleKey = 'FOURNISSEUR_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -154,39 +156,19 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
         prestations: [3, 4],
         branches: [2]
       }
-    ];  
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPrestations();
     this.loadBranches();
     this.loading = false;
   }
-  
+
   // Chargement des prestations associés à une fournisseur-soin
   loadPrestations(): void {
     this.fournisseurService.getAllPrestations().subscribe((prestations: Prestation[]) => {
         this.prestations = prestations;
     });
   }
-  
+
   // Chargement des prestations associés à une fournisseur-soin
   loadBranches(): void {
     this.fournisseurService.getAllBranches().subscribe((branches: Branche[]) => {

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Assure, Gender } from '../../models/assure.model';
 import { LiteRegistrant } from '../../models/lite.registrant.model';
 import { DossierMedical } from '../../models/medical-record.model';
@@ -232,14 +233,15 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private assureService: AssureService
   ) {
-    super(messageService, baseService, accountService, fb, assureService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, assureService, appMain);
     this.entityName = 'Assuré';
     this.componentLink = '/admin/assures';
     this.importLink = '/import/assures';
     this.roleKey = 'ASSURE_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -349,26 +351,6 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
         dossiers: [4],
         souscriptions: [2]
       }
-    ];
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadRegistrants();
     this.loadSouscriptions();

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { MessageService } from 'primeng/api';
 import { Account, Authority } from '../../models/account.model';
@@ -370,14 +371,15 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private accountCrudService: AccountCrudService
   ) {
-    super(messageService, baseService, accountService, fb, accountCrudService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, accountCrudService, appMain);
     this.entityName = 'Account';
     this.componentLink = '/admin/accounts';
     this.importLink = '/import/accounts';
     this.roleKey = 'ACCOUNT_MODULE';
-    this.isTable = true;
   }
 
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -417,7 +419,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         imageUrl: 'assets/demo/images/avatar/amyelsner.png',
         roles: [39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
       },
-      
       // Compte pour un agent
       {
         id: 2,
@@ -441,7 +442,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         imageUrl: 'assets/demo/images/avatar/asiyajavayant.png',
         roles: [27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 36, 37, 38]
       },
-      
       // Compte pour un administrateur
       {
         id: 4,
@@ -454,7 +454,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         imageUrl: 'assets/demo/images/avatar/bernardodominic.png',
         roles: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
       },
-      
       // Compte pour un fournisseur de soins
       {
         id: 5,
@@ -467,26 +466,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
         imageUrl: 'assets/demo/images/avatar/elwinsharvill.png',
         roles: [20, 21, 22, 23, 24, 25, 26]
       }
-    ];
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadRoles();
     this.loading = false;
@@ -521,7 +500,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       };
 
       this.accountCrudService.changePermission(form).subscribe(() => {
-        this.ngOnInit();    
+        this.ngOnInit();
       });
     }
   }

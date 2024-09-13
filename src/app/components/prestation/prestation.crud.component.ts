@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -244,14 +245,15 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private prestationService: PrestationService
   ) {
-    super(messageService, baseService, accountService, fb, prestationService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, prestationService, appMain);
     this.entityName = 'Prestation';
     this.componentLink = '/admin/prestations';
     this.importLink = '/import/prestations';
     this.roleKey = 'PRESTATION_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -360,26 +362,6 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
         sinistre: 4,
         documents: [4, 1]
       }
-    ];
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadFournisseurs();
     this.loadSinistres();

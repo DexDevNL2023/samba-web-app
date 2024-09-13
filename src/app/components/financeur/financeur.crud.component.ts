@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -89,16 +90,17 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private financeurService: FinanceurService
   ) {
-    super(messageService, baseService, accountService, fb, financeurService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, financeurService, appMain);
     this.entityName = 'Financeur';
     this.componentLink = '/admin/financeurs';
     this.importLink = '/import/financeurs';
     this.roleKey = 'FINANCEUR_MODULE';
-    this.isTable = true;
   }
-  
+
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected initializeColumns(): void {
     // Configuration des colonnes de la table
@@ -155,31 +157,11 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
         email: 'cnss@securitesociale.gouv',
         prestations: [2, 3, 4]
       }
-    ]; 
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPrestations();
     this.loading = false;
   }
-  
+
   // Chargement des prestations associés à une financeur-soin
   loadPrestations(): void {
     this.financeurService.getAllPrestations().subscribe((prestations: Prestation[]) => {

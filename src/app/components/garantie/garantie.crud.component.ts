@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -117,14 +118,15 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private garantieService: GarantieService
   ) {
-    super(messageService, baseService, accountService, fb, garantieService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, garantieService, appMain);
     this.entityName = 'Garantie';
     this.componentLink = '/admin/garanties';
     this.importLink = '/import/garanties';
     this.roleKey = 'GARANTIE_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -189,26 +191,6 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
         status: GarantieStatus.ACTIVEE,
         polices: [5, 6, 7]
       }
-    ];  
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPolices();
     this.loading = false;

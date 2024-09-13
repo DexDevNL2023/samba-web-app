@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Account } from '../models/account.model';
@@ -9,8 +10,8 @@ import { AccountService } from '../core/auth/account.service';
 @Injectable({ providedIn: 'root' })
 export class AccountCrudService extends GenericCrudService<Account> {
 
-  constructor(private accountService: AccountService, http: HttpClient) {
-      super(http, 'accounts');
+  constructor(private accountService: AccountService, http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'accounts');
   }
 
   // Méthode pour récupérer toutes les rôles associées à un account

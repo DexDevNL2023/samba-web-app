@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ToastService } from './../service/toast.service';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppMainComponent } from '../app.main.component';
@@ -20,9 +21,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   @ViewChild(PortraitComponent, { static: false }) tableComponent!: PortraitComponent;
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
-  displayItemDialog: boolean = false; 
+  displayItemDialog: boolean = false;
   selectedItemView: any;
-  displayItemListDialog: boolean = false; 
+  displayItemListDialog: boolean = false;
   selectedItemListView: any;
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
@@ -34,20 +35,18 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   importLink: string = '';
   entityName: string = '';
   roleKey: string = '';
-  isTable = true;
-  expandedRows: { [key: string]: boolean } = {};
-  isExpanded = false;
   formGroup: FormGroup; // Groupe de contrôles de formulaire
   // Déclaration de la variable loading pour contrôler l'affichage du skeleton loader
   loading: boolean = true;
   imageUrlPreview: string | ArrayBuffer | null = null;
   // Configuration des colonnes de la table
   cols: Column[] = [];
-  items: Entity[] = [];  
-  branches: EntityByBranch<Entity>[] = [];
+  items: Entity[] = [];
 
   constructor(
+    private toastService: ToastService,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
     private baseService: BaseService,
     private accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
@@ -70,6 +69,20 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
     // Simulate fetching data from a service
     this.fetchDatas();
+
+    // S'abonner aux messages de toast des requetes
+    this.toastService.toastMessages$.subscribe(toastMessage => {
+      if (toastMessage) {
+        this.messageService.add({
+          key: 'tst',
+          severity: toastMessage.severity,
+          summary: toastMessage.summary,
+          detail: toastMessage.detail
+        });
+        // Forcez la détection des changements
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
@@ -118,18 +131,10 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     //this.loading = true;
 
     // Au chargement du composant, récupère tous les éléments via le service
-    if(this.isTable) {
-      this.service.query().subscribe(data => {
-        this.items = data;
-        this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
-      });
-    } else {
-      this.service.queryByBranch().subscribe(data => {
-        this.branches = data;
-        this.items = this.branches.flatMap(branch => branch.partenaires?.flatMap(partenaire => partenaire.data) || []);
-        this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
-      });
-    }
+    this.service.query().subscribe(data => {
+      this.items = data;
+      this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
+    });
   }
 
   protected updateBreadcrumb() {
@@ -208,7 +213,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
             if (values) {
                 // Filtrer les éléments en fonction des IDs et du champ clé
                 const filteredDatas = this.filterItemsByIds(ids, values, 'id');
-                
                 // Configurer la vue de la liste avec les colonnes et les données filtrées
                 this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
                 this.displayItemListDialog = true;
@@ -364,21 +368,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
         default:
             return 'default';
-    }
-  }
-
-  protected expandAll() {
-    this.isExpanded = !this.isExpanded;
-
-    if (this.isExpanded) {
-      this.branches.forEach(branch => {
-        this.expandedRows[branch.name] = true;
-        branch.partenaires.forEach((registrant: any) => {
-          this.expandedRows[registrant.name] = true;
-        });
-      });
-    } else {
-      this.expandedRows = {};
     }
   }
 
@@ -608,7 +597,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
   protected hasAccessToPermission(permissionKey: string): boolean {
     return this.accountService.hasAccessToPermission(this.roleKey, permissionKey);
-  } 
+  }
 
   protected exportExcel(){
     this.baseService.generateExcel(this.entityName, this.items);

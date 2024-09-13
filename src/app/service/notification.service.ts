@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -12,8 +13,8 @@ export class NotificationService extends GenericCrudService<Notification> {
     private allNotificationsSubject: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
     private unreadNotificationsSubject: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
 
-    constructor(http: HttpClient) {
-        super(http, 'notifications');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'notifications');
     }
 
     // Méthode pour récupérer l'utilisateur associé à une notification spécifique

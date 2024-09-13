@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -94,14 +95,15 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private notificationService: NotificationService
   ) {
-    super(messageService, baseService, accountService, fb, notificationService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, notificationService, appMain);
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
     this.importLink = '/import/notifications';
     this.roleKey = 'NOTIFICATION_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -272,26 +274,6 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
         emetteur: 4,
         lu: false,
       }
-    ];  
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadAccounts();
     this.loading = false;

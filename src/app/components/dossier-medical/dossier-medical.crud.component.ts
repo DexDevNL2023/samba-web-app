@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -71,16 +72,17 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private medicalRecordService: MedicalRecordService
   ) {
-    super(messageService, baseService, accountService, fb, medicalRecordService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, medicalRecordService, appMain);
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
     this.importLink = '/import/dossiers/medicaux';
     this.roleKey = 'DOCUMENT_MODULE';
-    this.isTable = true;
   }
-  
+
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected initializeColumns(): void {
     // Configuration des colonnes de la table
@@ -180,31 +182,11 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
         consentementCollecteDonnees: true,
         declarationNonFraude: true,
       },
-    ];  
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadPatients();
     this.loading = false;
   }
-  
+
   // Chargement des polices associés à une medical-record
   loadPatients(): void {
     this.medicalRecordService.getAllPatients().subscribe((patients: Assure[]) => {

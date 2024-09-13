@@ -46,22 +46,22 @@ export class AppMainComponent {
     constructor(private accountService: AccountService, private breadcrumbService: BreadcrumbService, private messageService: MessageService, private router: Router, private menuService: MenuService, public app: AppComponent) { }
 
     // Méthode exécutée à l'initialisation du composant
-    ngOnInit(): void { 
-      // Exemple de configuration initiale du breadcrumb
-      this.breadcrumbItems = [
-          { label: 'Home', routerLink: '/admin' }
-      ];
+    ngOnInit(): void {
+        // Exemple de configuration initiale du breadcrumb
+        this.breadcrumbItems = [
+            { label: 'Home', routerLink: '/admin' }
+        ];
 
-      // Écoutez les changements dans la navigation pour mettre à jour le breadcrumb
-      this.breadcrumbService.setItems(this.breadcrumbItems);
-      
-      // Vérifie si l'utilisateur est déjà authentifié
-      this.accountService.identity().subscribe(() => {
+        // Écoutez les changements dans la navigation pour mettre à jour le breadcrumb
+        this.breadcrumbService.setItems(this.breadcrumbItems);
+
+        // Vérifie si l'utilisateur est déjà authentifié
+        this.accountService.identity().subscribe(() => {
         if (!this.accountService.isAuthenticated()) {
-          // Redirige vers la page de login si pas authentifié
-          this.router.navigate(['/login']); 
+            // Redirige vers la page de login si pas authentifié
+            this.router.navigate(['/login']);
         }
-      });
+        });
     }
 
     public setBreadcrumbItems(items: any[]) {

@@ -1,3 +1,4 @@
+import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,8 +9,8 @@ import { GenericCrudService } from './generic.crud.service';
 @Injectable({ providedIn: 'root' })
 export class GarantieService extends GenericCrudService<Garantie> {
 
-    constructor(http: HttpClient) {
-        super(http, 'garanties');
+    constructor(http: HttpClient, toastService: ToastService) {
+        super(http, toastService, 'garanties');
     }
 
     // Méthode pour récupérer les polices d'assurance associées à une garantie spécifique

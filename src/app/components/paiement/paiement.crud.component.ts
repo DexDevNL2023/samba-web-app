@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ToastService } from './../../service/toast.service';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -145,14 +146,15 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
+    toastService: ToastService,
+    cdr: ChangeDetectorRef,
     private paiementService: PaiementService
   ) {
-    super(messageService, baseService, accountService, fb, paiementService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, paiementService, appMain);
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
     this.importLink = '/import/paiements';
     this.roleKey = 'PAIEMENT_MODULE';
-    this.isTable = true;
   }
   
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -275,26 +277,6 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
         souscription: 4,
         recuPaiement: 3
       }
-    ]; 
-    this.branches = [
-        {
-            name: 'Branch A',
-            partenaires: [
-                {
-                    name: 'Registrant A1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        },
-        {
-            name: 'Branch B',
-            partenaires: [
-                {
-                    name: 'Registrant B1',
-                    data: this.items // Reuse existing items
-                }
-            ]
-        }
     ];
     this.loadSouscriptions();
     this.loadRecuPaiements();

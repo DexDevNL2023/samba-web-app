@@ -67,8 +67,8 @@ export default class SettingsComponent implements OnInit {
   ) {
     // Initialisation du formulaire avec les champs et validateurs nécessaires
     this.settingsForm = this.formBuilder.group({});
-  } 
-  
+  }
+
   ngOnInit(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
     this.accountService.identity().subscribe(account => {
