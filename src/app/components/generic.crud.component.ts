@@ -48,7 +48,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
     private baseService: BaseService,
-    private accountService: AccountService,
+    public accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
     private service: GenericCrudService<Entity>, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
@@ -60,9 +60,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   ngOnInit() {
     // Initialise les colonnes de la table
     this.initializeColumns();
-    // Others data initialization
-    this.initializeColumnsData();
-    this.assignColumnsValues();
+    // Récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
     this.getRequiredFields();
     // Mettre à jour le breadcrumb initial
     this.updateBreadcrumb();
@@ -85,51 +83,16 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     });
   }
 
-  // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
-  protected abstract initializeColumnsData(): void;
-
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected abstract assignColumnsValues(): void;
-
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected abstract initializeColumns(): void;
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected abstract getRequiredFields(): string[];
 
-  /**
-   * Met à jour les valeurs d'une colonne spécifique.
-   * @param field - Le champ de la colonne à mettre à jour.
-   * @param values - Les valeurs à assigner à la colonne.
-   */
-  protected setColumnValues(field: string, values: any[]) {
-    const column = this.cols.find(col => col.field === field);
-    if (column) {
-      column.values = values;
-    }
-  }
-
-  /**
-   * Met à jour les valeurs d'un sous-champ spécifique dans les colonnes.
-   * @param parentField - Le champ parent contenant le sous-champ.
-   * @param subField - Le sous-champ à mettre à jour.
-   * @param values - Les valeurs à assigner au sous-champ.
-   */
-  protected setSubFieldValues(parentField: string, subField: string, values: any[]) {
-    const parentColumn = this.cols.find(col => col.field === parentField);
-    if (parentColumn && parentColumn.subfield) {
-      const subColumn = parentColumn.subfield.find(sub => sub.field === subField);
-      if (subColumn) {
-        subColumn.values = values;
-      }
-    }
-  }
+  // Méthode abstraite à implémenter pour initialiser tous autres fonctions
+  protected abstract initializeOthers(): void;
 
   protected fetchDatas(): void {
-    //this.loading = true;
-
     // Au chargement du composant, récupère tous les éléments via le service
     this.service.query().subscribe(data => {
       this.items = data;
@@ -147,6 +110,17 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.appMain.setBreadcrumbItems(breadcrumbItems); // Call the public method instead
   }
 
+  // Méthode pour vérifier si l'utilisateur a toutes les autorisations dans une liste
+  hasAuthority(authorities: string[]): boolean {
+    // Si la liste des autorités est vide ou non définie, retourner true (autorisations par défaut)
+    if (!authorities || authorities.length === 0) {
+      return true;
+    }
+
+    // Utilise accountService pour vérifier si l'utilisateur a au moins une des autorités
+    return this.accountService.hasAnyAuthority(authorities);
+  }
+
   /**
    * Ouvre la vue d'un élément spécifique à partir de l'ID et du champ.
    * @param item - L'objet contenant les informations sur le champ et l'ID.
@@ -160,19 +134,12 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
         if (column) {
             // Assurer que la colonne a des valeurs à filtrer
-            const values = column.values;
+            const values = column.values; // Appelle la méthode de chargement
 
             if (values) {
-                // Filtrer l'élément en fonction des IDs et du champ clé
-                const filteredData = this.filterItemById(id, values, 'id');
-
-                if (filteredData) {
-                    // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
-                    this.selectedItemView = { cols: column.subfield || [], data: filteredData };
-                    this.displayItemDialog = true;
-                } else {
-                    console.error(`No item found with ID: ${id} in field: ${field}`);
-                }
+              // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
+              this.selectedItemView = { cols: column.subfield || [], data: values };
+              this.displayItemDialog = true;
             } else {
                 console.error(`No values found for field: ${field}`);
             }
@@ -182,17 +149,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     } else {
         console.error('Invalid item parameters provided.');
     }
-  }
-
-  /**
-   * Retourne l'élément correspondant à l'ID fourni.
-   * @param id - ID à rechercher.
-   * @param values - Liste des éléments à filtrer.
-   * @param key - Clé de l'élément à comparer (par exemple, 'id').
-   * @returns - L'élément correspondant à l'ID ou `null` si aucun élément n'est trouvé.
-   */
-  protected filterItemById(id: number, values: any[], key: string): any | null {
-      return values.find(item => item[key] === id) || null;
   }
 
   /**
@@ -209,12 +165,10 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
         if (column) {
             // Assurer que la colonne a des valeurs à filtrer
-            const values = column.values;
+            const values = column.values; // Appelle la méthode de chargement
             if (values) {
-                // Filtrer les éléments en fonction des IDs et du champ clé
-                const filteredDatas = this.filterItemsByIds(ids, values, 'id');
                 // Configurer la vue de la liste avec les colonnes et les données filtrées
-                this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
+                this.selectedItemListView = { cols: column.subfield || [], data: values };
                 this.displayItemListDialog = true;
             } else {
                 console.error(`No values found for field: ${field}`);
@@ -225,22 +179,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     } else {
         console.error('Invalid item parameters provided.');
     }
-  }
-
-  /**
-   * Retourne les éléments correspondant aux IDs fournis.
-   * @param ids - Liste des IDs à rechercher.
-   * @param values - Liste des éléments à filtrer.
-   * @param key - Clé de l'élément à comparer (par exemple, 'id').
-   * @returns - Liste des éléments correspondant aux IDs.
-   */
-  protected filterItemsByIds(ids: number[], values: any[], key: string): any[] {
-      return values.filter(item => ids.includes(item[key]));
-  }
-
-  // Method to calculate the total number of entitys for a given branch
-  protected calculateTotalSubscriptions(branch: EntityByBranch<Entity>): number {
-    return branch.partenaires?.reduce((total, registrant) => total + (registrant.data?.length || 0), 0) || 0;
   }
 
   // Method to get the severity class based on the entity status

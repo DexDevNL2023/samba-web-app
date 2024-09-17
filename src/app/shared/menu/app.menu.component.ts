@@ -22,7 +22,7 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         // S'abonne à l'état des notifications non lu
         this.notificationService.getUnreadNotificationState().subscribe(notifications => {
-          this.myNotifs = notifications;
+            this.myNotifs = notifications;
         });
 
         // Menu pour le Client (Assuré) :
@@ -57,7 +57,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             }
         ];
-        
+
         // Menu pour l'Agent :
         this.agentMenu = [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
@@ -92,7 +92,7 @@ export class AppMenuComponent implements OnInit {
             { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
-         
+
         // Menu pour l'Administrateur :
         this.adminMenu = [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
@@ -146,7 +146,7 @@ export class AppMenuComponent implements OnInit {
                 ]
             }
         ];
-        
+
         // Menu pour le Fournisseur de Services :
         this.fournisseurMenu = [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
@@ -189,12 +189,11 @@ export class AppMenuComponent implements OnInit {
     }
 
     buildMenu(menu: any[]) {
-        this.model = menu;
-        /* menu.forEach(item => {
+        menu.forEach(item => {
             if (this.hasModuleAccess(item?.roleKey)) {
                 this.model.push(item);
             }
-        }); */
+        });
     }
 
     onMenuClick(event) {
@@ -204,11 +203,11 @@ export class AppMenuComponent implements OnInit {
     // Vérifie si l'utilisateur possède l'autorisation d'accéder à un module donné
     hasModuleAccess(roleKey: string): boolean {
         //console.log(roleKey);
-      return this.accountService.hasAccessToModule(roleKey);
+        return this.accountService.hasAccessToModule(roleKey);
     }
 
     // Vérifie si l'utilisateur possède l'autorisation indiquer
     hasAuthority(authority: string | string): boolean {
-      return this.accountService.hasAnyAuthority(authority);
+        return this.accountService.hasAnyAuthority(authority);
     }
 }

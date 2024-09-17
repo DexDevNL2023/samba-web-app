@@ -8,7 +8,7 @@
   <div class="flex gap-5 flex-column-reverse md:flex-row">
     <div class="flex-auto p-fluid">
       <form name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
-        
+
         <!-- Default User Form Fields -->
         <div *ngIf="accountService.hasAnyAuthority(['ROLE_AGENT', 'ROLE_ADMIN'])">
           <div class="mb-4">
@@ -78,7 +78,7 @@
               data-cy="lastname"
             />
           </div>
-  
+
           <div class="mb-4">
             <label for="firstName" class="block font-normal text-900 mb-2">Prénoms</label>
             <input

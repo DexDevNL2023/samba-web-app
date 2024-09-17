@@ -1,11 +1,11 @@
 import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Notification } from '../models/notification.model';
 import { GenericCrudService } from './generic.crud.service';
-import { Account } from '../models/account.model';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 
 @Injectable({ providedIn: 'root' })
@@ -14,25 +14,37 @@ export class NotificationService extends GenericCrudService<Notification> {
     private unreadNotificationsSubject: BehaviorSubject<Notification[]> = new BehaviorSubject<Notification[]>([]);
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'notifications');
+        super(http, toastService, '/api/notifications');
     }
 
-    // Méthode pour récupérer l'utilisateur associé à une notification spécifique
-    getAllAccounts(): Observable<Account[]> {
-        return this.http.get<Account[]>(`${this.baseUrl}/${this.endpoint}/all/accounts`);
+    // Récupérer les notifications par ID d'utilisateur
+    getNotificationsByUserId(userId: number): Observable<Notification[]> {
+        return this.http.get<RessourceResponse<Notification[]>>(`${this.baseUrl}/user/${userId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les notifications par utilisateur')),
+            tap(notifications => {
+                this.allNotificationsSubject.next(notifications);
+            }),
+            catchError(error => this.handleError(error, 'Récupérer les notifications par utilisateur'))
+        );
     }
 
-    // Méthode pour récupérer toutes les notifications associé à un utilisateur spécifique
-    getAllNotificationByUtilisateur(utilisateurId: number): Observable<Notification[]> {
-        return this.http.get<Notification[]>(`${this.baseUrl}/${this.endpoint}/${utilisateurId}/all`).pipe(
-            tap(notifications => this.allNotificationsSubject.next(notifications))
+    // Méthode pour marquer toutes les notifications non lues comme lues
+    markAsReadNotificationsByUserId(userId: number): Observable<Notification[]> {
+        return this.http.put<RessourceResponse<Notification[]>>(`${this.baseUrl}/read/${userId}`, {}).pipe(
+            map(response => this.handleResponse(response, 'Marquer les notifications comme lues')),
+            tap(notifications => {
+                this.unreadNotificationsSubject.next(notifications);
+            }),
+            catchError(error => this.handleError(error, 'Marquer les notifications comme lues'))
         );
     }
 
     // Méthode pour récupérer les notifications non lu associé à un utilisateur spécifique
-    getUnreadNotificationByUtilisateur(utilisateurId: number): Observable<Notification[]> {
-        return this.http.get<Notification[]>(`${this.baseUrl}/${this.endpoint}/${utilisateurId}/unread`).pipe(
-            tap(notifications => this.unreadNotificationsSubject.next(notifications))
+    getUnreadNotificationsByUserId(userId: number): Observable<Notification[]> {
+        return this.http.get<RessourceResponse<Notification[]>>(`${this.baseUrl}/unread/${userId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les notifications non lues')),
+            tap(notifications => this.unreadNotificationsSubject.next(notifications)),
+            catchError(error => this.handleError(error, 'Récupérer les notifications non lues'))
         );
     }
 
@@ -44,15 +56,5 @@ export class NotificationService extends GenericCrudService<Notification> {
     // Méthode pour obtenir l'état de toutes les notifications non lu
     getUnreadNotificationState(): Observable<Notification[]> {
         return this.unreadNotificationsSubject.asObservable();
-    }
-
-    // Méthode pour marquer toutes les notifications non lues comme lues
-    markAllAsRead(utilisateurId: number): Observable<Notification[]> {
-        return this.http.put<Notification[]>(`${this.baseUrl}/${this.endpoint}/${utilisateurId}/mark-all-as-read`, {}).pipe(
-            tap(notifications => {
-                this.allNotificationsSubject.next(notifications);
-                this.unreadNotificationsSubject.next(notifications.filter(notification => !notification.lu));
-            })
-        );
     }
 }

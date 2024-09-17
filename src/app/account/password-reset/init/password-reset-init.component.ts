@@ -1,7 +1,6 @@
+import { AuthentificationService } from './../../../service/authentification.service';
 import { Component, AfterViewInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { PasswordResetInitService } from './password-reset-init.service';
 
 @Component({
   selector: 'app-password-reset-init',
@@ -36,7 +35,7 @@ export default class PasswordResetInitComponent implements AfterViewInit {
   ];
 
   constructor(
-    private passwordResetInitService: PasswordResetInitService,
+    private authentificationService: AuthentificationService,
     private fb: FormBuilder
   ) {
     // Initialisation du formulaire réactif avec les champs nécessaires et validations
@@ -55,7 +54,7 @@ export default class PasswordResetInitComponent implements AfterViewInit {
       const email = this.resetRequestForm.get('email')!.value; // Récupère la valeur de l'email depuis le formulaire
 
       // Appel du service pour sauvegarder la demande de réinitialisation
-      this.passwordResetInitService.save(email).subscribe(() => {
+      this.authentificationService.forgotPassword(email).subscribe(() => {
         this.success = true; // Définit l'état de succès à true après une réponse réussie
       });
     }

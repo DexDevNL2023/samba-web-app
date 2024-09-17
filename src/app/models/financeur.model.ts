@@ -5,7 +5,7 @@ export enum FinanceurType {
     MUTUELLE = 'MUTUELLE',
     ORGANISME_PUBLIC = 'ORGANISME_PUBLIC'
   }
-  
+
 export interface Financeur extends BaseEntity {
   nom?: string | null;
   description?: string | null;
@@ -15,4 +15,3 @@ export interface Financeur extends BaseEntity {
   email?: string | null;
   prestations?: number[] | null;
 }
-  

@@ -17,27 +17,13 @@ export class PortraitComponent {
 
   today = new Date();
   headerPrintData: HeaderPrintData = new HeaderPrintData();
-  data: Company = {
-      name: "SAMB'A Assurances Gabon S.A",
-      sigle: "SAMB'A",
-      email: "contact@samba-assurances.ga",
-      telephone: "+241 01 23 45 67",
-      site: "www.samba-assurances.ga",
-      telephone2: "+241 01 23 45 68",
-      adresse: "9137 3rd Lane",
-      ville: "California City",
-      bp: "93504",
-      logo: "assets/layout/images/logo-couleur.png",
-      enteteGauche: "SAMB'A Assurances Gabon S.A;9137 3rd Lane;California City, CA 93504;U.S.A.",
-      enteteDroite: "TEL: +241 01 23 45 67;P.B: 93504;California City;U.S.A.",
-      piedPage: "© 2024 SAMB'A Assurances Gabon S.A. All rights reserved."
-  };
+  data: Company = null;
 
   constructor(private paramService: CompanyService){}
 
   ngOnInit() {
     this.initHeaderPrintData(this.data);
-    //this.paramService.getParametres().subscribe(data => {this.initHeaderPrintData(data)});
+    this.paramService.getCurrentCompany().subscribe(data => {this.initHeaderPrintData(data)});
   }
 
   initHeaderPrintData(data: Company) {

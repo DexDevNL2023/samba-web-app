@@ -1,8 +1,7 @@
+import { AuthentificationService } from './../../../service/authentification.service';
 import { Component, Inject, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
-import { PasswordResetFinishService } from './password-reset-finish.service';
 
 @Component({
   selector: 'app-password-reset-finish',
@@ -43,7 +42,7 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
 
   constructor(
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction de formulaires
-    private passwordResetFinishService: PasswordResetFinishService, // Service PasswordResetFinishService pour la gestion de la réinitialisation du mot de passe
+    private authentificationService: AuthentificationService, // Service PasswordResetFinishService pour la gestion de la réinitialisation du mot de passe
     private route: ActivatedRoute // Service ActivatedRoute pour accéder aux paramètres de l'URL
   ) {
     // Initialisation du formulaire de réinitialisation du mot de passe avec des champs et des validateurs
@@ -56,8 +55,8 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
   ngOnInit(): void {
     // Abonne à la modification des paramètres d'URL
     this.route.queryParams.subscribe(params => {
-      if (params['key']) {
-        this.key = params['key']; // Récupère la clé unique à partir des paramètres d'URL
+      if (params['token']) {
+        this.key = params['token']; // Récupère la clé unique à partir des paramètres d'URL
       }
       this.initialized = true; // Marque l'initialisation du composant comme terminée
     });
@@ -80,7 +79,7 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
       this.doNotMatch = true; // Active l'indicateur de non-correspondance des mots de passe
     } else {
       // Appelle le service pour sauvegarder le nouveau mot de passe
-      this.passwordResetFinishService.save(this.key, newPassword).subscribe({
+      this.authentificationService.resetPassword(this.key, newPassword).subscribe({
         next: () => {
           this.success = true; // Affiche un message de succès après la réinitialisation du mot de passe
           this.passwordForm.reset(); // Réinitialise le formulaire

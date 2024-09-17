@@ -3,24 +3,38 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Fournisseur } from '../models/fournisseur.model';
-import { Prestation } from '../models/prestation.model';
 import { GenericCrudService } from './generic.crud.service';
-import { Branche } from '../models/branche.model';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class FournisseurService extends GenericCrudService<Fournisseur> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'fournisseurs');
+        super(http, toastService, '/api/fournisseurs');
     }
 
-    // Méthode pour récupérer les prestations associées à un fournisseur spécifique
-    getAllPrestations(): Observable<Prestation[]> {
-        return this.http.get<Prestation[]>(`${this.baseUrl}/${this.endpoint}/all/prestations`);
+    // Récupérer les fournisseurs avec leurs branches
+    getFournisseurWithBranchesById(brancheId: number): Observable<Fournisseur> {
+        return this.http.get<RessourceResponse<Fournisseur>>(`${this.baseUrl}/find/by/branche/${brancheId}`).pipe(
+            map(response => this.handleResponse(response, 'Fournisseur retrouvé avec branches')),
+            catchError(error => this.handleError(error, 'Fournisseur retrouvé avec branches'))
+        );
     }
 
-    // Méthode pour récupérer les branches associés à un fournisseur spécifique
-    getAllBranches(): Observable<Branche[]> {
-        return this.http.get<Branche[]>(`${this.baseUrl}/${this.endpoint}/all/sinistres`);
+    // Récupérer les fournisseurs avec leurs prestations
+    getFournisseurWithPrestationsById(prestationId: number): Observable<Fournisseur> {
+        return this.http.get<RessourceResponse<Fournisseur>>(`${this.baseUrl}/find/by/prestation/${prestationId}`).pipe(
+            map(response => this.handleResponse(response, 'Fournisseur retrouvé avec prestations')),
+            catchError(error => this.handleError(error, 'Fournisseur retrouvé avec prestations'))
+        );
+    }
+
+    // Récupérer les fournisseurs avec leurs registrants
+    getFournisseurWithRegistrantsById(registrantId: number): Observable<Fournisseur> {
+        return this.http.get<RessourceResponse<Fournisseur>>(`${this.baseUrl}/find/by/registrant/${registrantId}`).pipe(
+            map(response => this.handleResponse(response, 'Fournisseur retrouvé avec registrants')),
+            catchError(error => this.handleError(error, 'Fournisseur retrouvé avec registrants'))
+        );
     }
 }

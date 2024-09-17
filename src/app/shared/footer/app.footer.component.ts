@@ -5,5 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './app.footer.component.html'
 })
 export class AppFooterComponent {
-
 }

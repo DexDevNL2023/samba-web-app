@@ -3,32 +3,38 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Sinistre } from '../models/sinistre.model';
-import { Souscription } from '../models/souscription.model';
-import { Fournisseur } from '../models/fournisseur.model';
-import { Prestation } from '../models/prestation.model';
-import { Reclamation } from '../models/reclamation.model';
-import { Document } from '../models/document.model';
 import { GenericCrudService } from './generic.crud.service';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class SinistreService extends GenericCrudService<Sinistre> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'sinistres');
+        super(http, toastService, '/api/sinistres');
     }
 
-    // Méthode pour récupérer les souscriptions associée à un sinistre spécifique
-    getAllSouscriptions(): Observable<Souscription[]> {
-        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/all/souscriptions`);
+    // Récupérer les sinistres en fonction de la souscription
+    getBySouscriptionId(souscriptionId: number): Observable<Sinistre[]> {
+        return this.http.get<RessourceResponse<Sinistre[]>>(`${this.baseUrl}/find/by/souscription/${souscriptionId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les sinistres par souscription')),
+            catchError(error => this.handleError(error, 'Récupérer les sinistres par souscription'))
+        );
     }
 
-    // Méthode pour récupérer les prestations de soin associée à un sinistre spécifique
-    getAllPrestations(): Observable<Prestation[]> {
-        return this.http.get<Prestation[]>(`${this.baseUrl}/${this.endpoint}/all/prestations`);
+    // Récupérer un sinistre avec les prestations par ID
+    getWithPrestationsById(prestationId: number): Observable<Sinistre> {
+        return this.http.get<RessourceResponse<Sinistre>>(`${this.baseUrl}/find/by/prestation/${prestationId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer le sinistre avec prestations')),
+            catchError(error => this.handleError(error, 'Récupérer le sinistre avec prestations'))
+        );
     }
 
-    // Méthode pour récupérer les documents de sinistre associés à un sinistre spécifique
-    getAllDocuments(): Observable<Document[]> {
-        return this.http.get<Document[]>(`${this.baseUrl}/${this.endpoint}/all/documents`);
+    // Récupérer un sinistre avec les documents par ID
+    getWithDocumentsById(documentId: number): Observable<Sinistre> {
+        return this.http.get<RessourceResponse<Sinistre>>(`${this.baseUrl}/find/by/document/${documentId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer le sinistre avec documents')),
+            catchError(error => this.handleError(error, 'Récupérer le sinistre avec documents'))
+        );
     }
 }

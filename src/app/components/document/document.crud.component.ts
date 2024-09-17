@@ -5,7 +5,7 @@ import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { BaseService } from '../../service/base.service';
 import { MessageService } from 'primeng/api';
-import { Document } from '../../models/document.model';
+import { Document, TypeDocument } from '../../models/document.model';
 import { DocumentService } from '../../service/document.service';
 import { GenericCrudComponent } from '../generic.crud.component';
 
@@ -14,7 +14,13 @@ import { GenericCrudComponent } from '../generic.crud.component';
   templateUrl: './../generic.crud.component.html'
 })
 export class DocumentCrudComponent extends GenericCrudComponent<Document> {
-  
+
+  // Liste pour InsuranceType
+  typeDocuments = [
+    { label: 'Document de sinistre', value: TypeDocument.SINISTRE },
+    { label: 'Document de prestation', value: TypeDocument.PRESTATION }
+  ];
+
   constructor(
     appMain: AppMainComponent,
     messageService: MessageService,
@@ -23,7 +29,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    private documentService: DocumentService
+    documentService: DocumentService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, documentService, appMain);
     this.entityName = 'Document';
@@ -31,7 +37,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     this.importLink = '/import/documents';
     this.roleKey = 'DOCUMENT_MODULE';
   }
-  
+
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected initializeColumns(): void {
     // Configuration des colonnes de la table
@@ -39,44 +45,30 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroDocument', header: 'Num Document', type: 'text' },
       { field: 'nom', header: 'Nom', type: 'text' },
+      { field: 'type', header: 'Type', type: 'enum', values: () => this.typeDocuments, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'description', header: 'description', type: 'textarea' },
-      { field: 'url', header: 'Telecharger', type: 'url' }
+      { field: 'url', header: 'Telecharger', type: 'url' },
+      { field: 'sinistre', header: 'Sinistre', type: 'objet', values: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
+          { field: 'id', header: 'ID', type: 'id' },
+          { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+          { field: 'dateSurvenance', header: 'Date de survenance', type: 'date' },
+          { field: 'montantSinistre', header: 'Montant', type: 'currency' }
+        ]
+      },
+      { field: 'prestation', header: 'Prestation', type: 'objet', values: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', subfield: [
+          { field: 'id', header: 'ID', type: 'id' },
+          { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+          { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
+          { field: 'montant', header: 'Montant', type: 'currency' }
+        ]
+      }
     ];
   }
 
-  // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
-  protected initializeColumnsData(): void {
-    this.items = [
-      {
-        id: 1,
-        numeroDocument: 'DOC-001',
-        nom: 'Photo du Sinistre',
-        description: 'Photo montrant les dommages causés par l\'accident',
-        url: 'http://example.com/photo-sinistre.jpg'
-      },
-      {
-        id: 2,
-        numeroDocument: 'DOC-002',
-        nom: 'Vidéo du Sinistre',
-        description: 'Vidéo enregistrée par une caméra de surveillance',
-        url: 'http://example.com/video-sinistre.mp4'
-      },
-      {
-        id: 3,
-        numeroDocument: 'DOC-003',
-        nom: 'Facture de Réparation',
-        description: 'Facture des coûts de réparation des dommages',
-        url: 'http://example.com/facture-reparation.pdf'
-      },
-      {
-        id: 4,
-        numeroDocument: 'DOC-004',
-        nom: 'Rapport Médical',
-        description: 'Rapport médical décrivant les blessures subies',
-        url: 'http://example.com/rapport-medical.pdf'
-      }
-    ];
-    this.loading = false;
+  // Méthode abstraite à implémenter pour initialiser tous autres fonctions
+  protected initializeOthers(): void {
+    this.toggleVisibility('prestation', false);  // Masquer prestation
+    this.toggleVisibility('sinistre', false);  // Masquer sinistre
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
@@ -84,9 +76,46 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     return ['nom', 'url'];
   }
 
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected assignColumnsValues(): void { // Ajoutez le modificateur override
+  // Chargement des assures associés à une souscription
+  loadSinistres(): Rule[] {
+    let data: Rule[] = [];
+    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+      data = data;
+    });
+    return data;
+  }
+
+  // Chargement des polices associés à une souscription
+  loadPrestations(): Rule[] {
+    let data: Rule[] = [];
+    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+      data = data;
+    });
+    return data;
+  }
+
+  onTypeChange(item: any, event: any): void {
+    // On récupère la valeur sélectionnée dans le dropdown (SINISTRE ou PRESTATION)
+    const selectedType = event?.value;
+
+    // Vérifier quel type de document a été sélectionné
+    if (selectedType === TypeDocument.SINISTRE) {
+      // Rendre visible le champ avec l'id 'sinistre' et invisible 'prestation'
+      this.toggleVisibility('sinistre', true);  // Afficher sinistre
+      this.toggleVisibility('prestation', false);  // Masquer prestation
+    } else if (selectedType === TypeDocument.PRESTATION) {
+      // Rendre visible le champ avec l'id 'prestation' et invisible 'sinistre'
+      this.toggleVisibility('prestation', true);  // Afficher prestation
+      this.toggleVisibility('sinistre', false);  // Masquer sinistre
+    }
+  }
+
+  // Méthode pour basculer la visibilité d'un élément en utilisant son id
+  toggleVisibility(fieldId: string, isVisible: boolean): void {
+    const element = document.getElementById(fieldId) as HTMLSelectElement;
+    if (element) {
+      // Si l'élément est trouvé, modifier sa visibilité
+      element.style.display = isVisible ? 'block' : 'none';
+    }
   }
 }

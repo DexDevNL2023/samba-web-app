@@ -6,10 +6,13 @@ export enum PaymentType {
   PRESTATION = 'PRESTATION'
 }
 
-export enum PaymentStatus {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
+export enum PaymentMode {
+  BANK_TRANSFER = 'VIREMENT BANCAIRE',
+  CASH = 'ESPÈCES',
+  STRIPE = 'STRIPE',
+  PAYPAL = 'PAYPAL',
+  MOOV = 'MOOV_MONEY',
+  AIRTEL = 'AIRTEL_MONEY'
 }
 
 export interface RecuPaiement extends BaseEntity {
@@ -22,9 +25,10 @@ export interface RecuPaiement extends BaseEntity {
 export interface Paiement extends BaseEntity {
   numeroPaiement?: string | null;
   datePaiement?: Date | null;
+  mode?: PaymentMode | null;
   montant?: number | null;
-  type?: keyof typeof PaymentType | null;
-  status?: keyof typeof PaymentStatus | null;
+  type?: PaymentType | null;
   souscription?: number | null;
+  reclamation?: number | null;
   recuPaiement?: number | null;
 }

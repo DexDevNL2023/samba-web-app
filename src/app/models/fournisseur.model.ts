@@ -6,6 +6,8 @@ export interface Fournisseur extends BaseEntity {
   email?: string | null;
   adresse?: string | null;
   servicesFournis?: string | null;
+  account?: number | null;
   prestations?: number[] | null;
   branches?: number[] | null;
+  registrants?: number[] | null;
 }

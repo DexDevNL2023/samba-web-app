@@ -51,14 +51,14 @@ export default class LoginComponent implements OnInit, AfterViewInit {
   }
 
   // Méthode exécutée à l'initialisation du composant
-  ngOnInit(): void { 
+  ngOnInit(): void {
     // Vérifie si l'utilisateur est déjà authentifié
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
         // Redirige vers la page d'acceuil si authentifié
         //this.router.navigate(['/admin']);
       }
-    }); 
+    });
   }
 
   // Méthode exécutée après l'initialisation de la vue
@@ -69,14 +69,14 @@ export default class LoginComponent implements OnInit, AfterViewInit {
 
   // Méthode pour gérer la soumission du formulaire de connexion
   login(): void {
-    /* // Récupère les valeurs du formulaire
+    // Récupère les valeurs du formulaire
     const loginData = this.loginForm.getRawValue();
     // Appelle le service de connexion avec les données du formulaire
     this.loginService.login(loginData).subscribe({
       next: () => {
         // Réinitialise l'état d'erreur d'authentification
         this.authenticationError = false;
-        // Si aucune navigation en cours, redirige vers la page d'acceuil 
+        // Si aucune navigation en cours, redirige vers la page d'acceuil
         if (!this.router.getCurrentNavigation()) {
           this.router.navigate(['/admin']);
         }
@@ -85,28 +85,6 @@ export default class LoginComponent implements OnInit, AfterViewInit {
       error: () => {
         this.authenticationError = true;
       }
-    }); */ 
-
-    // Récupère les valeurs du formulaire
-    const credentials: Login = this.loginForm.getRawValue();
-    
-    // Change les authority de l'utilisateur en fonction du nom d'utilisateur
-    switch (credentials.username) {
-      case 'admin':
-        this.accountService.changeAuthorities('ROLE_ADMIN');
-        break;
-      case 'agent':
-        this.accountService.changeAuthorities('ROLE_AGENT');
-        break;
-      case 'provider':
-        this.accountService.changeAuthorities('ROLE_PROVIDER');
-        break;
-      default:
-        this.accountService.changeAuthorities('ROLE_CLIENT');
-        break;
-    }
-
-    // Redirige l'utilisateur vers la page /admin
-    this.router.navigate(['/admin']);
+    });
   }
 }

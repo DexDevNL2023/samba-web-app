@@ -57,6 +57,10 @@
 								{{ col.header }}
 								<p-sortIcon [field]="col.field"></p-sortIcon>
 							</th>
+                            <th style="min-width:15rem" *ngIf="col.type === 'percentage'" [pSortableColumn]="col.field">
+                                {{ col.header }} %
+                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                            </th>
 							<th style="min-width:15rem" *ngIf="col.type === 'currency'"
 								[pSortableColumn]="col.field">
 								{{ col.header }} XAF
@@ -104,6 +108,10 @@
 							</td>
 							<ng-container *ngFor="let col of cols">
 								<td [ngSwitch]="col.type">
+									<ng-container *ngSwitchCase="'percentage'">
+										<span class="p-column-title">{{ col.header }} %</span>
+										{{ item[col.field] }}
+									</ng-container>
 									<ng-container *ngSwitchCase="'currency'">
 										<span class="p-column-title">{{ col.header }} XAF</span>
 										{{ item[col.field] }}
@@ -182,38 +190,61 @@
                                 <ng-container [ngSwitch]="field.type">
                                     <input *ngSwitchCase="'text'" type="text" class="p-inputtext p-component p-element"
                                         pInputText name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" />
+                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-dropdown *ngSwitchCase="'enum'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" placeholder="Select a {{ field.header }}"
                                         formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
-                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body" />
+                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <textarea *ngSwitchCase="'textarea'" class="p-inputtextarea p-component p-element"
                                         pInputTextarea name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}" rows="5"
-                                        cols="30"></textarea>
+                                        cols="30" [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null"></textarea>
                                     <p-calendar *ngSwitchCase="'date'" name="{{ field.field }}" id="{{ field.field }}"
                                         formControlName="{{ field.field }}" [showIcon]="true" inputId="icon"
-                                        dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true"
-                                        yearRange="1900:{{ currentYear }}"
-                                        placeholder="Sélectionnez une {{ field.header }}"></p-calendar>
-                                    <p-inputNumber *ngSwitchCase="'currency'" name="{{ field.field }}" id="{{ field.field }}"
+                                        dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
+                                        placeholder="Sélectionnez une {{ field.header }}" [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null"></p-calendar>
+                                    <p-inputNumber *ngSwitchCase="'percentage'" name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
-                                        [showButtons]="true" [min]="0" [max]="100000000000000000" />
+                                        [minFractionDigits]="2" [maxFractionDigits]="2" [suffix]="'%'" [min]="0"
+                                        [max]="100" [step]="0.01" [showButtons]="true"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
+                                    <p-inputNumber *ngSwitchCase="'currency'" name="{{ field.field }}" id="{{ field.field }}"
+                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="currency" currency="XAF"
+                                        currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0"
+                                        [min]="0" [max]="100000000000000000" [showButtons]="true"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
+                                    <p-inputNumber *ngSwitchCase="'number'" name="{{ field.field }}" id="{{ field.field }}"
+                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
+                                        [showButtons]="true" [min]="0" [max]="100000000000000000"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-dropdown *ngSwitchCase="'objet'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" placeholder="Select a {{ field.header }}"
                                         formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
-                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body" />
+                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-multiSelect *ngSwitchCase="'list'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" formControlName="{{ field.field }}"
                                         optionLabel="{{ field.label }}" optionValue="{{ field.key }}" [showClear]="true"
-                                        appendTo="body" [style]="{'width':'100%'}"
-                                        [panelStyle]="{'max-height':'200px'}"></p-multiSelect>
+                                        appendTo="body" [style]="{'width':'100%'}" [panelStyle]="{'max-height':'200px'}"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null"></p-multiSelect>
                                     <p-checkbox *ngSwitchCase="'boolean'" name="{{ field.field }}" id="{{ field.field }}"
-                                        [label]="field.header" formControlName="{{ field.field }}" binary="true"
-                                        [styleClass]="'p-mr-2'" />
+                                        [label]="field.header" formControlName="{{ field.field }}" binary="true" [styleClass]="'p-mr-2'"
+                                        [disabled]="!hasAuthority(field.access)"
+                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <div *ngSwitchCase="'image'">
                                         <img name="{{ field.field }}" id="{{ field.field }}" formControlName="{{ field.field }}" src="{{ imageUrlPreview || '../../../assets/layout/images/avatar.png' }}" alt="Preview"
-                                        style="max-width: 200px; max-height: 200px;" size="xlarge" />
+                                        style="max-width: 200px; max-height: 200px;" size="xlarge" [disabled]="!hasAuthority(field.access)" />
                                         <p-fileUpload
                                             mode="basic"
                                             for="{{ field.field }}"
@@ -222,7 +253,9 @@
                                             (onSelect)="onFileSelected($event)"
                                             [showUploadButton]="false"
                                             [showCancelButton]="true"
-                                            [auto]="true"></p-fileUpload>
+                                            [auto]="true"
+                                            [disabled]="!hasAuthority(field.access)"
+                                            (change)="col.control ? col.control(selectedItem, $event) : null"></p-fileUpload>
                                     </div>
                                 </ng-container>
                             </div>
@@ -257,16 +290,16 @@
                             <span *ngSwitchCase="'id'" class="block font-normal text-900 mb-2">
                                 {{ selectedItemView?.data[col.field] }}
                             </span>
-
                             <!-- Valeurs générales -->
                             <span *ngSwitchDefault>
                                 {{ selectedItemView?.data[col.field] }}
                             </span>
-
+                            <!-- Pourcentage -->
+                            <span *ngSwitchCase="'percentage'">{{ selectedItemView?.data[col.field] | percent:'1.2-2' }}</span>
+                            <!-- Montants en XAF -->
+                            <span *ngSwitchCase="'currency'">{{ selectedItemView?.data[col.field] | currency: 'XAF ' }}</span>
                             <!-- Currency -->
-                            <span *ngSwitchCase="'currency'">{{ selectedItemView?.data[col.field] |
-                                currency:'XAF ' }}</span>
-
+                            <span *ngSwitchCase="'number'">{{ selectedItemView?.data[col.field] | number:'1.0-0' }}</span>
                             <!-- Image -->
                             <img *ngSwitchCase="'image'" [src]="selectedItemView?.data[col.field]"
                                 [alt]="selectedItemView?.data[col.field]" width="100" class="shadow-4" />
@@ -284,21 +317,25 @@
                             <p-panel *ngSwitchCase="'textarea'" header="{{ col.header }}" [toggleable]="true">
                                 <p>{{ selectedItemView?.data[col.field] }}</p>
                             </p-panel>
-
-							<p-dropdown *ngSwitchCase="'objet'" [options]="col.values" 
+                            <!-- Dropdown -->
+							<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
 								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
-								optionValue="{{ col.key }}" [showClear]="true" appendTo="body" />
-
-							<p-multiSelect *ngSwitchCase="'list'" [options]="col.values" 
-								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}" 
+								optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
+                                [disabled]="!hasAuthority(col.access)"
+                                (change)="col.control ? col.control(selectedItemView?.data, $event) : null" />
+                            <!-- MultiSelect -->
+							<p-multiSelect *ngSwitchCase="'list'" [options]="col.values"
+								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
 								optionValue="{{ col.key }}" [showClear]="true"
 								appendTo="body" [style]="{'width':'100%'}"
-								[panelStyle]="{'max-height':'200px'}"></p-multiSelect>
+								[panelStyle]="{'max-height':'200px'}"
+                                [disabled]="!hasAuthority(col.access)"
+                                (change)="col.control ? col.control(selectedItemView?.data, $event) : null"></p-multiSelect>
                         </ng-container>
                     </div>
                 </ng-template>
             </p-dialog>
-        
+
             <p-dialog [(visible)]="displayItemListDialog" [style]="{width: '50%'}" header="Listing" [modal]="true"
                 class="p-fluid" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
                 [maximizable]="true">
@@ -322,6 +359,10 @@
                                     </th>
                                     <th style="min-width:25rem" *ngIf="col.type === 'textarea'" [pSortableColumn]="col.field">
                                         {{ col.header }}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                    <th style="min-width:15rem" *ngIf="col.type === 'percentage'" [pSortableColumn]="col.field">
+                                        {{ col.header }} %
                                         <p-sortIcon [field]="col.field"></p-sortIcon>
                                     </th>
                                     <th style="min-width:15rem" *ngIf="col.type === 'currency'" [pSortableColumn]="col.field">
@@ -349,6 +390,10 @@
                             <tr>
                                 <ng-container *ngFor="let col of selectedItemListView?.cols">
                                     <td [ngSwitch]="col.type">
+                                        <ng-container *ngSwitchCase="'percentage'">
+                                            <span class="p-column-title">{{ col.header }} %</span>
+                                            {{ item[col.field] }}
+                                        </ng-container>
                                         <ng-container *ngSwitchCase="'currency'">
                                             <span class="p-column-title">{{ col.header }} XAF</span>
                                             {{ item[col.field] }}
@@ -379,21 +424,21 @@
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'objet'">
                                             <span class="p-column-title">{{ col.header }}</span>
-											<!-- <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
-												(click)="openItemView({ field: col.field, id: item[col.field] })"></button> -->
-											<p-dropdown *ngSwitchCase="'objet'" [options]="col.values" 
+											<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
 											[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
-											optionValue="{{ col.key }}" [showClear]="true" appendTo="body" />
+											optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
+                                            [disabled]="!hasAuthority(col.access)"
+                                            (change)="col.control ? col.control(item, $event) : null" />
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'list'">
                                             <span class="p-column-title">{{ col.header }}</span>
-											<!-- <button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info"
-												(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button> -->
-											<p-multiSelect *ngSwitchCase="'list'" [options]="col.values" 
-												[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}" 
+											<p-multiSelect *ngSwitchCase="'list'" [options]="col.values"
+												[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
 												optionValue="{{ col.key }}" [showClear]="true"
 												appendTo="body" [style]="{'width':'100%'}"
-												[panelStyle]="{'max-height':'200px'}"></p-multiSelect>
+												[panelStyle]="{'max-height':'200px'}"
+                                                [disabled]="!hasAuthority(col.access)"
+                                                (change)="col.control ? col.control(item, $event) : null"></p-multiSelect>
                                         </ng-container>
                                         <ng-container *ngSwitchDefault>
                                             <span class="p-column-title">{{ col.header }}</span>
@@ -406,7 +451,7 @@
                     </p-table>
                 </ng-template>
             </p-dialog>
-        
+
             <p-dialog header="Confirm" [(visible)]="displayDeleteDialog" [modal]="true" [style]="{ width: '50rem' }"
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <div class="flex align-items-center justify-content-center">
@@ -424,7 +469,7 @@
                     </div>
                 </p-footer>
             </p-dialog>
-        
+
             <p-dialog header="Confirm" [(visible)]="displayDeleteItemsDialog" [modal]="true" [style]="{ width: '50rem' }"
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <div class="flex align-items-center justify-content-center">
@@ -445,6 +490,7 @@
         </div>
     </div>
 </div>
+
 <!-- app-invoice.component.html -->
 <p-dialog header="Print Preview" [(visible)]="printPreviewVisible" [modal]="true" [style]="{width: '80vw'}"
 	[modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">

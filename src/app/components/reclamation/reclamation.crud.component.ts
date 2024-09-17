@@ -1,3 +1,7 @@
+import { Authority } from './../../models/account.model';
+import { PaymentType, PaymentMode } from './../../models/paiement.model';
+import { ClaimStatus } from './../../models/sinistre.model';
+import { PrestationStatus, PrestationType } from './../../models/prestation.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -7,7 +11,7 @@ import { BaseService } from '../../service/base.service';
 import { MessageService } from 'primeng/api';
 import { Reclamation, StatutReclamation, TypeReclamation } from '../../models/reclamation.model';
 import { ReclamationService } from '../../service/reclamation.service';
-import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
+import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
 import { GenericCrudComponent } from '../generic.crud.component';
 
 @Component({
@@ -15,56 +19,6 @@ import { GenericCrudComponent } from '../generic.crud.component';
   templateUrl: './../generic.crud.component.html'
 })
 export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> {
-  souscriptions: Souscription[] = [
-    {
-      id: 1,
-      numeroSouscription: 'SUB001',
-      dateSouscription: new Date('2023-01-01'),
-      dateExpiration: new Date('2024-01-01'),
-      status: 'ACTIVE',
-      frequencePaiement: 'MENSUEL',
-      assure: 1,
-      police: 1,
-      paiements: [1, 2, 3],
-      sinistres: [1, 2]
-    },
-    {
-      id: 2,
-      numeroSouscription: 'SUB002',
-      dateSouscription: new Date('2022-06-01'),
-      dateExpiration: new Date('2023-06-01'),
-      status: 'ON_RISK',
-      frequencePaiement: 'ANNUEL',
-      assure: 2,
-      police: 2,
-      paiements: [4],
-      sinistres: [3]
-    },
-    {
-      id: 3,
-      numeroSouscription: 'SUB003',
-      dateSouscription: new Date('2024-02-15'),
-      dateExpiration: new Date('2025-02-15'),
-      status: 'WAITING',
-      frequencePaiement: 'TRIMESTRIEL',
-      assure: 3,
-      police: 3,
-      paiements: [5, 6],
-      sinistres: []
-    },
-    {
-      id: 4,
-      numeroSouscription: 'SUB004',
-      dateSouscription: new Date('2021-09-01'),
-      dateExpiration: new Date('2022-09-01'),
-      status: 'RESILIE',
-      frequencePaiement: 'SEMESTRIEL',
-      assure: 4,
-      police: 4,
-      paiements: [7, 8],
-      sinistres: [4]
-    }
-  ];
 
   // Liste pour InsuranceType
   typeReclamations = [
@@ -74,20 +28,47 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
   statutReclamations = [
     { label: 'En cours', value: StatutReclamation.EN_COURS },
     { label: 'Approuvée', value: StatutReclamation.APPROUVEE },
-    { label: 'Rejetée', value: StatutReclamation.REJETEE },
-    { label: 'En attente', value: StatutReclamation.EN_ATTENTE }
-  ];  
+    { label: 'Rejetée', value: StatutReclamation.REJETEE }
+  ];
   frequencies = [
     { label: 'Annuel', value: PaymentFrequency.ANNUEL },
     { label: 'Mensuel', value: PaymentFrequency.MENSUEL },
     { label: 'Semestriel', value: PaymentFrequency.SEMESTRIEL },
     { label: 'Trimestriel', value: PaymentFrequency.TRIMESTRIEL }
   ];
-  status = [
-    { label: 'Activee', value: SubscriptionStatus.ACTIVE },
+  souscriptiontatus = [
     { label: 'On risk', value: SubscriptionStatus.ON_RISK },
     { label: 'Resiliee', value: SubscriptionStatus.RESILIE },
     { label: 'En attente', value: SubscriptionStatus.WAITING }
+  ];
+  prestationTypes = [
+    { label: 'Bien', value: PrestationType.BIEN },
+    { label: 'Agricole', value: PrestationType.AGRICOLE },
+    { label: 'Personne', value: PrestationType.PERSONNE },
+    { label: 'Santé', value: PrestationType.SANTE }
+  ];
+  prestationStatuses = [
+    { label: 'Non remboursé', value: PrestationStatus.NON_REMBOURSE },
+    { label: 'En attente', value: PrestationStatus.EN_COURS },
+    { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
+  ];
+  claimStatuses = [
+    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
+    { label: 'Approuvé', value: ClaimStatus.APPROUVE },
+    { label: 'Annulé', value: ClaimStatus.ANNULE }
+  ];
+  paymentTypes = [
+    { label: 'Prime', value: PaymentType.PRIME },
+    { label: 'Remboursement', value: PaymentType.REMBOURSEMENT },
+    { label: 'Prestation', value: PaymentType.PRESTATION }
+  ];
+  paymentModes = [
+    { label: 'Virement bancaire', value: PaymentMode.BANK_TRANSFER },
+    { label: 'Especes', value: PaymentMode.CASH },
+    { label: 'PayPal', value: PaymentMode.PAYPAL },
+    { label: 'Stripe', value: PaymentMode.STRIPE },
+    { label: 'Moov Money', value: PaymentMode.MOOV },
+    { label: 'Airtel Money', value: PaymentMode.AIRTEL }
   ];
 
   constructor(
@@ -98,7 +79,7 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    private reclamationService: ReclamationService
+    reclamationService: ReclamationService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, reclamationService, appMain);
     this.entityName = 'Reclamation';
@@ -106,159 +87,102 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     this.importLink = '/import/reclamations';
     this.roleKey = 'RECLAMATION_MODULE';
   }
-  
+
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected initializeColumns(): void {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
-      { field: 'type', header: 'Type', type: 'enum', values: [], label: 'label', key: 'value' },
+      { field: 'type', header: 'Type', type: 'enum', values: () => this.typeReclamations, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
-      { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
+      { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value' },
       { field: 'description', header: 'Description', type: 'textarea' },
       { field: 'montantReclame', header: 'Montant reclamé', type: 'currency' },
       { field: 'montantApprouve', header: 'Montant approuvé', type: 'currency' },
       { field: 'dateEvaluation', header: 'Date évaluation', type: 'date' },
       { field: 'agentEvaluateur', header: 'Agent évaluateur', type: 'text' },
       { field: 'justification', header: 'Justification', type: 'textarea' },
-      { field: 'souscription', header: 'Souscription', type: 'objet', values: [], label: 'numeroSouscription', key: 'id', subfield: [
+      { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
         { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
         { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: [], label: 'label', key: 'value' },
-        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: () => this.souscriptiontatus, label: 'label', key: 'value' },
+        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
       ]
-    }
+      },
+      { field: 'sinistre', header: 'Sinistre', type: 'object', values: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+        { field: 'label', header: 'Libellé', type: 'text' },
+        { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
+        { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
+        { field: 'status', header: 'Status', type: 'enum', values: () => this.claimStatuses, label: 'label', key: 'value' }
+      ]
+      },
+      { field: 'prestation', header: 'Prestation', type: 'object', values: () => this.loadPrestations(), label: 'typePrestation', key: 'id', subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+        { field: 'label', header: 'Libellé', type: 'text' },
+        { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
+        { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+        { field: 'montant', header: 'Montant', type: 'currency' },
+        { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+      ]
+      },
+      { field: 'paiements', header: 'Paiements', type: 'list', values: () => this.loadPaiements(), label: 'montantPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
+        { field: 'id', header: 'ID', type: 'id' },
+        { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
+        { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
+        { field: 'montant', header: 'Montant', type: 'currency' },
+        { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value' },
+        { field: 'mode', header: 'Mode', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' }
+      ]
+      }
     ];
   }
 
-  // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
-  protected initializeColumnsData(): void {
-    this.items = [
-      {
-        id: 1,
-        numeroReclamation: 'REC123456',
-        type: TypeReclamation.SINISTRE,
-        dateReclamation: new Date('2024-03-15'),
-        status: StatutReclamation.EN_COURS,
-        description: 'Réclamation pour un sinistre auto.',
-        montantReclame: 500000,
-        montantApprouve: 450000,
-        dateEvaluation: new Date('2024-03-20'),
-        agentEvaluateur: 'Agent 001',
-        justification: 'Dommages évalués et approuvés.',
-        souscription: 4
-      },
-      {
-        id: 2,
-        numeroReclamation: 'REC654321',
-        type: TypeReclamation.PRESTATION,
-        dateReclamation: new Date('2024-04-10'),
-        status: StatutReclamation.APPROUVEE,
-        description: 'Réclamation pour des frais médicaux.',
-        montantReclame: 10000,
-        montantApprouve: 8000,
-        dateEvaluation: new Date('2024-04-15'),
-        agentEvaluateur: 'Agent 002',
-        justification: 'Frais médicaux partiellement approuvés.',
-        souscription: 3
-      },
-      {
-        id: 3,
-        numeroReclamation: 'REC789012',
-        type: TypeReclamation.SINISTRE,
-        dateReclamation: new Date('2024-05-05'),
-        status: StatutReclamation.REJETEE,
-        description: 'Réclamation pour des dommages agricoles.',
-        montantReclame: 300000,
-        montantApprouve: 0,
-        dateEvaluation: new Date('2024-05-10'),
-        agentEvaluateur: 'Agent 003',
-        justification: 'Réclamation rejetée pour non-conformité.',
-        souscription: 2
-      },
-      {
-        id: 4,
-        numeroReclamation: 'REC890123',
-        type: TypeReclamation.PRESTATION,
-        dateReclamation: new Date('2024-06-15'),
-        status: StatutReclamation.EN_ATTENTE,
-        description: 'Réclamation pour des prestations de rééducation.',
-        montantReclame: 50000,
-        montantApprouve: null,
-        dateEvaluation: null,
-        agentEvaluateur: null,
-        justification: null,
-        souscription: 1
-      },
-      {
-        id: 5,
-        numeroReclamation: 'REC456789',
-        type: TypeReclamation.SINISTRE,
-        dateReclamation: new Date('2024-07-20'),
-        status: StatutReclamation.APPROUVEE,
-        description: 'Réclamation pour un sinistre habitation.',
-        montantReclame: 1000000,
-        montantApprouve: 950000,
-        dateEvaluation: new Date('2024-07-25'),
-        agentEvaluateur: 'Agent 004',
-        justification: 'Évaluation des dommages approuvée.',
-        souscription: 1
-      },
-      {
-        id: 6,
-        numeroReclamation: 'REC321654',
-        type: TypeReclamation.PRESTATION,
-        dateReclamation: new Date('2024-08-01'),
-        status: StatutReclamation.REJETEE,
-        description: 'Réclamation pour des soins dentaires.',
-        montantReclame: 15000,
-        montantApprouve: 0,
-        dateEvaluation: new Date('2024-08-05'),
-        agentEvaluateur: 'Agent 005',
-        justification: 'Réclamation rejetée pour absence de justificatifs.',
-        souscription: 2
-      },
-      {
-        id: 7,
-        numeroReclamation: 'REC654987',
-        type: TypeReclamation.SINISTRE,
-        dateReclamation: new Date('2024-09-10'),
-        status: StatutReclamation.EN_ATTENTE,
-        description: 'Réclamation pour un sinistre agricole.',
-        montantReclame: 200000,
-        montantApprouve: null,
-        dateEvaluation: null,
-        agentEvaluateur: null,
-        justification: null,
-        souscription: 3
-      },
-      {
-        id: 8,
-        numeroReclamation: 'REC987321',
-        type: TypeReclamation.PRESTATION,
-        dateReclamation: new Date('2024-10-01'),
-        status: StatutReclamation.EN_COURS,
-        description: 'Réclamation pour des services de télémédecine.',
-        montantReclame: 3000,
-        montantApprouve: null,
-        dateEvaluation: null,
-        agentEvaluateur: null,
-        justification: null,
-        souscription: 4
-      }
-    ];
-    this.loadSouscriptions();
-    this.loading = false;
+  // Méthode abstraite à implémenter pour initialiser tous autres fonctions
+  protected initializeOthers(): void {
+    this.toggleVisibility('prestation', false);  // Masquer prestation
+    this.toggleVisibility('sinistre', false);  // Masquer sinistre
   }
 
   // Chargement des souscriptions associés à une reclamation
-  loadSouscriptions(): void {
-    this.reclamationService.getAllSouscriptions().subscribe((souscriptions: Souscription[]) => {
-        this.souscriptions = souscriptions;
+  loadSouscriptions(): PoliceAssurance[] {
+    let data: PoliceAssurance[] = [];
+    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+      data = data;
     });
+    return data;
+  }
+
+  // Chargement des souscriptions associés à une reclamation
+  loadSinistres(): PoliceAssurance[] {
+    let data: PoliceAssurance[] = [];
+    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+      data = data;
+    });
+    return data;
+  }
+
+  // Chargement des souscriptions associés à une reclamation
+  loadPrestations(): PoliceAssurance[] {
+    let data: PoliceAssurance[] = [];
+    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+      data = data;
+    });
+    return data;
+  }
+
+  // Chargement des souscriptions associés à une reclamation
+  loadPaiements(): PoliceAssurance[] {
+    let data: PoliceAssurance[] = [];
+    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+      data = data;
+    });
+    return data;
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
@@ -266,14 +190,28 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     return ['numeroReclamation', 'dateReclamation', 'description'];
   }
 
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected assignColumnsValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('type', this.typeReclamations);
-    this.setColumnValues('status', this.statutReclamations);
-    this.setColumnValues('souscription', this.souscriptions);
-    this.setSubFieldValues('souscription', 'status', this.status);
-    this.setSubFieldValues('souscription', 'frequencePaiement', this.frequencies);
+  onTypeChange(item: any, event: any): void {
+    // On récupère la valeur sélectionnée dans le dropdown (SINISTRE ou PRESTATION)
+    const selectedType = event?.value;
+
+    // Vérifier quel type de reclamation a été sélectionné
+    if (selectedType === TypeReclamation.SINISTRE) {
+      // Rendre visible le champ avec l'id 'sinistre' et invisible 'prestation'
+      this.toggleVisibility('sinistre', true);  // Afficher sinistre
+      this.toggleVisibility('prestation', false);  // Masquer prestation
+    } else if (selectedType === TypeReclamation.PRESTATION) {
+      // Rendre visible le champ avec l'id 'prestation' et invisible 'sinistre'
+      this.toggleVisibility('prestation', true);  // Afficher prestation
+      this.toggleVisibility('sinistre', false);  // Masquer sinistre
+    }
+  }
+
+  // Méthode pour basculer la visibilité d'un élément en utilisant son id
+  toggleVisibility(fieldId: string, isVisible: boolean): void {
+    const element = document.getElementById(fieldId) as HTMLSelectElement;
+    if (element) {
+      // Si l'élément est trouvé, modifier sa visibilité
+      element.style.display = isVisible ? 'block' : 'none';
+    }
   }
 }

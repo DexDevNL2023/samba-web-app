@@ -1,20 +1,33 @@
 import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Assurance } from '../models/assurance.model';
+import { Assurance, InsuranceType } from '../models/assurance.model';
 import { GenericCrudService } from './generic.crud.service';
-import { PoliceAssurance } from '../models/police-assurance.model';
 import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class AssuranceService extends GenericCrudService<Assurance> {
-
   constructor(http: HttpClient, toastService: ToastService) {
-      super(http, toastService, 'assurances');
+    super(http, toastService, '/api/assurances'); // Changer l'endpoint de base
   }
 
-  // Méthode pour récupérer toutes les polices associées à une assurance
-  getAllPolices(): Observable<PoliceAssurance[]> {
-      return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/all/polices`);
+  // Récupérer une assurance avec ses polices par ID
+  getAssuranceWithPolicesById(policeId: number): Observable<Assurance> {
+    return this.http.get<RessourceResponse<Assurance>>(`${this.baseUrl}/find/by/police/${policeId}`).pipe(
+      map((response) => this.handleResponse(response, 'Récupérer une assurance avec ses polices')),
+      catchError((error) => this.handleError(error, 'Récupérer une assurance avec ses polices'))
+    );
+  }
+
+  // Récupérer les assurances par type
+  getAssurancesByType(type: InsuranceType): Observable<Assurance[]> {
+    return this.http.get<RessourceResponse<Assurance[]>>(`${this.baseUrl}/find/by/type/${type}`).pipe(
+      map((response) => this.handleResponse(response, 'Récupérer les assurances par type')),
+      catchError((error) => this.handleError(error, 'Récupérer les assurances par type'))
+    );
   }
 }

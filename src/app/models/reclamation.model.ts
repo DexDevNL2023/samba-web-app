@@ -8,8 +8,7 @@ export enum TypeReclamation {
 export enum StatutReclamation {
   EN_COURS = 'EN_COURS',
   APPROUVEE = 'APPROUVEE',
-  REJETEE = 'REJETEE',
-  EN_ATTENTE = 'EN_ATTENTE'
+  REJETEE = 'REJETEE'
 }
 
 export interface Reclamation extends BaseEntity {
@@ -24,4 +23,7 @@ export interface Reclamation extends BaseEntity {
   agentEvaluateur?: string | null;
   justification?: string | null;
   souscription?: number | null;
+  sinistre?: number | null;
+  prestation?: number | null;
+  paiements?: number[] | null;
 }

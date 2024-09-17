@@ -6,8 +6,9 @@ export enum TypeNotification {
   REMINDER = 'REMINDER',
   CLAIM = 'CLAIM',
   PROFILE = 'PROFILE',
+  SYSTEM = 'SYSTEM',
 }
-  
+
 export interface Notification extends BaseEntity {
   lu?: boolean | null;
   titre?: string | null;

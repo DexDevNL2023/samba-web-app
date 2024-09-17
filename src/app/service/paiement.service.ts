@@ -2,24 +2,39 @@ import { ToastService } from './toast.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Paiement, RecuPaiement } from '../models/paiement.model';
-import { Souscription } from '../models/souscription.model';
+import { Paiement } from '../models/paiement.model';
 import { GenericCrudService } from './generic.crud.service';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class PaiementService extends GenericCrudService<Paiement> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'paiements');
+        super(http, toastService, '/api/paiements');
     }
 
-    // Méthode pour récupérer la souscription associée à un paiement spécifique
-    getAllSouscriptions(): Observable<Souscription[]> {
-        return this.http.get<Souscription[]>(`${this.baseUrl}/${this.endpoint}/all/souscriptions`);
+    // Trouver les paiements par ID de souscription
+    getPaiementsBySouscriptionId(souscriptionId: number): Observable<Paiement[]> {
+        return this.http.get<RessourceResponse<Paiement[]>>(`${this.baseUrl}/find/by/souscription/${souscriptionId}`).pipe(
+            map(response => this.handleResponse(response, 'Paiements récupérés avec succès')),
+            catchError(error => this.handleError(error, 'Erreur lors de la récupération des paiements par ID de souscription'))
+        );
     }
 
-    // Méthode pour récupérer la reçu de paiement associée à un paiement spécifique
-    getAllRecuPaiements(): Observable<RecuPaiement[]> {
-        return this.http.get<RecuPaiement[]>(`${this.baseUrl}/${this.endpoint}/all/recu-paiements`);
+    // Trouver un paiement par ID de réclamation
+    getPaiementByReclamationId(reclamationId: number): Observable<Paiement> {
+        return this.http.get<RessourceResponse<Paiement>>(`${this.baseUrl}/find/by/reclamation/${reclamationId}`).pipe(
+            map(response => this.handleResponse(response, 'Paiement récupéré avec succès')),
+            catchError(error => this.handleError(error, 'Erreur lors de la récupération du paiement par ID de réclamation'))
+        );
+    }
+
+    // Trouver un paiement par ID de reçu
+    getPaiementByRecuPaiementId(recuPaiementId: number): Observable<Paiement> {
+        return this.http.get<RessourceResponse<Paiement>>(`${this.baseUrl}/find/by/recu/${recuPaiementId}`).pipe(
+            map(response => this.handleResponse(response, 'Paiement récupéré avec succès')),
+            catchError(error => this.handleError(error, 'Erreur lors de la récupération du paiement par ID de reçu'))
+        );
     }
 }

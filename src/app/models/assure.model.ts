@@ -18,6 +18,7 @@ export interface Assure extends BaseEntity {
   addresse?: string | null;
   signature?: string | null;
   registrant?: number | null;
+  account?: number | null;
   dossiers?: number[] | null;
   souscriptions?: number[] | null;
 }

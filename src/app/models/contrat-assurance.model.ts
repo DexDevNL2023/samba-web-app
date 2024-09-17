@@ -18,4 +18,5 @@ export interface ContratAssurance extends BaseEntity {
   exclusions?: string | null;            // Exclusions spécifiques de la couverture
   dateDebut?: Date | null;               // Date de début de la couverture
   dateFin?: Date | null;                 // Date de fin de la couverture
+  souscription?: number | null;          // ID de la souscription associée
 }

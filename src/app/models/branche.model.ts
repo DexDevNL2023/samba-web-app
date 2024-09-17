@@ -4,5 +4,5 @@ export interface Branche extends BaseEntity {
     code?: string;
     ville?: string;
     isDefaut?: Boolean;
-    partenaires?: number[] | null;
+    registrants?: number[] | null;
 }

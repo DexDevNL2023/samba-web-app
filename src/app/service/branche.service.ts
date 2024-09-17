@@ -4,17 +4,21 @@ import { HttpClient } from '@angular/common/http';
 import { GenericCrudService } from './generic.crud.service';
 import { Observable } from 'rxjs';
 import { Branche } from '../models/branche.model';
-import { Fournisseur } from '../models/fournisseur.model';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class BrancheService extends GenericCrudService<Branche> {
 
   constructor(http: HttpClient, toastService: ToastService) {
-      super(http, toastService, 'branches');
+    super(http, toastService, '/api/branches'); // Updated endpoint
   }
 
-  // Méthode pour récupérer toutes les partenaires associées à une branche
-  getAllPartners(): Observable<Fournisseur[]> {
-      return this.http.get<Fournisseur[]>(`${this.baseUrl}/${this.endpoint}/all/partners`);
+  // Fetch branch details by registrant ID
+  getBrancheWithRegistrantsById(registrantId: number): Observable<Branche> {
+    return this.http.get<RessourceResponse<Branche>>(`${this.baseUrl}/find/by/registrant/${registrantId}`).pipe(
+      map(response => this.handleResponse(response, 'Branche retrouvée avec succès!')),
+      catchError(error => this.handleError(error, 'Erreur lors de la récupération de la branche'))
+    );
   }
 }

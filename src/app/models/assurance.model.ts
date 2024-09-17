@@ -6,7 +6,7 @@ export enum InsuranceType {
   AGRICOLE = 'AGRICOLE',
   SANTE = 'SANTE'
 }
-  
+
 export interface Assurance extends BaseEntity {
   nom?: string | null;
   description?: string | null;

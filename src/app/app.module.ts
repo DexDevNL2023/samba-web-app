@@ -1,3 +1,6 @@
+import { RoleService } from './service/role.service';
+import { PermissionService } from './service/permission.service';
+import { AuthorizationService } from './service/authorization.service';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
@@ -103,7 +106,7 @@ import { DocumentService } from './service/document.service';
 import { FinanceurService } from './service/financeur.service';
 import { FournisseurService } from './service/fournisseur.service';
 import { GarantieService } from './service/garantie.service';
-import { MedicalRecordService } from './service/medical-record.service';
+import { DossierMedicalService } from './service/dossier-medical.service';
 import { NotificationService } from './service/notification.service';
 import { PaiementService } from './service/paiement.service';
 import { PoliceAssuranceService } from './service/police-assurance.service';
@@ -116,16 +119,12 @@ import { AssureService } from './service/assure.service';
 import { RouterModule } from '@angular/router';
 import LoginComponent from './login/login.component';
 import PasswordComponent from './account/password/password.component';
-import { PasswordService } from './account/password/password.service';
 import PasswordResetFinishComponent from './account/password-reset/finish/password-reset-finish.component';
-import { PasswordResetInitService } from './account/password-reset/init/password-reset-init.service';
-import { PasswordResetFinishService } from './account/password-reset/finish/password-reset-finish.service';
 import PasswordResetInitComponent from './account/password-reset/init/password-reset-init.component';
 import RegisterComponent from './account/register/register.component';
 import { RegisterService } from './account/register/register.service';
 import SettingsComponent from './account/settings/settings.component';
 import { AccountService } from './core/auth/account.service';
-import { AuthServerProvider } from './core/auth/auth-jwt.service';
 import { StateStorageService } from './core/auth/state-storage.service';
 import { AuthExpiredInterceptor } from './core/interceptor/auth-expired.interceptor';
 import { AuthInterceptor } from './core/interceptor/auth.interceptor';
@@ -160,6 +159,8 @@ import { AccountCrudService } from './service/account.crud.service';
 import { AccountCrudComponent } from './components/account/account.crud.component';
 import { ContratAssuranceService } from './service/contrat-assurance.service';
 import { ContratAssuranceCrudComponent } from './components/contrat-assurance/contrat-assurance.crud.component';
+import { AuthentificationService } from './service/authentification.service';
+import { CompanyComponent } from './company/company.component';
 
 @NgModule({
     imports: [
@@ -286,16 +287,17 @@ import { ContratAssuranceCrudComponent } from './components/contrat-assurance/co
         SinistreCrudComponent,
         SouscriptionCrudComponent,
         PortraitComponent,
+        CompanyComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentService, UserRouteAccessService,
-        FinanceurService, FournisseurService, GarantieService, MedicalRecordService, BaseService, BrancheService,
+        FinanceurService, FournisseurService, GarantieService, DossierMedicalService, BaseService, BrancheService,
         NotificationService, PaiementService, PoliceAssuranceService, PrestationService, AccountCrudService,
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
-        PasswordService, PasswordResetInitService, PasswordResetFinishService, CompanyService, MessageService,
-        RegisterService, AccountService, AuthServerProvider, StateStorageService, CompanyService, DashboardService,
+        RoleService, PermissionService, AuthorizationService, CompanyService, MessageService, AuthentificationService,
+        RegisterService, AccountService, StateStorageService, CompanyService, DashboardService,
         ContratAssuranceService,
         {
           provide: HTTP_INTERCEPTORS,

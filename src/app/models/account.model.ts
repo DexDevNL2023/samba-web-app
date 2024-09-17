@@ -4,7 +4,8 @@ export enum Authority {
   CLIENT = 'ROLE_CLIENT',
   AGENT = 'ROLE_AGENT',
   ADMIN = 'ROLE_ADMIN',
-  PROVIDER = 'ROLE_PROVIDER'
+  PROVIDER = 'ROLE_PROVIDER',
+  SYSTEM = 'ROLE_SYSTEM'
 }
 
 export interface Account extends BaseEntity {
@@ -15,7 +16,7 @@ export interface Account extends BaseEntity {
   usingQr?: boolean | null;
   loginUrl?: string | null;
   imageUrl?: string | null;
-  authority?: string | null;
   actived?: boolean | null;
+  authority?: Authority | null;
   roles?: number[] | null;
 }

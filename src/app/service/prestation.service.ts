@@ -3,36 +3,54 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Prestation } from '../models/prestation.model';
-import { Fournisseur } from '../models/fournisseur.model';
-import { Financeur } from '../models/financeur.model';
-import { Sinistre } from '../models/sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
-import { Document } from '../models/document.model';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class PrestationService extends GenericCrudService<Prestation> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'prestations');
+        super(http, toastService, '/api/prestations');
     }
 
-    // Méthode pour récupérer le fournisseur associé à une prestation de soin spécifique
-    getAllFournisseurs(): Observable<Fournisseur[]> {
-        return this.http.get<Fournisseur[]>(`${this.baseUrl}/${this.endpoint}/all/fournisseurs`);
+    // Récupérer les prestations par souscription
+    getBySouscriptionId(souscriptionId: number): Observable<Prestation[]> {
+        return this.http.get<RessourceResponse<Prestation[]>>(`${this.baseUrl}/${this.endpoint}/find/by/souscription/${souscriptionId}`).pipe(
+        map(response => this.handleResponse(response, 'Prestations par souscription')),
+        catchError(error => this.handleError(error, 'Erreur lors de la récupération des prestations par souscription'))
+        );
     }
 
-    // Méthode pour récupérer les financeurs associés à une prestation de soin spécifique
-    getAllFinanceurs(): Observable<Financeur[]> {
-        return this.http.get<Financeur[]>(`${this.baseUrl}/${this.endpoint}/all/financeurs`);
+    // Récupérer les prestations par sinistre
+    getBySinistreId(sinistreId: number): Observable<Prestation[]> {
+        return this.http.get<RessourceResponse<Prestation[]>>(`${this.baseUrl}/${this.endpoint}/find/by/sinistre/${sinistreId}`).pipe(
+        map(response => this.handleResponse(response, 'Prestations par sinistre')),
+        catchError(error => this.handleError(error, 'Erreur lors de la récupération des prestations par sinistre'))
+        );
     }
 
-    // Méthode pour récupérer les sinistres associés à une prestation de soin spécifique
-    getAllSinistres(): Observable<Sinistre[]> {
-        return this.http.get<Sinistre[]>(`${this.baseUrl}/${this.endpoint}/all/sinistrse`);
+    // Récupérer une prestation avec ses documents
+    getWithDocumentsById(documentId: number): Observable<Prestation> {
+        return this.http.get<RessourceResponse<Prestation>>(`${this.baseUrl}/${this.endpoint}/find/by/document/${documentId}`).pipe(
+        map(response => this.handleResponse(response, 'Prestation avec documents')),
+        catchError(error => this.handleError(error, 'Erreur lors de la récupération de la prestation avec documents'))
+        );
     }
 
-    // Méthode pour récupérer les documents associés à une prestation de soin spécifique
-    getAllDocuments(): Observable<Document[]> {
-        return this.http.get<Document[]>(`${this.baseUrl}/${this.endpoint}/all/documents`);
+    // Récupérer les prestations par fournisseur
+    getByFournisseurId(fournisseurId: number): Observable<Prestation[]> {
+        return this.http.get<RessourceResponse<Prestation[]>>(`${this.baseUrl}/${this.endpoint}/find/by/fournisseur/${fournisseurId}`).pipe(
+        map(response => this.handleResponse(response, 'Prestations par fournisseur')),
+        catchError(error => this.handleError(error, 'Erreur lors de la récupération des prestations par fournisseur'))
+        );
+    }
+
+    // Récupérer une prestation avec financeurs
+    getWithFinanceursById(financeurId: number): Observable<Prestation> {
+        return this.http.get<RessourceResponse<Prestation>>(`${this.baseUrl}/${this.endpoint}/find/by/financeur/${financeurId}`).pipe(
+        map(response => this.handleResponse(response, 'Prestation avec financeurs')),
+        catchError(error => this.handleError(error, 'Erreur lors de la récupération de la prestation avec financeurs'))
+        );
     }
 }

@@ -1,3 +1,4 @@
+import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -5,8 +6,8 @@ import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { BaseService } from '../../service/base.service';
 import { MessageService } from 'primeng/api';
-import { DossierMedical } from '../../models/medical-record.model';
-import { MedicalRecordService } from '../../service/medical-record.service';
+import { DossierMedical } from '../../models/dossier-medical.model';
+import { DossierMedicalService } from '../../service/dossier-medical.service';
 import { Assure, Gender } from '../../models/assure.model';
 import { GenericCrudComponent } from '../generic.crud.component';
 
@@ -15,56 +16,6 @@ import { GenericCrudComponent } from '../generic.crud.component';
   templateUrl: './../generic.crud.component.html'
 })
 export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMedical> {
-  patients: Assure[] = [
-    {
-      id: 1,
-      numNiu: 'NIU001',
-      lastName: 'Dupont',
-      firstName: 'Jean',
-      email: 'jean.dupont@example.com',
-      dateNaissance: new Date('1980-05-20'),
-      numCni: 'CNI123456',
-      sexe: Gender.MALE,
-      telephone: '+241612345678',
-      addresse: '123 Rue Principale, Libreville, Gabon',
-      signature: 'signature001.png',
-      registrant: 1,
-      dossiers: [1, 2],
-      souscriptions: [1, 2]
-    },
-    {
-      id: 2,
-      numNiu: 'NIU002',
-      lastName: 'Ngoma',
-      firstName: 'Marie',
-      email: 'marie.ngoma@example.com',
-      dateNaissance: new Date('1990-07-15'),
-      numCni: 'CNI789012',
-      sexe: Gender.FEMALE,
-      telephone: '+241623456789',
-      addresse: '456 Avenue de la Paix, Port-Gentil, Gabon',
-      signature: 'signature002.png',
-      registrant: 2,
-      dossiers: [3],
-      souscriptions: [3]
-    },
-    {
-      id: 3,
-      numNiu: 'NIU003',
-      lastName: 'Moukagni',
-      firstName: 'Paul',
-      email: 'paul.moukagni@example.com',
-      dateNaissance: new Date('1975-03-10'),
-      numCni: 'CNI345678',
-      sexe: Gender.MALE,
-      telephone: '+241634567890',
-      addresse: '789 Boulevard des Nations, Franceville, Gabon',
-      signature: 'signature003.png',
-      registrant: 3,
-      dossiers: [4],
-      souscriptions: [4, 5]
-    }
-  ];
 
   constructor(
     appMain: AppMainComponent,
@@ -74,9 +25,9 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    private medicalRecordService: MedicalRecordService
+    dossierMedicalService: DossierMedicalService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, medicalRecordService, appMain);
+    super(toastService, messageService, cdr, baseService, accountService, fb, dossierMedicalService, appMain);
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
     this.importLink = '/import/dossiers/medicaux';
@@ -89,7 +40,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
-      { field: 'patient', header: 'Patient', type: 'objet', values: [], label: 'numNiu', key: 'id', subfield: [
+      { field: 'patient', header: 'Patient', type: 'objet', values: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numNiu', header: 'Niu', type: 'text' },
           { field: 'firstName', header: 'Nom', type: 'text' },
@@ -116,93 +67,21 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     ];
   }
 
-  // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
-  protected initializeColumnsData(): void {
-    this.items = [
-      {
-        id: 1,
-        numDossierMedical: 'DM123456',
-        patient: 1,
-        dateUpdated: new Date('2023-07-15'),
-        maladiesChroniques: 'Hypertension, Diabète',
-        maladiesHereditaires: 'Maladie cardiaque',
-        interventionsChirurgicales: 'Appendicectomie en 2018',
-        hospitalisations: 'Hospitalisation pour pneumonie en 2020',
-        allergies: 'Allergie aux arachides',
-        vaccins: 'Vaccin contre la grippe, Vaccin contre l\'hépatite B',
-        habitudesAlimentaires: 'Régime équilibré, riche en fruits et légumes',
-        consommationAlcool: 'Occasionnelle',
-        consommationTabac: 'Non-fumeur',
-        niveauActivitePhysique: 'Modéré, 3 fois par semaine',
-        revenusAnnuels: 35000,
-        chargesFinancieres: 15000,
-        declarationBonneSante: true,
-        consentementCollecteDonnees: true,
-        declarationNonFraude: true,
-      },
-      {
-        id: 2,
-        numDossierMedical: 'DM654321',
-        patient: 2,
-        dateUpdated: new Date('2023-07-20'),
-        maladiesChroniques: 'Asthme',
-        maladiesHereditaires: 'Diabète',
-        interventionsChirurgicales: 'Chirurgie du genou en 2015',
-        hospitalisations: 'Hospitalisation pour crise d\'asthme en 2019',
-        allergies: 'Aucune connue',
-        vaccins: 'Vaccin contre la rougeole, Vaccin contre la rubéole',
-        habitudesAlimentaires: 'Régime pauvre en glucides',
-        consommationAlcool: 'Modérée',
-        consommationTabac: 'Non-fumeur',
-        niveauActivitePhysique: 'Intense, 5 fois par semaine',
-        revenusAnnuels: 50000,
-        chargesFinancieres: 20000,
-        declarationBonneSante: true,
-        consentementCollecteDonnees: true,
-        declarationNonFraude: true,
-      },
-      {
-        id: 3,
-        numDossierMedical: 'DM789012',
-        patient: 3,
-        dateUpdated: new Date('2023-07-25'),
-        maladiesChroniques: 'Aucune',
-        maladiesHereditaires: 'Hypertension',
-        interventionsChirurgicales: 'Aucune',
-        hospitalisations: 'Hospitalisation pour fracture du bras en 2017',
-        allergies: 'Allergie aux antibiotiques',
-        vaccins: 'Vaccin contre la polio, Vaccin contre la varicelle',
-        habitudesAlimentaires: 'Régime végétarien',
-        consommationAlcool: 'Non',
-        consommationTabac: 'Non-fumeur',
-        niveauActivitePhysique: 'Léger, 1 fois par semaine',
-        revenusAnnuels: 45000,
-        chargesFinancieres: 18000,
-        declarationBonneSante: true,
-        consentementCollecteDonnees: true,
-        declarationNonFraude: true,
-      },
-    ];
-    this.loadPatients();
-    this.loading = false;
+  // Méthode abstraite à implémenter pour initialiser tous autres fonctions
+  protected initializeOthers(): void {
   }
 
   // Chargement des polices associés à une medical-record
-  loadPatients(): void {
-    this.medicalRecordService.getAllPatients().subscribe((patients: Assure[]) => {
-        this.patients = patients;
+  loadPatients(): Rule[] {
+    let data: Rule[] = [];
+    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+      data = data;
     });
+    return data;
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['numDossierMedical', 'patient'];
-  }
-
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected assignColumnsValues(): void { // Ajoutez le modificateur override
-    this.setColumnValues('patient', this.patients);
   }
 }

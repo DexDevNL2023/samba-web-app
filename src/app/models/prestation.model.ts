@@ -8,8 +8,8 @@ export enum PrestationType {
 }
 
 export enum PrestationStatus {
+  EN_COURS = 'EN_COURS',
   NON_REMBOURSE = 'NON_REMBOURSE',
-  EN_ATTENTE = 'EN_ATTENTE',
   REMBOURSE = 'REMBOURSE'
 }
 
@@ -17,11 +17,12 @@ export interface Prestation extends BaseEntity {
   numeroPrestation?: string | null;
   label?: string | null;
   datePrestation?: Date | null;
+  montant?: number | null;
   type?: keyof typeof PrestationType | null;
   description?: string | null;
-  montant?: number | null;
   status?: keyof typeof PrestationStatus | null;
   fournisseur?: number | null;
+  souscription?: number | null;
   sinistre?: number | null;
   financeurs?: number[] | null;
   documents?: number[];

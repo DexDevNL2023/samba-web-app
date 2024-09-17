@@ -3,48 +3,63 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Souscription } from '../models/souscription.model';
-import { PoliceAssurance } from '../models/police-assurance.model';
-import { Paiement } from '../models/paiement.model';
-import { Sinistre } from '../models/sinistre.model';
 import { GenericCrudService } from './generic.crud.service';
-import { Assure } from '../models/assure.model';
-import { Reclamation } from '../models/reclamation.model';
-import { ContratAssurance } from '../models/contrat-assurance.model';
+import { map, catchError } from 'rxjs/operators';
+import { RessourceResponse } from './../models/ressource.response.model';
 
 @Injectable({ providedIn: 'root' })
 export class SouscriptionService extends GenericCrudService<Souscription> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, 'souscriptions');
+        super(http, toastService, '/api/souscriptions');
     }
 
-    // Méthode pour récupérer l'utilisateur associé à une souscription spécifique
-    getAllAssures(): Observable<Assure[]> {
-        return this.http.get<Assure[]>(`${this.baseUrl}/${this.endpoint}/all/assures`);
+    getAllByAssureId(assureId: number): Observable<Souscription[]> {
+        return this.http.get<RessourceResponse<Souscription[]>>(`${this.baseUrl}/find/by/assure/${assureId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions par assuré')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions par assuré'))
+        );
     }
 
-    // Méthode pour récupérer la police d'assurance associée à une souscription spécifique
-    getAllPolices(): Observable<PoliceAssurance[]> {
-        return this.http.get<PoliceAssurance[]>(`${this.baseUrl}/${this.endpoint}/all/polices`);
+    getAllByPoliceId(policeId: number): Observable<Souscription[]> {
+        return this.http.get<RessourceResponse<Souscription[]>>(`${this.baseUrl}/find/by/police/${policeId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions par police')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions par police'))
+        );
     }
 
-    // Méthode pour récupérer le contrat associée à une souscription spécifique
-    getAllContrats(): Observable<ContratAssurance[]> {
-        return this.http.get<ContratAssurance[]>(`${this.baseUrl}/${this.endpoint}/all/contrats`);
+    getWithContratsById(contratId: number): Observable<Souscription> {
+        return this.http.get<RessourceResponse<Souscription>>(`${this.baseUrl}/find/by/contrat/${contratId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions avec contrats')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions avec contrats'))
+        );
     }
 
-    // Méthode pour récupérer les paiements associés à une souscription spécifique
-    getAllPaiements(): Observable<Paiement[]> {
-        return this.http.get<Paiement[]>(`${this.baseUrl}/${this.endpoint}/all/paiements`);
+    getWithSinistresById(sinistreId: number): Observable<Souscription> {
+        return this.http.get<RessourceResponse<Souscription>>(`${this.baseUrl}/find/by/sinistre/${sinistreId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions avec sinistres')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions avec sinistres'))
+        );
     }
 
-    // Méthode pour récupérer les sinistres associés à une souscription spécifique
-    getAllSinistres(): Observable<Sinistre[]> {
-        return this.http.get<Sinistre[]>(`${this.baseUrl}/${this.endpoint}/all/sinistres`);
+    getWithPrestationsById(prestationId: number): Observable<Souscription> {
+        return this.http.get<RessourceResponse<Souscription>>(`${this.baseUrl}/find/by/prestation/${prestationId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions avec prestations')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions avec prestations'))
+        );
     }
 
-    // Méthode pour récupérer les reclamations associés à une souscription spécifique
-    getAllReclamations(): Observable<Reclamation[]> {
-        return this.http.get<Reclamation[]>(`${this.baseUrl}/${this.endpoint}/all/reclamations`);
+    getWithPaiementsById(paiementId: number): Observable<Souscription> {
+        return this.http.get<RessourceResponse<Souscription>>(`${this.baseUrl}/find/by/paiement/${paiementId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions avec paiements')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions avec paiements'))
+        );
+    }
+
+    getWithReclamationsById(reclamationId: number): Observable<Souscription> {
+        return this.http.get<RessourceResponse<Souscription>>(`${this.baseUrl}/find/by/reclamation/${reclamationId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les souscriptions avec réclamations')),
+            catchError(error => this.handleError(error, 'Récupérer les souscriptions avec réclamations'))
+        );
     }
 }

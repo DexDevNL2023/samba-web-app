@@ -1,3 +1,4 @@
+import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
@@ -15,28 +16,6 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './../generic.crud.component.html'
 })
 export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
-  partenaires: Fournisseur[] = [
-    {
-      id: 1,
-      nom: 'Clinique Santé Plus',
-      telephone: '123456789',
-      email: 'contact@santeplus.com',
-      adresse: '123 Rue de la Santé, Libreville - Gabon',
-      servicesFournis: 'Consultations, Soins Paramédicaux',
-      prestations: [1, 2],
-      branches: [1]
-    },
-    {
-      id: 2,
-      nom: 'Centre Médical Bongo',
-      telephone: '987654321',
-      email: 'info@cmbongo.com',
-      adresse: '456 Rue de la Médecine, Port-Gentil - Gabon',
-      servicesFournis: 'Radiologie, Analyses de Laboratoire',
-      prestations: [3, 4],
-      branches: [2]
-    }
-  ];
 
   constructor(
     appMain: AppMainComponent,
@@ -46,7 +25,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    private brancheService: BrancheService
+    brancheService: BrancheService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, brancheService, appMain);
     this.entityName = 'Branche';
@@ -54,7 +33,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     this.importLink = '/import/branches';
     this.roleKey = 'BRANCHE_MODULE';
   }
-  
+
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected initializeColumns(): void {
     // Configuration des colonnes de la table
@@ -63,7 +42,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
       { field: 'code', header: 'Code', type: 'text' },
       { field: 'ville', header: 'Ville', type: 'text' },
       { field: 'isDefaut', header: 'Par defaut', type: 'boolean' },
-      { field: 'partenaires', header: 'Partenaires', type: 'list', values: [], label: 'nom', key: 'id', subfield: [
+      { field: 'registrants', header: 'Partenaires', type: 'list', values: () => this.loadPartenaires(), label: 'nom', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'nom', header: 'Nom', type: 'text' },
           { field: 'telephone', header: 'Telephone', type: 'text' },
@@ -74,44 +53,21 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     ];
   }
 
-  // Méthode abstraite à implémenter pour initialiser les données des colonnes de la table
-  protected initializeColumnsData(): void {
-    this.items = [
-      {
-        id: 1,
-        code: 'DLA',
-        ville: 'Branche Douala',
-        isDefaut: false,
-        partenaires: [1,4,5]
-      },
-      {
-        id: 2,
-        code: 'YAE',
-        ville: 'Branche Yaounde',
-        isDefaut: true,
-        partenaires: [2,3]
-      }
-    ];
-    this.loadPartenaires();
-    this.loading = false;
+  // Méthode abstraite à implémenter pour initialiser tous autres fonctions
+  protected initializeOthers(): void {
   }
-  
+
   // Chargement des polices associés à une branche
-  loadPartenaires(): void {
-    this.brancheService.getAllPartners().subscribe((partenaires: Fournisseur[]) => {
-        this.partenaires = partenaires;
+  loadPartenaires(): Rule[] {
+    let data: Rule[] = [];
+    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+      data = data;
     });
+    return data;
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['code', 'ville'];
-  }
-
-  /**
-   * Assigner les valeurs aux colonnes en fonction des champs spécifiés.
-   */
-  protected assignColumnsValues(): void {
-    this.setColumnValues('partenaires', this.partenaires);
   }
 }

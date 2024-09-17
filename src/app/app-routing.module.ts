@@ -29,7 +29,8 @@ import { ReclamationCrudComponent } from './components/reclamation/reclamation.c
 import { SinistreCrudComponent } from './components/sinistre/sinistre.crud.component';
 import { SouscriptionCrudComponent } from './components/souscription/souscription.crud.component';
 import { ContratAssuranceCrudComponent } from './components/contrat-assurance/contrat-assurance.crud.component';
- 
+import { CompanyComponent } from './company/company.component';
+
 @NgModule({
     imports: [
         RouterModule.forRoot([
@@ -38,7 +39,7 @@ import { ContratAssuranceCrudComponent } from './components/contrat-assurance/co
                 component: AppMainComponent,
                 children: [
                     { path: '', component: DashboardComponent },
-                    
+
                     { path: 'accounts', component: AccountCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
                     { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
                     { path: 'assures', component: AssureCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
@@ -56,11 +57,13 @@ import { ContratAssuranceCrudComponent } from './components/contrat-assurance/co
                     { path: 'reclamations', component: ReclamationCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
                     { path: 'sinistres', component: SinistreCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'souscriptions', component: SouscriptionCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
-                    
+
                     { path: 'profile', component: ProfilComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'password', component: PasswordComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
                     { path: 'setting', component: SettingsComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT', 'ROLE_PROVIDER'] } },
-                    
+
+                    { path: 'company', component: CompanyComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
+
                     { path: 'accessdenied', component: AppAccessdeniedComponent },
                     { path: 'notfound', component: AppNotfoundComponent },
                     { path: '**', redirectTo: '/notfound' },

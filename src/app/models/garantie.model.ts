@@ -5,7 +5,7 @@ export enum GarantieStatus {
   EXPIREE = 'EXPIREE',
   SUSPENDUE = 'SUSPENDUE'
 }
-  
+
 export interface Garantie extends BaseEntity {
   numeroGarantie?: string | null;
   label?: string | null;
@@ -17,4 +17,3 @@ export interface Garantie extends BaseEntity {
   status?: keyof typeof GarantieStatus | null;
   polices?: number[] | null;
 }
-  

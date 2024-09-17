@@ -1,9 +1,12 @@
+import { UserRequest } from './../../models/user.request.model';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { Account, Authority } from '../../models/account.model';
 import { Gender } from '../../models/assure.model';
+import { AccountCrudService } from '../../service/account.crud.service';
+import { UserResponse } from '../../models/user.response.model';
 
 @Component({
   selector: 'app-settings',
@@ -12,43 +15,16 @@ import { Gender } from '../../models/assure.model';
 export default class SettingsComponent implements OnInit {
   success = false; // Indicateur pour afficher le succès de la sauvegarde des paramètres
   settingsForm: FormGroup; // Formulaire de paramètres utilisateur
-  user: any | null = {
-    id: 1,
-    // Champ commun
-    email: 'victor.nlang@teleo.com',
-    telephone: '1234567890',
-    adresse: '123 Rue de la Santé, Libreville - Gabon',
-
-    // Admin et agent
-    actived: true,
-    authority: ['ROLE_CLIENT'],
-    fullName: 'Victor Nlang',
-    langKey: 'en',
-    login: 'victor.nlang',
-    imageUrl: '',
-
-    // Client
-    numNiu: 'NIU123456789',
-    lastName: 'Doe',
-    firstName: 'John',
-    dateNaissance: new Date('1985-01-15'),
-    numCni: 'CNI12345678',
-    sexe: Gender.MALE,
-    signature: 'john_doe_signature.png',
-
-    // Provider
-    nom: 'Clinique Santé Plus',
-    servicesFournis: 'Consultations, Soins Paramédicaux'
-  }; // Utilisateur actuel
+  user: UserResponse | null = null; // Utilisateur actuel
   currentYear: number = new Date().getFullYear();
   languages = [
     { label: 'Francais', value: 'fr' },
     { label: 'Anglais', value: 'en' }
   ];
   genders = [
-    { label: 'Male', value: 'MALE' },
-    { label: 'Female', value: 'FEMALE' },
-    { label: 'Other', value: 'OTHER' }
+    { label: 'Male', value: Gender.MALE },
+    { label: 'Female', value: Gender.FEMALE },
+    { label: 'Other', value: Gender.OTHER }
   ];
   authorities = [
     { label: 'Assuré', value: Authority.CLIENT },
@@ -61,6 +37,7 @@ export default class SettingsComponent implements OnInit {
   account: Account | null = null;
 
   constructor(
+    public accountCrudService: AccountCrudService,
     public accountService: AccountService, // Service pour la gestion du compte utilisateur
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction du formulaire
     public appMain: AppMainComponent
@@ -77,7 +54,7 @@ export default class SettingsComponent implements OnInit {
       if (this.account) {
         const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
-          this.accountService.findUser(userId).subscribe((user: any) => {
+          this.accountCrudService.getProfile(userId).subscribe((user: any) => {
             this.user = user;
           });
         }
@@ -148,21 +125,11 @@ export default class SettingsComponent implements OnInit {
 
     if (this.user) {
       // Fusionne les données du compte avec les valeurs actuelles du formulaire
-      const user = { ...this.user, ...this.settingsForm.getRawValue() };
-      
-      // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-      this.accountService.identity().subscribe(account => {
-        this.account = account;
-        console.log(this.account.authority);
-        if (this.account) {
-          const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
-          if (userId) {
-            // Appel du service pour sauvegarder les modifications du compte
-            this.accountService.updateUser(userId, user).subscribe(() => {
-              this.success = true; // Affiche le succès de la sauvegarde
-            });
-          }
-        }
+      const user: UserRequest = { ...this.user, ...this.settingsForm.getRawValue() };
+
+      // Appel du service pour sauvegarder les modifications du compte
+      this.accountCrudService.updateProfile(user).subscribe(() => {
+        this.success = true; // Affiche le succès de la sauvegarde
       });
     }
   }

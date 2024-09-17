@@ -1,4 +1,4 @@
-import { DossierMedical } from "./medical-record.model";
+import { DossierMedical } from "./dossier-medical.model";
 import { Registrant } from "./registrant.model";
 import { Souscription } from "./souscription.model";
 import { RuleReponse } from './rule.reponse.model';

@@ -1,8 +1,8 @@
+import { SignupRequest } from './../../models/signup.request';
+import { AuthentificationService } from './../../service/authentification.service';
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-
-import { RegisterService } from './register.service';
 
 @Component({
   selector: 'app-register',
@@ -18,6 +18,8 @@ export default class RegisterComponent implements AfterViewInit {
   success = false; // Indicateur pour afficher le succès de l'inscription
 
   registerForm: FormGroup; // Formulaire d'inscription
+  imageUrlPreview: string | ArrayBuffer | null = null;
+
   items: any = [
     {
       imageUrl: '../../assets/layout/images/claim-declaration.webp',
@@ -43,10 +45,15 @@ export default class RegisterComponent implements AfterViewInit {
 
   constructor(
     private fb: FormBuilder, // Service FormBuilder pour la construction du formulaire
-    private registerService: RegisterService // Service RegisterService pour la gestion de l'inscription
+    private authentificationService: AuthentificationService // Service RegisterService pour la gestion de l'inscription
   ) {
     // Initialisation du formulaire d'inscription avec les champs et les validateurs nécessaires
     this.registerForm = this.fb.group({
+      fullName: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(100) // Ajout d'une limite de longueur pour fullName
+      ]],
       login: ['', [
         Validators.required,
         Validators.minLength(1),
@@ -61,20 +68,48 @@ export default class RegisterComponent implements AfterViewInit {
       ]],
       password: ['', [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(8), // Minimum de 8 caractères pour le mot de passe pour plus de sécurité
         Validators.maxLength(50)
       ]],
       confirmPassword: ['', [
         Validators.required,
-        Validators.minLength(4),
+        Validators.minLength(8),
         Validators.maxLength(50)
-      ]]
+      ]],
+      generatePassword: [false] // Défini par défaut à false
+    }, {
+      validator: this.matchPasswords('password', 'confirmPassword') // Validation personnalisée pour les mots de passe
     });
   }
 
   ngAfterViewInit(): void {
     // Met le focus sur le champ de nom d'utilisateur après l'initialisation de la vue
     this.login.nativeElement.focus();
+  }
+
+  // Méthode pour valider la correspondance des mots de passe
+  matchPasswords(password: string, confirmPassword: string) {
+    return (formGroup: FormGroup) => {
+      const passwordControl = formGroup.controls[password];
+      const confirmPasswordControl = formGroup.controls[confirmPassword];
+
+      if (!passwordControl || !confirmPasswordControl) {
+        return null;
+      }
+
+      if (confirmPasswordControl.errors && !confirmPasswordControl.errors['mismatch']) {
+        // Ne pas changer les erreurs existantes s'il y en a d'autres
+        return null;
+      }
+
+      // Si les mots de passe ne correspondent pas
+      if (passwordControl.value !== confirmPasswordControl.value) {
+        this.doNotMatch = true;
+        confirmPasswordControl.setErrors({ mismatch: true });
+      } else {
+        confirmPasswordControl.setErrors(null); // Réinitialiser les erreurs si ça correspond
+      }
+    };
   }
 
   // Méthode appelée lors de la soumission du formulaire d'inscription
@@ -85,22 +120,31 @@ export default class RegisterComponent implements AfterViewInit {
     this.errorEmailExists = false;
     this.errorUserExists = false;
 
-    // Récupération des valeurs du formulaire (mot de passe et confirmation)
-    const { password, confirmPassword } = this.registerForm.getRawValue();
+    if (this.registerForm.valid) {
+      const signupRequest: SignupRequest = {
+        fullName: this.registerForm.value.fullName,
+        login: this.registerForm.value.login,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+        imageUrl: typeof this.imageUrlPreview === 'string' ? this.imageUrlPreview : '',
+        generatePassword: this.registerForm.value.generatePassword
+      };
 
-    // Vérification si les mots de passe ne correspondent pas
-    if (password !== confirmPassword) {
-      this.doNotMatch = true;
+      // Appel au service pour l'inscription avec signupRequest
+      this.authentificationService.register(signupRequest).subscribe(
+        (response) => {
+          console.log('Inscription réussie', response);
+          // Gérer le succès de l'inscription
+          this.success = true;
+        },
+        (error) => {
+          console.error('Erreur lors de l\'inscription', error);
+          // Gérer l'erreur lors de l'inscription
+          this.processError(error);
+        }
+      );
     } else {
-      // Récupération des valeurs de nom d'utilisateur et d'e-mail
-      const { login, email } = this.registerForm.getRawValue();
-
-      // Appel du service pour sauvegarder l'inscription avec les données fournies
-      this.registerService.save({ login, email, password, imageUrl: '' })
-        .subscribe({
-          next: () => this.success = true, // Affichage du succès si l'inscription est réussie
-          error: response => this.processError(response) // Gestion des erreurs en cas d'échec
-        });
+      console.log('Le formulaire est invalide');
     }
   }
 
@@ -113,6 +157,24 @@ export default class RegisterComponent implements AfterViewInit {
       this.errorEmailExists = true; // Affichage de l'erreur si l'e-mail est déjà utilisé
     } else {
       this.error = true; // Affichage d'une erreur générique pour d'autres cas
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = reader.result as string; // `result` est de type `string | ArrayBuffer`
+        if (typeof result === 'string') { // Assurez-vous que `result` est une chaîne
+          this.imageUrlPreview = result;
+        } else {
+          // Vous pouvez gérer le cas où `result` n'est pas une chaîne si nécessaire
+          console.error('Le résultat de la lecture du fichier n\'est pas une chaîne');
+          this.imageUrlPreview = null; // Ou gérer différemment
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

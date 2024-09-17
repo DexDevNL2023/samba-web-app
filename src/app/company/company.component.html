@@ -1,0 +1,108 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-4 py-2">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-1">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Exporter" icon="pi pi-upload" class="p-button-help mr-2 "
+                            (click)="dt.exportCSV()"></button>
+                        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-success"
+                            (click)="saveForm()" [disabled]="isEditable"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button pButton pRipple [label]="editButtonLabel" [icon]="editButtonIcon" class="p-button-secondary"
+                        (click)="makeEditable()"></button>
+                </ng-template>
+            </p-toolbar>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <h5>Informations sur l'entreprise</h5>
+                <div class="p-fluid p-formgrid grid">
+                    <!-- Name, sigle, email -->
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="name">Nom</label>
+                        <input type="text" pInputText id="name" [(ngModel)]="company.name" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.name}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.name">Nom obligatoire.</small>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="sigle">Sigle</label>
+                        <input type="text" pInputText id="sigle" [(ngModel)]="company.sigle" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.sigle}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.sigle">Sigle
+                            obligatoire.</small>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="email">Email</label>
+                        <input type="text" pInputText id="email" [(ngModel)]="company.email" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.email}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.email">Email
+                            obligatoire.</small>
+                    </div>
+
+                    <!-- Telephone, telephone2, adresse -->
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="telephone">Téléphone</label>
+                        <input type="text" pInputText id="telephone" [(ngModel)]="company.telephone" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.telephone}"
+                            [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.telephone">Téléphone
+                            obligatoire.</small>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="telephone2">Téléphone 2</label>
+                        <input type="text" pInputText id="telephone2" [(ngModel)]="company.telephone2"
+                            [readonly]="isEditable" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="adresse">Adresse</label>
+                        <input type="text" pInputText id="adresse" [(ngModel)]="company.adresse"
+                            [readonly]="isEditable" />
+                    </div>
+
+                    <!-- Ville, BP, site web -->
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="ville">Ville</label>
+                        <input type="text" pInputText id="ville" [(ngModel)]="company.ville" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.ville}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.ville">Ville
+                            obligatoire.</small>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="bp">Boîte postale</label>
+                        <input type="text" pInputText id="bp" [(ngModel)]="company.bp" [readonly]="isEditable" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="site">Site web</label>
+                        <input type="text" pInputText id="site" [(ngModel)]="company.site" [readonly]="isEditable" />
+                    </div>
+
+                    <!-- Logo, entêtes, pieds de page -->
+                    <div class="field col-12 md:col-4" *ngIf="!isEditable">
+                        <label htmlFor="logo">Votre logo</label>
+                        <p-fileUpload name="file" customUpload="true" (uploadHandler)="onFileSelected($event)" [auto]="true"
+                            [chooseLabel]="'Choisir un fichier'" [cancelLabel]="'Annuler'"
+                            [uploadLabel]="'Uploader'"></p-fileUpload>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="entete">Entête gauche</label>
+                        <textarea id="entete" [(ngModel)]="company.enteteGauche" [readonly]="isEditable"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="entete">Entête droite</label>
+                        <textarea id="entete" [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="pied">Pieds de page</label>
+                        <textarea id="pied" [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
