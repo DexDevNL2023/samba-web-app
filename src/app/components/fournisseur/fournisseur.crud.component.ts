@@ -1,5 +1,11 @@
-import { PrestationStatus, PrestationType } from './../../models/prestation.model';
-import { Authority } from './../../models/account.model';
+import { Branche } from './../../models/branche.model';
+import { BrancheService } from './../../service/branche.service';
+import { LiteRegistrant } from './../../models/lite.registrant.model';
+import { RegistrantService } from './../../service/registrant.service';
+import { AccountCrudService } from './../../service/account.crud.service';
+import { PrestationService } from './../../service/prestation.service';
+import { Prestation, PrestationStatus, PrestationType } from './../../models/prestation.model';
+import { Account, Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -38,12 +44,15 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    fournisseurService: FournisseurService
+    fournisseurService: FournisseurService,
+    private prestationService: PrestationService,
+    private accountCrudService: AccountCrudService,
+    private registrantService: RegistrantService,
+    private brancheService: BrancheService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, fournisseurService, appMain);
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
-    this.importLink = '/import/fournisseurs';
     this.roleKey = 'FOURNISSEUR_MODULE';
   }
 
@@ -84,8 +93,7 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
       { field: 'registrant', header: 'Registrants', type: 'list', values: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
-          { field: 'branche', header: 'Branche', type: 'objet', values: () => this.loadBranches(), label: 'ville', key: 'id' },
-          { field: 'partenaire', header: 'Partenaire', type: 'objet', values: () => this.loadPartenaires(), label: 'nom', key: 'id' }
+          { field: 'branche', header: 'Branche', type: 'objet', values: () => this.loadBranches(), label: 'ville', key: 'id' }
         ]
       }
     ];
@@ -96,44 +104,35 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadPrestations(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPrestations(): Prestation[] {
+    let data: Prestation[] = [];
+    this.prestationService.getByFournisseurId(this.selectedItem.id).subscribe((data: Prestation[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement aux registrants associés à une assure
-  loadRegistrants(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadRegistrants(): LiteRegistrant[] {
+    let data: LiteRegistrant[] = [];
+    this.registrantService.getByFournisseurId(this.selectedItem.id).subscribe((data: LiteRegistrant[]) => {
       data = data;
     });
     return data;
   }
 
-  loadAccounts(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadAccounts(): Account[] {
+    let data: Account[] = [];
+    this.accountCrudService.query().subscribe((data: Account[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
-      data = data;
-    });
-    return data;
-  }
-
-  // Chargement des polices associés à une branche
-  loadPartenaires(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadBranches(): Branche[] {
+    let data: Branche[] = [];
+    this.brancheService.query().subscribe((data: Branche[]) => {
       data = data;
     });
     return data;

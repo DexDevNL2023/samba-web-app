@@ -29,7 +29,7 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       tap({
         error: (err: any) => {
-          if (err instanceof HttpErrorResponse && err.status === 401 && !err.url?.includes('api/account')) {
+          if (err instanceof HttpErrorResponse && err.status === 401 && !err.url?.includes('api/accounts')) {
             this.handleUnauthorized();
           }
         }

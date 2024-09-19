@@ -39,7 +39,6 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
     super(toastService, messageService, cdr, baseService, accountService, fb, assuranceService, appMain);
     this.entityName = 'Assurance';
     this.componentLink = '/admin/assurances';
-    this.importLink = '/import/assurances';
     this.roleKey = 'ASSURANCE_MODULE';
   }
 

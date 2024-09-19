@@ -1,5 +1,5 @@
 import { UserRequest } from './../../models/user.request.model';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -40,6 +40,7 @@ export default class SettingsComponent implements OnInit {
     public accountCrudService: AccountCrudService,
     public accountService: AccountService, // Service pour la gestion du compte utilisateur
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction du formulaire
+    private cdr: ChangeDetectorRef,
     public appMain: AppMainComponent
   ) {
     // Initialisation du formulaire avec les champs et validateurs nécessaires
@@ -48,31 +49,57 @@ export default class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-    this.accountService.identity().subscribe(account => {
-      this.account = account;
-      console.log(this.account.authority);
-      if (this.account) {
-        const userId = this.account.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
+    this.accountService.getAuthenticationState().subscribe(account => {
+      if (account) {
+        this.account = account;
+        const userId = this.account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
         if (userId) {
-          this.accountCrudService.getProfile(userId).subscribe((user: any) => {
-            this.user = user;
-          });
+          this.accountCrudService.getProfile(userId).subscribe(
+            (user: UserResponse) => {
+              console.log(user);
+              if (user) {
+                this.user = user;
+                this.rebuildFormBasedOnAuthorities();
+                const userAuthority = this.user.authority ? [this.user.authority] : [];
+                const userLanguage = this.user.langKey ? this.user.langKey : 'fr';
+                this.settingsForm.patchValue({
+                  ...this.user,
+                  authority: userAuthority,
+                  langKey: userLanguage
+                });
+                this.cdr.detectChanges();
+              }
+            },
+            (error) => {
+              console.error('Erreur lors de la récupération du profil utilisateur:', error);
+            }
+          );
         }
       }
     });
+
     // Remplir le formulaire avec les données de l'utilisateur
     this.rebuildFormBasedOnAuthorities();
     this.settingsForm.patchValue(this.user);
+
+    // Force change detection
+    this.cdr.detectChanges();
+
     this.updateBreadcrumb(); // Mettre à jour le breadcrumb initial
   }
 
   private rebuildFormBasedOnAuthorities(): void {
-    if (this.account?.authority.includes(Authority.PROVIDER)) {
-      this.buildProviderForm();
-    } else if (this.account?.authority.includes(Authority.CLIENT)) {
-      this.buildAssureForm();
-    } else {
-      this.buildDefaultUserForm();
+    if (this.account?.authority) { // Vérifiez si 'authority' est défini
+      if (this.account.authority === Authority.PROVIDER) {
+        console.log('fournisseur');
+        this.buildProviderForm();
+      } else if (this.account.authority === Authority.CLIENT) {
+        console.log('assure');
+        this.buildAssureForm();
+      } else {
+        console.log('agent ou admin');
+        this.buildDefaultUserForm();
+      }
     }
   }
 
@@ -104,7 +131,7 @@ export default class SettingsComponent implements OnInit {
     this.settingsForm.addControl('email', this.formBuilder.control('', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(254)]));
     this.settingsForm.addControl('langKey', this.formBuilder.control('', Validators.required));
     this.settingsForm.addControl('actived', this.formBuilder.control(false, Validators.required));
-    this.settingsForm.addControl('authority', this.formBuilder.control([]));
+    this.settingsForm.addControl('authority', this.formBuilder.control(''));
     this.settingsForm.addControl('imageUrl', this.formBuilder.control(''));
     this.settingsForm.addControl('login', this.formBuilder.control(''));
   }
@@ -124,12 +151,44 @@ export default class SettingsComponent implements OnInit {
     this.success = false;
 
     if (this.user) {
-      // Fusionne les données du compte avec les valeurs actuelles du formulaire
-      const user: UserRequest = { ...this.user, ...this.settingsForm.getRawValue() };
+      let user: UserRequest;
+
+      // Vérifier l'autorité de l'utilisateur
+      switch (this.user.authority) {
+        case Authority.PROVIDER:
+          user = {
+            ...this.user,
+            fullName: this.settingsForm.getRawValue().nom, // Utiliser le nom du fournisseur
+            ...this.settingsForm.getRawValue() // Inclure les autres paramètres
+          };
+          break;
+
+        case Authority.CLIENT:
+          user = {
+            ...this.user,
+            fullName: `${this.settingsForm.getRawValue().firstName} ${this.settingsForm.getRawValue().lastName}`, // Concatenation du prénom et du nom
+            ...this.settingsForm.getRawValue() // Inclure les autres paramètres
+          };
+          break;
+
+        default:
+          user = { ...this.user, ...this.settingsForm.getRawValue() }; // Utiliser les valeurs par défaut
+          break;
+      }
 
       // Appel du service pour sauvegarder les modifications du compte
       this.accountCrudService.updateProfile(user).subscribe(() => {
         this.success = true; // Affiche le succès de la sauvegarde
+
+        // Recharge les données du compte utilisateur authentifié
+        this.accountService.identity(true).subscribe(account => {
+          if (account) {
+            this.accountService.authenticate(account);
+          }
+
+          // Réactualise l'affichage du template après la mise à jour des données
+          this.cdr.detectChanges();
+        });
       });
     }
   }

@@ -1,3 +1,5 @@
+import { Assure } from './../../models/assure.model';
+import { AssureService } from './../../service/assure.service';
 import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
@@ -8,7 +10,6 @@ import { BaseService } from '../../service/base.service';
 import { MessageService } from 'primeng/api';
 import { DossierMedical } from '../../models/dossier-medical.model';
 import { DossierMedicalService } from '../../service/dossier-medical.service';
-import { Assure, Gender } from '../../models/assure.model';
 import { GenericCrudComponent } from '../generic.crud.component';
 
 @Component({
@@ -25,12 +26,12 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    dossierMedicalService: DossierMedicalService
+    dossierMedicalService: DossierMedicalService,
+    private assureService: AssureService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, dossierMedicalService, appMain);
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
-    this.importLink = '/import/dossiers/medicaux';
     this.roleKey = 'DOCUMENT_MODULE';
   }
 
@@ -72,9 +73,9 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
   }
 
   // Chargement des polices associés à une medical-record
-  loadPatients(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPatients(): Assure[] {
+    let data: Assure[] = [];
+    this.assureService.query().subscribe((data: Assure[]) => {
       data = data;
     });
     return data;

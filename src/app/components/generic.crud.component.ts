@@ -5,13 +5,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { AppMainComponent } from '../app.main.component';
 import { AccountService } from '../core/auth/account.service';
 import { BaseService } from '../service/base.service';
-import { EntityByBranch } from '../models/entity-by-branch.model';
 import { MessageService } from 'primeng/api';
 import readXlsxFile from 'read-excel-file';
 import { Column } from '../models/column.model';
 import { BaseEntity } from '../models/base-entity.model';
 import { GenericCrudService } from '../service/generic.crud.service';
 import { PortraitComponent } from '../shared/portrait/portrait.demo.component';
+import { RuleReponse } from '../models/rule.reponse.model';
 
 @Component({
   selector: 'app-generic-crud',
@@ -32,7 +32,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   selectedItems: Entity[] = []; // Tableau d'éléments de type Entity sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
-  importLink: string = '';
   entityName: string = '';
   roleKey: string = '';
   formGroup: FormGroup; // Groupe de contrôles de formulaire
@@ -140,14 +139,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
               // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
               this.selectedItemView = { cols: column.subfield || [], data: values };
               this.displayItemDialog = true;
-            } else {
-                console.error(`No values found for field: ${field}`);
             }
-        } else {
-            console.error(`Column with field: ${field} not found.`);
         }
-    } else {
-        console.error('Invalid item parameters provided.');
     }
   }
 
@@ -170,14 +163,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
                 // Configurer la vue de la liste avec les colonnes et les données filtrées
                 this.selectedItemListView = { cols: column.subfield || [], data: values };
                 this.displayItemListDialog = true;
-            } else {
-                console.error(`No values found for field: ${field}`);
             }
-        } else {
-            console.error(`Column with field: ${field} not found.`);
         }
-    } else {
-        console.error('Invalid item parameters provided.');
     }
   }
 
@@ -331,9 +318,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       if (input.length > 0) {
         const data = await readXlsxFile(input[0]);
         const processedData = this.processExcelData(data);
-        this.baseService.create(this.importLink, processedData).subscribe(
+        this.service.createAll(processedData).subscribe(
           data => {
-            console.log(data);
             this.ngOnInit();
           },
           error => {
@@ -365,12 +351,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   protected createFormControls(): { [key: string]: FormControl } {
       const controls: { [key: string]: FormControl } = {}; // Initialise un objet vide pour les contrôles de formulaire
       const requiredFields = this.getRequiredFields(); // Récupère la liste des champs requis
-      console.log(requiredFields);
 
       this.cols.forEach(col => { // Parcours toutes les colonnes
           const isRequired = requiredFields.includes(col.field); // Vérifie si le champ est requis
-          console.log(col);
-          console.log(isRequired);
 
           switch (col.type) {
               case 'id':
@@ -534,7 +517,10 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
   protected hasAccessToPermission(permissionKey: string): boolean {
-    return this.accountService.hasAccessToPermission(this.roleKey, permissionKey);
+    this.accountService.getAutorisations(this.accountService.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
+        return this.accountService.hasAccessToPermission(this.roleKey, permissionKey, roles);
+    });
+    return false;
   }
 
   protected exportExcel(){

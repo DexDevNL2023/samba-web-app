@@ -38,10 +38,13 @@
           <div class="mb-4">
             <label for="langKey" class="block font-normal text-900 mb-2">Langue</label>
             <p-dropdown
+              name="langKey"
               id="langKey"
               [options]="languages"
               placeholder="Langue"
               formControlName="langKey"
+              optionLabel="label"
+              optionValue="value"
             ></p-dropdown>
           </div>
 
@@ -161,7 +164,7 @@
 
           <div class="mb-4">
             <label for="adresse" class="block font-normal text-900 mb-2">Adresse</label>
-            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse" 
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse"
                 placeholder="Adresse complete" formControlName="adresse" rows="5" cols="30">
             </textarea>
           </div>
@@ -219,14 +222,14 @@
 
           <div class="mb-4">
             <label for="adresse" class="block font-normal text-900 mb-2">Adresse</label>
-            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse" 
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="adresse"
                 placeholder="Adresse complete" formControlName="adresse" rows="5" cols="30">
             </textarea>
           </div>
 
           <div class="mb-4">
             <label for="servicesFournis" class="block font-normal text-900 mb-2">Services Fournis</label>
-            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="servicesFournis" 
+            <textarea class="p-inputtextarea p-component p-element" pInputTextarea id="servicesFournis"
                 placeholder="Services Fournis" formControlName="servicesFournis" rows="5" cols="30">
             </textarea>
           </div>

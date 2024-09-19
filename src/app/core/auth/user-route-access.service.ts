@@ -1,3 +1,4 @@
+import { ToastService } from './../../service/toast.service';
 // Importations nécessaires d'Angular et de RxJS
 import { isDevMode, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
@@ -14,6 +15,7 @@ export class UserRouteAccessService implements CanActivate {
 
   constructor(
     private accountService: AccountService,
+    private toastService: ToastService,
     private stateStorageService: StateStorageService,
     private router: Router
   ) {}
@@ -32,11 +34,8 @@ export class UserRouteAccessService implements CanActivate {
             return true; // Autoriser l'accès à la route
           }
 
-          if (isDevMode()) {
-            console.error('User does not have any of the required authorities:', authorities);
-          }
+          this.toastService.showToast('error', `Accès interdit`, `L'utilisateur ne possède aucune des autorités requises : ${authorities.join(', ')}`);
 
-          this.router.navigate(['accessdenied']);
           return false;
         }
 

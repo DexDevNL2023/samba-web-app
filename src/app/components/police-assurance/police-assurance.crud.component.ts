@@ -1,3 +1,7 @@
+import { SouscriptionService } from './../../service/souscription.service';
+import { GarantieService } from './../../service/garantie.service';
+import { AssuranceService } from './../../service/assurance.service';
+import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -50,12 +54,14 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    policeAssuranceService: PoliceAssuranceService
+    policeAssuranceService: PoliceAssuranceService,
+    private souscriptionService: SouscriptionService,
+    private assuranceService: AssuranceService,
+    private garantieService: GarantieService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, policeAssuranceService, appMain);
     this.entityName = 'Police d\'assurance';
     this.componentLink = '/admin/polices/assurances';
-    this.importLink = '/import/polices/assurances';
     this.roleKey = 'POLICE_ASSURANCE_MODULE';
   }
 
@@ -66,9 +72,9 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroPolice', header: 'Num Police', type: 'text' },
       { field: 'label', header: 'Libellé', type: 'text' },
-      { field: 'dureeCouverture', header: 'Durée de couverture', type: 'number' },
-      { field: 'conditions', header: 'Conditions', type: 'textarea' },
-      { field: 'montantSouscription', header: 'Montant', type: 'currency' },
+      { field: 'dureeCouverture', header: 'Durée de couverture', type: 'number, access: [Authority.ADMIN]' },
+      { field: 'conditions', header: 'Conditions', type: 'textarea', access: [Authority.ADMIN] },
+      { field: 'montantSouscription', header: 'Montant', type: 'currency', access: [Authority.ADMIN] },
       { field: 'assurance', header: 'Assurance', type: 'objet', values: () => this.loadAssurances(), label: 'nom', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'nom', header: 'Name', type: 'text' },
@@ -101,27 +107,27 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
   }
 
   // Chargement des assurances associés à une police-assurance
-  loadAssurances(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadAssurances(): Assurance[] {
+    let data: Assurance[] = [];
+    this.assuranceService.query().subscribe((data: Assurance[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des garanties associés à une police-assurance
-  loadGaranties(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadGaranties(): Garantie[] {
+    let data: Garantie[] = [];
+    this.garantieService.query().subscribe((data: Garantie[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des souscriptions associés à une police-assurance
-  loadSouscriptions(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.getAllByPoliceId(this.selectedItem.id).subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;

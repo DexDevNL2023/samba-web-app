@@ -44,7 +44,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     super(toastService, messageService, cdr, baseService, accountService, fb, accountCrudService, appMain);
     this.entityName = 'Account';
     this.componentLink = '/admin/accounts';
-    this.importLink = '/import/accounts';
     this.roleKey = 'ACCOUNT_MODULE';
   }
 
@@ -62,7 +61,6 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       { field: 'actived', header: 'Actif', type: 'boolean' },
       { field: 'roles', header: 'Rôles', type: 'list', values: () => this.loadRoles(), label: 'roleKey', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'roleKey', header: 'Clé', type: 'text' },
           { field: 'libelle', header: 'Libelle', type: 'text' },
           { field: 'permissions', header: 'Permissions', type: 'list', values: () => this.loadPermissions(), label: 'libelle', key: 'id', access: [Authority.ADMIN], control: (item: any, event: any) => this.onPermissionsChange(item, event) }
         ]
@@ -98,9 +96,7 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
   }
 
   onPermissionsChange(item: any, event: any): void {
-    console.log("Role changed for item:", item);
     // Les permissions sélectionnées pour le champ list
-    console.log("Permissions changed: ", event.value);
     const form: PermissionFormRequest = {
       "accountId": this.selectedItem?.id,
       "moduleId": item?.id,

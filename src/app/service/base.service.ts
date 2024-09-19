@@ -1,31 +1,22 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import * as FileSave from 'file-saver';
 
 
 @Injectable({ providedIn: 'root' })
 export class BaseService {
 
-  constructor(private http: HttpClient) {}
-
-  create(api: string, form: any): Observable<any> {
-    console.log("Create ok ", form)
-    console.log(`${api}`, JSON.stringify(form));
-    return this.http.post<any>(`${environment.apiUrl}/${api}`, JSON.stringify(form));
-  }
-
   generateExcel(title, data) {
     if(data.length > 0){
 
       data.map(item =>{
         delete item['id'];
-        delete item['createdAt'];
         delete item['createdBy'];
-        delete item['modifiedAt'];
-        delete item['modifiedBy'];
-        delete item['isDefault'];
+        delete item['createdAt'];
+        delete item['updatedBy'];
+        delete item['updatedAt'];
+        delete item['deletedAt'];
+        delete item['deletedBy'];
+        delete item['isDeleted'];
       })
     }else{
       data = [];

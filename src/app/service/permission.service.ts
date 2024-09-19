@@ -9,6 +9,6 @@ import { Permission } from '../models/permission.model';
 export class PermissionService extends GenericCrudService<Permission> {
 
     constructor(http: HttpClient, toastService: ToastService) {
-        super(http, toastService, '/api/permissions');
+        super(http, toastService, 'api/permissions');
     }
 }

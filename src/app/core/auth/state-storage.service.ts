@@ -28,6 +28,7 @@ export class StateStorageService {
   // Méthode pour stocker le jeton d'authentification soit dans le localStorage soit dans le sessionStorage
   storeAuthenticationToken(authenticationToken: string, rememberMe: boolean): void {
     authenticationToken = JSON.stringify(authenticationToken); // Sérialisation du jeton en chaîne JSON
+    console.log(authenticationToken);
     this.clearAuthenticationToken(); // Nettoyage des anciens jetons
     if (rememberMe) {
       localStorage.setItem(this.authenticationKey, authenticationToken); // Stockage dans le localStorage si "rememberMe" est vrai

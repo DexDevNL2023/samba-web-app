@@ -44,7 +44,6 @@ export class CompanyComponent implements OnInit {
 
     saveForm() {
         this.submitted = true;
-        console.log(this.company);
         if (this.company.name?.trim() && this.company.sigle?.trim() && this.company.email?.trim()) {
             if (this.company.id) {
             this.paramService.updateCompany(this.company).subscribe(

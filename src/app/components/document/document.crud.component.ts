@@ -1,3 +1,7 @@
+import { Prestation } from './../../models/prestation.model';
+import { Sinistre } from './../../models/sinistre.model';
+import { PrestationService } from './../../service/prestation.service';
+import { SinistreService } from './../../service/sinistre.service';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -29,12 +33,13 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    documentService: DocumentService
+    documentService: DocumentService,
+    private sinistreService: SinistreService,
+    private prestationService: PrestationService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, documentService, appMain);
     this.entityName = 'Document';
     this.componentLink = '/admin/documents';
-    this.importLink = '/import/documents';
     this.roleKey = 'DOCUMENT_MODULE';
   }
 
@@ -77,18 +82,18 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
   }
 
   // Chargement des assures associés à une souscription
-  loadSinistres(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadSinistres(): Sinistre[] {
+    let data: Sinistre[] = [];
+    this.sinistreService.query().subscribe((data: Sinistre[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des polices associés à une souscription
-  loadPrestations(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPrestations(): Prestation[] {
+    let data: Prestation[] = [];
+    this.prestationService.query().subscribe((data: Prestation[]) => {
       data = data;
     });
     return data;

@@ -1,4 +1,5 @@
-import { PaymentFrequency, SubscriptionStatus } from './../../models/souscription.model';
+import { SouscriptionService } from './../../service/souscription.service';
+import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
 import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
@@ -43,12 +44,12 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    contratAssuranceService: ContratAssuranceService
+    contratAssuranceService: ContratAssuranceService,
+    private souscriptionService: SouscriptionService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, contratAssuranceService, appMain);
     this.entityName = 'Contrat d\'assurance';
     this.componentLink = '/admin/contrats/assurances';
-    this.importLink = '/import/contrats/assurances';
     this.roleKey = 'CONTRAT_MODULE';
   }
 
@@ -57,16 +58,16 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroContrat', header: 'Num Contrat', type: 'text' },
-      { field: 'dateContrat', header: 'Date du contrat', type: 'date' },
-      { field: 'typeContrat', header: 'Type', type: 'enum', values: () => this.contratTypes, label: 'label', key: 'value' },
-      { field: 'couverture', header: 'Couverture', type: 'textarea' },
-      { field: 'montantAssure', header: 'Montant assuré', type: 'currency' },
-      { field: 'franchise', header: 'franchise', type: 'currency' },
-      { field: 'conditions', header: 'Conditions', type: 'textarea' },
-      { field: 'exclusions', header: 'Exclusions', type: 'textarea' },
-      { field: 'dateDebut', header: 'Date de début', type: 'date' },
-      { field: 'dateFin', header: 'Date de fin', type: 'date' },
+      { field: 'numeroContrat', header: 'Num Contrat', type: 'text', access: [Authority.ADMIN] },
+      { field: 'dateContrat', header: 'Date du contrat', type: 'date', access: [Authority.ADMIN] },
+      { field: 'typeContrat', header: 'Type', type: 'enum', values: () => this.contratTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'couverture', header: 'Couverture', type: 'textarea', access: [Authority.ADMIN] },
+      { field: 'montantAssure', header: 'Montant assuré', type: 'currency', access: [Authority.ADMIN] },
+      { field: 'franchise', header: 'franchise', type: 'currency', access: [Authority.ADMIN] },
+      { field: 'conditions', header: 'Conditions', type: 'textarea', access: [Authority.ADMIN] },
+      { field: 'exclusions', header: 'Exclusions', type: 'textarea', access: [Authority.ADMIN] },
+      { field: 'dateDebut', header: 'Date de début', type: 'date', access: [Authority.ADMIN] },
+      { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
       { field: 'souscriptions', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
@@ -89,9 +90,9 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
   }
 
   // Chargement des souscriptions associés à une police-assurance
-  loadSouscriptions(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.query().subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;

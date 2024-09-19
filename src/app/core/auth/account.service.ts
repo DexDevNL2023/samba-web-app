@@ -1,3 +1,9 @@
+import { Souscription } from './../../models/souscription.model';
+import { SouscriptionService } from './../../service/souscription.service';
+import { DossierMedical } from './../../models/dossier-medical.model';
+import { DossierMedicalService } from './../../service/dossier-medical.service';
+import { Registrant } from './../../models/registrant.model';
+import { RegistrantService } from './../../service/registrant.service';
 import { UserData } from './../../models/user-data.model';
 import { AuthorizationService } from './../../service/authorization.service';
 import { environment } from 'src/environments/environment';
@@ -30,6 +36,9 @@ export class AccountService {
   constructor(
     private accountCrudService: AccountCrudService,
     private authorizationService: AuthorizationService,
+    private dossierMedicalService: DossierMedicalService,
+    private souscriptionService: SouscriptionService,
+    private registrantService: RegistrantService,
     private stateStorageService: StateStorageService,
     private router: Router
   ) {}
@@ -51,23 +60,12 @@ export class AccountService {
 
   // Méthode pour authentifier un utilisateur et mettre à jour l'état d'authentification
   authenticate(identity: Account | null): void {
-    this.userIdentity = identity; // Mise à jour du signal userIdentity
-    this.authenticationState.next(this.userIdentity); // Notification de l'état d'authentification
-    if (!identity) {
+    if (identity) {
+      this.userIdentity = identity;
+      this.authenticationState.next(this.userIdentity); // Mise à jour de l'état d'authentification
+    } else {
       this.accountCache$ = null; // Invalidation du cache si l'utilisateur est déconnecté
     }
-  }
-
-  // Méthode pour vérifier si l'utilisateur possède l'une des autorisations spécifiées
-  hasAnyAuthority(authorities: string[] | string): boolean {
-    if (!this.userIdentity) {
-      return false; // Retourne false si l'utilisateur n'est pas authentifié
-    }
-    if (!Array.isArray(authorities)) {
-      authorities = [authorities]; // Convertit les autorisations en tableau si nécessaire
-    }
-    // Vérifie si l'utilisateur possède l'une des autorisations
-    return authorities.some((authority: string) => this.userIdentity.authority === authority);
   }
 
   // Méthode pour récupérer l'identité de l'utilisateur, éventuellement avec force
@@ -75,14 +73,13 @@ export class AccountService {
     if (!this.accountCache$ || force) {
       this.accountCache$ = this.fetch().pipe(
         tap((account: Account) => {
-          this.authenticate(account); // Authentifie l'utilisateur avec les données récupérées
-
-          this.navigateToStoredUrl(); // Navigue vers l'URL précédemment stockée
+          this.authenticate(account); // Authentification avec les données récupérées
+          this.navigateToStoredUrl(); // Redirection après authentification
         }),
-        shareReplay(), // Partage et met en cache le résultat de l'observable
+        shareReplay(),
       );
     }
-    return this.accountCache$.pipe(catchError(() => of(null))); // Gestion des erreurs
+    return this.accountCache$.pipe(catchError(() => of(null)));
   }
 
   // Méthode pour vérifier si l'utilisateur est authentifié
@@ -111,45 +108,58 @@ export class AccountService {
     }
   }
 
+  // Méthode pour vérifier si l'utilisateur possède l'une des autorisations spécifiées
+  hasAnyAuthority(authorities: string[] | string): boolean {
+    // Vérification si l'utilisateur est authentifié
+    if (!this.userIdentity || !this.userIdentity.authority) {
+      return false; // Retourne false si l'utilisateur n'est pas authentifié ou n'a pas d'autorité
+    }
+
+    // Si 'authorities' n'est pas un tableau, le convertir en tableau
+    if (!Array.isArray(authorities)) {
+      authorities = [authorities];
+    }
+
+    // Vérification si l'utilisateur possède l'une des autorisations spécifiées
+    return authorities.some((authority: string) => authority === this.userIdentity.authority);
+  }
+
   // Vérifie si l'utilisateur a le droit d'accès pour un module donné
-  hasAccessToModule(roleKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
-      return roles?.some(rule => rule?.roleKey === roleKey);
-    });
-    return false;
+  hasAccessToModule(roleKey: string, roles: RuleReponse[]): boolean {
+    return roles?.some(rule => rule?.roleKey === roleKey);
   }
 
   // Vérifie si l'utilisateur a le droit d'accès pour un traitement donné (ecrire, lire, modifier, suprimer ou imprimer)
-  hasAccessToPermission(roleKey: string, permissionKey: string): boolean {
-    this.getAutorisations(this.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
-      return roles?.some(rule => rule?.roleKey === roleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
-    });
-    return false;
+  hasAccessToPermission(roleKey: string, permissionKey: string, roles: RuleReponse[]): boolean {
+    return roles?.some(rule => rule?.roleKey === roleKey && rule?.permissions?.some(permission => permission?.permissionKey === permissionKey));
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
   getAutorisations(userId: number): Observable<RuleReponse[]> {
-      return this.authorizationService.getAllAutorisations(userId);
+      return this.authorizationService.getAllAutorisations(userId).pipe(
+        catchError(() => of([])) // En cas d'erreur, renvoie un tableau vide
+      );
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
-  getRegistrant(userId: number): Observable<Registrant> {
-      return this.http.get<Registrant>(`${this.baseUrl}/api/account/${userId}/registrant`);
+  getRegistrant(userId: number): Observable<Registrant | null> {
+      return this.registrantService.getByUserId(userId).pipe(
+        catchError(() => of(null)) // En cas d'erreur, renvoie null
+      );
   }
 
   // Méthode pour récupérer les dossiers médicaux d'un utilisateur
   getMedicalRecords(userId: number): Observable<DossierMedical[]> {
-      return this.http.get<DossierMedical[]>(`${this.baseUrl}/api/account/${userId}/dossiers`);
+      return this.dossierMedicalService.getByUserId(userId).pipe(
+        catchError(() => of([])) // En cas d'erreur, renvoie un tableau vide
+      );
   }
 
   // Méthode pour récupérer les souscriptions d'un utilisateur
   getSouscriptions(userId: number): Observable<Souscription[]> {
-      return this.http.get<Souscription[]>(`${this.baseUrl}/api/account/${userId}/souscriptions`);
-  }
-
-  // Méthode pour récupérer les notifications d'un utilisateur
-  getNotifications(userId: number): Observable<Notification[]> {
-      return this.http.get<Notification[]>(`${this.baseUrl}/api/account/${userId}/notifications`);
+      return this.souscriptionService.getByUserId(userId).pipe(
+        catchError(() => of([])) // En cas d'erreur, renvoie un tableau vide
+      );
   }
 
   // Méthode pour récupérer les données combinées d'un utilisateur

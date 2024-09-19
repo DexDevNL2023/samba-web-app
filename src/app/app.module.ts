@@ -1,3 +1,5 @@
+import { RecuPaiementCrudComponent } from './components/recu-paiement/recu-paiement.crud.component';
+import { RecuPaiementService } from './service/recu-paiement.service';
 import { RoleService } from './service/role.service';
 import { PermissionService } from './service/permission.service';
 import { AuthorizationService } from './service/authorization.service';
@@ -5,7 +7,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {CommonModule, HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -122,7 +124,6 @@ import PasswordComponent from './account/password/password.component';
 import PasswordResetFinishComponent from './account/password-reset/finish/password-reset-finish.component';
 import PasswordResetInitComponent from './account/password-reset/init/password-reset-init.component';
 import RegisterComponent from './account/register/register.component';
-import { RegisterService } from './account/register/register.service';
 import SettingsComponent from './account/settings/settings.component';
 import { AccountService } from './core/auth/account.service';
 import { StateStorageService } from './core/auth/state-storage.service';
@@ -281,6 +282,7 @@ import { CompanyComponent } from './company/company.component';
         GarantieCrudComponent,
         NotificationCrudComponent,
         PaiementCrudComponent,
+        RecuPaiementCrudComponent,
         PoliceAssuranceCrudComponent,
         PrestationCrudComponent,
         ReclamationCrudComponent,
@@ -297,8 +299,8 @@ import { CompanyComponent } from './company/company.component';
         NotificationService, PaiementService, PoliceAssuranceService, PrestationService, AccountCrudService,
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         RoleService, PermissionService, AuthorizationService, CompanyService, MessageService, AuthentificationService,
-        RegisterService, AccountService, StateStorageService, CompanyService, DashboardService,
-        ContratAssuranceService,
+        AccountService, StateStorageService, CompanyService, DashboardService,
+        ContratAssuranceService, RecuPaiementService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,

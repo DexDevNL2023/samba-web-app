@@ -1,3 +1,4 @@
+import { FournisseurService } from './../../service/fournisseur.service';
 import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
@@ -25,12 +26,12 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    brancheService: BrancheService
+    brancheService: BrancheService,
+    private fournisseurService: FournisseurService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, brancheService, appMain);
     this.entityName = 'Branche';
     this.componentLink = '/admin/branches';
-    this.importLink = '/import/branches';
     this.roleKey = 'BRANCHE_MODULE';
   }
 
@@ -58,9 +59,9 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
   }
 
   // Chargement des polices associés à une branche
-  loadPartenaires(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPartenaires(): Fournisseur[] {
+    let data: Fournisseur[] = [];
+    this.fournisseurService.getFournisseurWithBranchesById(this.selectedItem.id).subscribe((data: Fournisseur[]) => {
       data = data;
     });
     return data;

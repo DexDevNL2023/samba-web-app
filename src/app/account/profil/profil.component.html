@@ -5,8 +5,8 @@
                 <div class="align-content-center justify-content-center flex">
                     <img src="../../../assets/layout/images/ban.jpg" width="100%" height="150px" alt="">
                 </div>
-                <p-avatar image="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" style="position: relative;top: -20px;left: 40%;" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                <p-button icon="pi pi-cog" style="position: relative;top: -20px;left: 65%;" styleClass="p-button-rounded mr-2 mb-2" size="xlarge" (click)="goToSettings()"></p-button>
+                <p-avatar image="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" style="position: relative; top: -20px; left: 40%;" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
+                <p-button icon="pi pi-cog" style="position: relative; top: -20px; left: 70%;" styleClass="p-button-rounded mr-2 mb-2" size="xlarge" (click)="goToSettings()"></p-button>
 
                 <div class="w-[10%]">
                     <div class="w-full">
@@ -21,11 +21,11 @@
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Langue : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account.langKey}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.langKey}}</span></div>
                             </li>
                             <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Role : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account.authority}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{getAuthorityLabel(account?.authority)}}</span></div>
                             </li>
                         </ul>
                     </div>

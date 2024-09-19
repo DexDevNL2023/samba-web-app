@@ -1,3 +1,4 @@
+import { AccountCrudService } from './../../service/account.crud.service';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -34,12 +35,12 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    notificationService: NotificationService
+    private notificationService: NotificationService,
+    private accountCrudService: AccountCrudService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, notificationService, appMain);
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
-    this.importLink = '/import/notifications';
     this.roleKey = 'NOTIFICATION_MODULE';
   }
 
@@ -74,13 +75,12 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
   protected initializeOthers(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
     this.accountService.identity().subscribe(account => {
-      console.log(account);
       if (account) {
         // Marquer toutes les notifications non lues comme lues
         this.notificationService.markAsReadNotificationsByUserId(account.id).subscribe();
 
         // Check if the authenticated user has the ROLE_CLIENT authority
-        if (account.authority && account.authority.includes('ROLE_CLIENT')) {
+        if (account?.authority === Authority.CLIENT) {
           // If the user is a client, find and select the dropdown fields for emitter and recipient
           const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
           const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
@@ -120,9 +120,9 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
   }
 
   // Chargement des polices associés à une notification
-  loadAccounts(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadAccounts(): Account[] {
+    let data: Account[] = [];
+    this.accountCrudService.query().subscribe((data: Account[]) => {
       data = data;
     });
     return data;

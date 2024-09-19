@@ -1,12 +1,18 @@
-import { Authority } from './../../models/account.model';
+import { AccountCrudService } from './../../service/account.crud.service';
+import { Account, Authority } from './../../models/account.model';
+import { Fournisseur } from './../../models/fournisseur.model';
+import { Branche } from './../../models/branche.model';
+import { DossierMedical } from './../../models/dossier-medical.model';
+import { FournisseurService } from './../../service/fournisseur.service';
+import { BrancheService } from './../../service/branche.service';
+import { DossierMedicalService } from './../../service/dossier-medical.service';
+import { SouscriptionService } from './../../service/souscription.service';
+import { RegistrantService } from './../../service/registrant.service';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { Assure, Gender } from '../../models/assure.model';
 import { LiteRegistrant } from '../../models/lite.registrant.model';
-import { DossierMedical } from '../../models/dossier-medical.model';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
-import { Fournisseur } from '../../models/fournisseur.model';
-import { Branche } from '../../models/branche.model';
 import { AppMainComponent } from '../../app.main.component';
 import { FormBuilder } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -47,12 +53,17 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    assureService: AssureService
+    assureService: AssureService,
+    private registrantService: RegistrantService,
+    private souscriptionService: SouscriptionService,
+    private dossierMedicalService: DossierMedicalService,
+    private brancheService: BrancheService,
+    private fournisseurService: FournisseurService,
+    private accountCrudService: AccountCrudService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, assureService, appMain);
     this.entityName = 'Assuré';
     this.componentLink = '/admin/assures';
-    this.importLink = '/import/assures';
     this.roleKey = 'ASSURE_MODULE';
   }
 
@@ -108,53 +119,53 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
   }
 
   // Chargement aux registrants associés à une assure
-  loadRegistrants(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadRegistrants(): LiteRegistrant[] {
+    let data: LiteRegistrant[] = [];
+    this.registrantService.query().subscribe((data: LiteRegistrant[]) => {
       data = data;
     });
     return data;
   }
 
-  loadAccounts(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadAccounts(): Account[] {
+    let data: Account[] = [];
+    this.accountCrudService.query().subscribe((data: Account[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.getAllByAssureId(this.selectedItem.id).subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des dossiers médicaux associés à une assure
-  loadDossiers(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadDossiers(): DossierMedical[] {
+    let data: DossierMedical[] = [];
+    this.dossierMedicalService.getDossierMedicalWithPatientById(this.selectedItem.id).subscribe((data: DossierMedical[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadBranches(): Branche[] {
+    let data: Branche[] = [];
+    this.brancheService.query().subscribe((data: Branche[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des polices associés à une branche
-  loadPartenaires(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPartenaires(): Fournisseur[] {
+    let data: Fournisseur[] = [];
+    this.fournisseurService.query().subscribe((data: Fournisseur[]) => {
       data = data;
     });
     return data;

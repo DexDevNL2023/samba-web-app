@@ -2,19 +2,19 @@
     <a href="#" id="layout-menu-btn" class="menu-btn" (click)="app.onMenuButtonClick($event)">
       <i class="pi pi-bars"></i>
     </a>
-  
+
     <span class="search-input text-center fs-1 fw-semibold" style="color: rgb(30, 30, 32); font-size: 20px;">
       SAMBA'A Web App v1.1
     </span>
-  
+
     <div class="layout-topbar-menu-wrapper">
       <ul class="topbar-menu fadeInDown" [ngClass]="{'topbar-menu-active': app.topbarMenuActive}">
-        <li class="profile-item" #profile [ngClass]="{'active-topmenuitem':app.activeTopbarItem === profile}">
+        <li class="profile-item cursor-pointer" #profile [ngClass]="{'active-topmenuitem':app.activeTopbarItem === profile}">
           <a href="#" (click)="app.onTopbarItemClick($event, profile)">
             <img src="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" alt="manhattan-layout" />
             <span class="topbar-item-name profile-name">{{account?.fullName}}</span>
           </a>
-          <ul class="fadeInDown animated">
+          <ul class="fadeInDown animated cursor-pointer">
             <li role="menuitem">
               <a (click)="openProfile()">
                 <i class="pi pi-fw pi-user"></i>
@@ -41,7 +41,7 @@
             <span class="topbar-badge rubberBand">{{myNotifs?.length}}</span>
             <span class="topbar-item-name">Notifications</span>
           </a>
-          <ul class="fadeInDown animated">
+          <ul class="fadeInDown animated cursor-pointer">
             <li *ngFor="let notification of myNotifs" role="menuitem">
               <a href="#" (click)="openNotifications(notification)">
                 <i *ngIf="notification.typeNotification === 'PAYMENT'" class="pi pi-fw pi-credit-card"></i>
@@ -62,4 +62,4 @@
         <img src="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" alt="manhattan-layout" />
       </a>
     </div>
-  </div>  
+  </div>

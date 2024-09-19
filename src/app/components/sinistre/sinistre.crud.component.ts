@@ -1,16 +1,21 @@
 import { Authority } from './../../models/account.model';
+import { DocumentService } from './../../service/document.service';
+import { SouscriptionService } from './../../service/souscription.service';
+import { PrestationService } from './../../service/prestation.service';
+import { SinistreService } from './../../service/sinistre.service';
 import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { AppMainComponent } from '../../app.main.component';
-import { AccountService } from '../../core/auth/account.service';
-import { BaseService } from '../../service/base.service';
+import { AccountService } from './../../core/auth/account.service';
+import { BaseService } from './../../service/base.service';
 import { MessageService } from 'primeng/api';
-import { Sinistre, SinistreStatus } from '../../models/sinistre.model';
-import { SinistreService } from '../../service/sinistre.service';
-import { PrestationStatus, PrestationType } from '../../models/prestation.model';
-import { PaymentFrequency, SubscriptionStatus } from '../../models/souscription.model';
+import { AppMainComponent } from './../../app.main.component';
+import { Prestation, PrestationType, PrestationStatus } from './../../models/prestation.model';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { Sinistre, SinistreStatus } from './../../models/sinistre.model';
 import { GenericCrudComponent } from '../generic.crud.component';
+import { Document } from './../../models/document.model';
+import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
+
 
 @Component({
   selector: 'app-sinistre-crud',
@@ -56,12 +61,14 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    sinistreService: SinistreService
+    sinistreService: SinistreService,
+    private prestationService: PrestationService,
+    private souscriptionService: SouscriptionService,
+    private documentService: DocumentService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, sinistreService, appMain);
     this.entityName = 'Sinistre';
     this.componentLink = '/admin/sinistres';
-    this.importLink = '/import/sinistres';
     this.roleKey = 'SINISTRE_MODULE';
   }
 
@@ -115,27 +122,27 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.query().subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des polices associés à une sinistre
-  loadPrestations(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadPrestations(): Prestation[] {
+    let data: Prestation[] = [];
+    this.prestationService.getBySinistreId(this.selectedItem.id).subscribe((data: Prestation[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des documents associés à une prestation
-  loadDocuments(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadDocuments(): Document[] {
+    let data: Document[] = [];
+    this.documentService.getAllBySinistreId(this.selectedItem.id).subscribe((data: Document[]) => {
       data = data;
     });
     return data;

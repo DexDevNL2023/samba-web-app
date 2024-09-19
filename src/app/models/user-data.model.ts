@@ -9,4 +9,3 @@ export interface UserData {
   dossiers?: Pick<DossierMedical, 'id' | 'numDossierMedical' | 'dateUpdated'>[] | null;
   souscriptions?: Pick<Souscription, 'id' | 'numeroSouscription' | 'dateSouscription' | 'dateExpiration' | 'status' | 'frequencePaiement'>[] | null;
 }
- 

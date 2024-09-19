@@ -1,3 +1,5 @@
+import { RuleReponse } from './../../models/rule.reponse.model';
+import { Account } from './../../models/account.model';
 import { Component, OnInit } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -88,7 +90,14 @@ export class AppMenuComponent implements OnInit {
                     { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
-            { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            {
+                label: 'Comptabilite',
+                icon: 'pi pi-fw pi-wallet',
+                items: [
+                    { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+                    { roleKey: 'RECU_PAIEMENT_MODULE', label: 'Guichets de caisse', icon: 'pi pi-fw pi-receipt', routerLink: ['/admin/recus/paiements'] }
+                ]
+            },
             { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
@@ -132,7 +141,14 @@ export class AppMenuComponent implements OnInit {
                     { roleKey: 'DOSSIER_MEDICAUX_MODULE', label: 'Dossiers medicaux', icon: 'pi pi-fw pi-folder-open', routerLink: ['/admin/dossiers/medicaux'] }
                 ]
             },
-            { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+            {
+                label: 'Comptabilite',
+                icon: 'pi pi-fw pi-wallet',
+                items: [
+                    { roleKey: 'PAIEMENT_MODULE', label: 'Paiements', icon: 'pi pi-fw pi-credit-card', routerLink: ['/admin/paiements'] },
+                    { roleKey: 'RECU_PAIEMENT_MODULE', label: 'Guichets de caisse', icon: 'pi pi-fw pi-receipt', routerLink: ['/admin/recus/paiements'] }
+                ]
+            },
             { roleKey: 'REPORTING_MODULE', label: 'Rapports CIMA', icon: 'pi pi-fw pi-file-pdf', routerLink: ['/admin/rapports'] },
             { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length },
@@ -177,37 +193,74 @@ export class AppMenuComponent implements OnInit {
         ];
 
         // Construire le menu
-        if(this.hasAuthority('ROLE_CLIENT')) {
-            this.buildMenu(this.clientMenu);
-        } else if(this.hasAuthority('ROLE_AGENT')) {
-            this.buildMenu(this.agentMenu);
-        } else if(this.hasAuthority('ROLE_ADMIN')) {
-            this.buildMenu(this.adminMenu);
-        } else if(this.hasAuthority('ROLE_PROVIDER')) {
-            this.buildMenu(this.fournisseurMenu);
-        }
-    }
-
-    buildMenu(menu: any[]) {
-        menu.forEach(item => {
-            if (this.hasModuleAccess(item?.roleKey)) {
-                this.model.push(item);
+        this.accountService.getAuthenticationState().subscribe(account => {
+            if (account) {
+                this.loadMenusBasedOnRole(account);
             }
         });
     }
 
+    // Charge les menus en fonction du rôle de l'utilisateur authentifié
+    loadMenusBasedOnRole(account: Account) {
+        this.accountService.getAutorisations(account?.id).subscribe((roles: RuleReponse[]) => {
+            // Vérifie si l'utilisateur possède l'autorisation indiquer
+            if (this.accountService.hasAnyAuthority('ROLE_CLIENT')) {
+                this.buildMenu(this.clientMenu, roles);
+            } else if (this.accountService.hasAnyAuthority('ROLE_AGENT')) {
+                this.buildMenu(this.agentMenu, roles);
+            } else if (this.accountService.hasAnyAuthority('ROLE_ADMIN')) {
+                this.buildMenu(this.adminMenu, roles);
+            } else if (this.accountService.hasAnyAuthority('ROLE_PROVIDER')) {
+                this.buildMenu(this.fournisseurMenu, roles);
+            }
+        });
+    }
+
+    /**
+     * Reconstruit un menu basé sur les rôles d'accès de l'utilisateur.
+     *
+     * @param menu - Un tableau d'objets représentant les éléments du menu. Chaque élément peut avoir une clé de rôle (`roleKey`) et éventuellement des sous-éléments (`items`).
+     * @param roles - Un tableau d'objets représentant les rôles d'accès de l'utilisateur.
+     */
+    buildMenu(menu: any[], roles: RuleReponse[]) {
+        // Initialise un tableau temporaire pour stocker le menu filtré
+        let filteredMenu = [];
+
+        // Parcourt chaque élément du menu
+        menu.forEach(item => {
+            let newItem = { ...item }; // Crée une copie de l'élément
+
+            // Si l'élément a une clé de rôle, vérifie si l'utilisateur a accès
+            if (item?.roleKey) {
+                if (this.accountService.hasAccessToModule(item?.roleKey, roles)) {
+                    // Si l'élément contient des sous-éléments, traite-les récursivement
+                    if (item?.items) {
+                        newItem.items = this.buildMenu(item.items, roles);
+                    }
+                    filteredMenu.push(newItem);
+                }
+            } else {
+                // Si l'élément n'a pas de clé de rôle (ex: catégories de menu)
+                if (item?.items) {
+                    // Applique la récursivité sur les sous-éléments
+                    newItem.items = this.buildMenu(item.items, roles);
+                    // Ajoute l'élément seulement si des sous-éléments sont présents après filtrage
+                    if (newItem.items.length > 0) {
+                        filteredMenu.push(newItem);
+                    }
+                } else {
+                    filteredMenu.push(newItem); // Ajoute directement l'élément sans sous-éléments
+                }
+            }
+        });
+
+        // Met à jour le modèle avec le menu filtré
+        this.model = filteredMenu;
+
+        return filteredMenu; // Retourne le menu filtré pour un appel récursif correct
+    }
+
     onMenuClick(event) {
         this.app.onMenuClick(event);
-    }
-
-    // Vérifie si l'utilisateur possède l'autorisation d'accéder à un module donné
-    hasModuleAccess(roleKey: string): boolean {
-        //console.log(roleKey);
-        return this.accountService.hasAccessToModule(roleKey);
-    }
-
-    // Vérifie si l'utilisateur possède l'autorisation indiquer
-    hasAuthority(authority: string | string): boolean {
-        return this.accountService.hasAnyAuthority(authority);
     }
 }

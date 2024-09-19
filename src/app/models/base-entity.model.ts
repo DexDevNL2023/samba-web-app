@@ -1,7 +1,3 @@
-export interface BaseEntity {
+export abstract class BaseEntity {
   id?: number;
-  createdAt?: Date | null;
-  createdBy?: string | null;
-  modifiedAt?: Date | null;
-  modifiedBy?: string | null;
 }

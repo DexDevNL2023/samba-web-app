@@ -1,6 +1,9 @@
 import { Gender } from './assure.model';
 import { Authority } from './account.model';
+
 export class UserResponse {
+    id?: number;
+
     usingQr: boolean = false;
     email!: string;
     telephone?: string;

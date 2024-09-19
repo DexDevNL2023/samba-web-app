@@ -1,3 +1,5 @@
+import { PoliceAssuranceService } from './../../service/police-assurance.service';
+import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -31,12 +33,12 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    garantieService: GarantieService
+    garantieService: GarantieService,
+    private policeAssuranceService: PoliceAssuranceService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, garantieService, appMain);
     this.entityName = 'Garantie';
     this.componentLink = '/admin/garanties';
-    this.importLink = '/import/garanties';
     this.roleKey = 'GARANTIE_MODULE';
   }
 
@@ -47,12 +49,12 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
       { field: 'label', header: 'Label', type: 'text' },
-      { field: 'percentage', header: 'Pourcentage', type: 'percentage' },
-      { field: 'termes', header: 'Termes', type: 'textarea' },
-      { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency' },
-      { field: 'dateDebut', header: 'Date de début', type: 'date' },
-      { field: 'dateFin', header: 'Date de fin', type: 'date' },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.garantieStatus, label: 'label', key: 'value' },
+      { field: 'percentage', header: 'Pourcentage', type: 'percentage', access: [Authority.ADMIN] },
+      { field: 'termes', header: 'Termes', type: 'textarea', access: [Authority.ADMIN] },
+      { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency', access: [Authority.ADMIN] },
+      { field: 'dateDebut', header: 'Date de début', type: 'date', access: [Authority.ADMIN] },
+      { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
+      { field: 'status', header: 'Status', type: 'enum', values: () => this.garantieStatus, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: () => this.loadPolices(), label: 'numeroPolice', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPolice', header: 'Num Police', type: 'text' },
@@ -67,11 +69,13 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
   protected initializeOthers(): void {
   }
 
-  // Chargement des polices associés à une garantie-soin
-  loadPolices(): void {
-    this.garantieService.getAllPolices().subscribe((polices: PoliceAssurance[]) => {
-        this.polices = polices;
+  // Chargement des polices associés à une assurance
+  loadPolices(): PoliceAssurance[] {
+    let data: PoliceAssurance[] = [];
+    this.policeAssuranceService.getWithGarantiesById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+      data = data;
     });
+    return data;
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

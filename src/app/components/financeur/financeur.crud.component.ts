@@ -1,3 +1,5 @@
+import { PrestationService } from './../../service/prestation.service';
+import { Authority } from './../../models/account.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -44,12 +46,12 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    financeurService: FinanceurService
+    financeurService: FinanceurService,
+    private prestationService: PrestationService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, financeurService, appMain);
     this.entityName = 'Financeur';
     this.componentLink = '/admin/financeurs';
-    this.importLink = '/import/financeurs';
     this.roleKey = 'FINANCEUR_MODULE';
   }
 
@@ -82,9 +84,9 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
   }
 
   // Chargement des prestations associés à une financeur-soin
-  loadPrestations(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
+  loadPrestations(): Prestation[] {
+    let data: Prestation[] = [];
+    this.prestationService.getWithFinanceursById(this.selectedItem.id).subscribe((data: Prestation[]) => {
       data = data;
     });
     return data;

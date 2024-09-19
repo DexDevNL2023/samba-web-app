@@ -52,13 +52,10 @@ export default class LoginComponent implements OnInit, AfterViewInit {
 
   // Méthode exécutée à l'initialisation du composant
   ngOnInit(): void {
-    // Vérifie si l'utilisateur est déjà authentifié
-    this.accountService.identity().subscribe(() => {
-      if (this.accountService.isAuthenticated()) {
-        // Redirige vers la page d'acceuil si authentifié
-        //this.router.navigate(['/admin']);
-      }
-    });
+    /* if (this.accountService.isAuthenticated()) {
+      // Redirige vers la page d'acceuil si authentifié
+      this.router.navigate(['/admin']);
+    } */
   }
 
   // Méthode exécutée après l'initialisation de la vue

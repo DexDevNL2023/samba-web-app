@@ -1,5 +1,9 @@
+import { RecuPaiement } from './../../models/Recu-paiement.model';
+import { RecuPaiementService } from './../../service/recu-paiement.service';
+import { ReclamationService } from './../../service/reclamation.service';
+import { SouscriptionService } from './../../service/souscription.service';
 import { Authority } from './../../models/account.model';
-import { StatutReclamation, TypeReclamation } from './../../models/reclamation.model';
+import { Reclamation, StatutReclamation, TypeReclamation } from './../../models/reclamation.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -50,8 +54,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
   statutReclamations = [
     { label: 'En cours', value: StatutReclamation.EN_COURS },
     { label: 'Approuvée', value: StatutReclamation.APPROUVEE },
-    { label: 'Rejetée', value: StatutReclamation.REJETEE },
-    { label: 'En attente', value: StatutReclamation.EN_ATTENTE }
+    { label: 'Rejetée', value: StatutReclamation.REJETEE }
   ];
 
   constructor(
@@ -62,12 +65,14 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    paiementService: PaiementService
+    paiementService: PaiementService,
+    private souscriptionService: SouscriptionService,
+    private reclamationService: ReclamationService,
+    private recuPaiementService: RecuPaiementService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, paiementService, appMain);
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
-    this.importLink = '/import/paiements';
     this.roleKey = 'PAIEMENT_MODULE';
   }
 
@@ -79,7 +84,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
       { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
       { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
       { field: 'montant', header: 'Montant', type: 'currency' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value' },
+      { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'mode', header: 'Mode de Paiement', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' },
       { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
@@ -114,27 +119,27 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.query().subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadRecuReclamations(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadRecuReclamations(): Reclamation[] {
+    let data: Reclamation[] = [];
+    this.reclamationService.query().subscribe((data: Reclamation[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadRecuPaiements(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadRecuPaiements(): RecuPaiement {
+    let data: RecuPaiement = null;
+    this.recuPaiementService.getByPaiementId(this.selectedItem.id).subscribe((data: RecuPaiement) => {
       data = data;
     });
     return data;

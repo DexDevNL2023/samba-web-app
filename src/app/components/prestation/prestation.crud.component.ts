@@ -1,4 +1,14 @@
-import { PaymentFrequency, SubscriptionStatus } from './../../models/souscription.model';
+import { SinistreStatus } from './../../models/sinistre.model';
+import { DocumentService } from './../../service/document.service';
+import { FinanceurService } from './../../service/financeur.service';
+import { SinistreService } from './../../service/sinistre.service';
+import { FournisseurService } from './../../service/fournisseur.service';
+import { SouscriptionService } from './../../service/souscription.service';
+import { Fournisseur } from './../../models/fournisseur.model';
+import { Document } from './../../models/document.model';
+import { Financeur } from './../../models/financeur.model';
+import { Authority } from './../../models/account.model';
+import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -8,7 +18,7 @@ import { BaseService } from '../../service/base.service';
 import { MessageService } from 'primeng/api';
 import { Prestation, PrestationType, PrestationStatus } from '../../models/prestation.model';
 import { PrestationService } from '../../service/prestation.service';
-import { ClaimStatus } from '../../models/sinistre.model';
+import { Sinistre } from '../../models/sinistre.model';
 import { GenericCrudComponent } from '../generic.crud.component';
 
 @Component({
@@ -29,10 +39,11 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     { label: 'En attente', value: PrestationStatus.EN_COURS },
     { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
   ];
-  claimStatuses = [
-    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
-    { label: 'Approuvé', value: ClaimStatus.APPROUVE },
-    { label: 'Annulé', value: ClaimStatus.ANNULE }
+  sinistreStatuses = [
+    { label: 'En cours', value: SinistreStatus.EN_COURS },
+    { label: 'Approuvé', value: SinistreStatus.APPROUVE },
+    { label: 'Clôturé', value: SinistreStatus.CLOTURE },
+    { label: 'Rejeté', value: SinistreStatus.REJETE }
   ];
   frequencies = [
     { label: 'Annuel', value: PaymentFrequency.ANNUEL },
@@ -54,12 +65,16 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    prestationService: PrestationService
+    prestationService: PrestationService,
+    private souscriptionService: SouscriptionService,
+    private fournisseurService: FournisseurService,
+    private sinistreService: SinistreService,
+    private financeurService: FinanceurService,
+    private documentService: DocumentService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, prestationService, appMain);
     this.entityName = 'Prestation';
     this.componentLink = '/admin/prestations';
-    this.importLink = '/import/prestations';
     this.roleKey = 'PRESTATION_MODULE';
   }
 
@@ -74,7 +89,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
       { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
       { field: 'description', header: 'Description', type: 'textarea' },
       { field: 'montant', header: 'Montant', type: 'currency' },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' },
+      { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
@@ -98,7 +113,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
           { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.claimStatuses, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: () => this.sinistreStatuses, label: 'label', key: 'value' }
         ]
       },
       { field: 'financeurs', header: 'Financeurs', type: 'list', values: () => this.loadFinanceurs(), label: 'nom', key: 'id', subfield: [
@@ -124,45 +139,45 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.query().subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des fournisseurs associés à une prestation
-  loadFournisseurs(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadFournisseurs(): Fournisseur[] {
+    let data: Fournisseur[] = [];
+    this.fournisseurService.query().subscribe((data: Fournisseur[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des sinistres associés à une prestation
-  loadSinistres(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadSinistres(): Sinistre[] {
+    let data: Sinistre[] = [];
+    this.sinistreService.query().subscribe((data: Sinistre[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des financeurs associés à une prestation
-  loadFinanceurs(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadFinanceurs(): Financeur[] {
+    let data: Financeur[] = [];
+    this.financeurService.query().subscribe((data: Financeur[]) => {
       data = data;
     });
     return data;
   }
 
   // Chargement des documents associés à une prestation
-  loadDocuments(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  loadDocuments(): Document[] {
+    let data: Document[] = [];
+    this.documentService.getAllByPrestationId(this.selectedItem.id).subscribe((data: Document[]) => {
       data = data;
     });
     return data;

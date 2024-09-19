@@ -1,7 +1,12 @@
+import { Souscription } from './../../models/souscription.model';
+import { PrestationService } from './../../service/prestation.service';
+import { SouscriptionService } from './../../service/souscription.service';
+import { SinistreService } from './../../service/sinistre.service';
+import { PaiementService } from './../../service/paiement.service';
 import { Authority } from './../../models/account.model';
-import { PaymentType, PaymentMode } from './../../models/paiement.model';
-import { ClaimStatus } from './../../models/sinistre.model';
-import { PrestationStatus, PrestationType } from './../../models/prestation.model';
+import { PaymentType, PaymentMode, Paiement } from './../../models/paiement.model';
+import { Sinistre, SinistreStatus } from './../../models/sinistre.model';
+import { Prestation, PrestationStatus, PrestationType } from './../../models/prestation.model';
 import { ToastService } from './../../service/toast.service';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -52,10 +57,11 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     { label: 'En attente', value: PrestationStatus.EN_COURS },
     { label: 'Remboursé', value: PrestationStatus.REMBOURSE }
   ];
-  claimStatuses = [
-    { label: 'En attente', value: ClaimStatus.EN_ATTENTE },
-    { label: 'Approuvé', value: ClaimStatus.APPROUVE },
-    { label: 'Annulé', value: ClaimStatus.ANNULE }
+  sinistreStatuses = [
+    { label: 'En cours', value: SinistreStatus.EN_COURS },
+    { label: 'Approuvé', value: SinistreStatus.APPROUVE },
+    { label: 'Clôturé', value: SinistreStatus.CLOTURE },
+    { label: 'Rejeté', value: SinistreStatus.REJETE }
   ];
   paymentTypes = [
     { label: 'Prime', value: PaymentType.PRIME },
@@ -79,12 +85,15 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     fb: FormBuilder,
     toastService: ToastService,
     cdr: ChangeDetectorRef,
-    reclamationService: ReclamationService
+    reclamationService: ReclamationService,
+    private prestationService: PrestationService,
+    private souscriptionService: SouscriptionService,
+    private sinistreService: SinistreService,
+    private paiementService: PaiementService
   ) {
     super(toastService, messageService, cdr, baseService, accountService, fb, reclamationService, appMain);
     this.entityName = 'Reclamation';
     this.componentLink = '/admin/reclamations';
-    this.importLink = '/import/reclamations';
     this.roleKey = 'RECLAMATION_MODULE';
   }
 
@@ -96,13 +105,13 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
       { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
       { field: 'type', header: 'Type', type: 'enum', values: () => this.typeReclamations, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value' },
+      { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'description', header: 'Description', type: 'textarea' },
       { field: 'montantReclame', header: 'Montant reclamé', type: 'currency' },
-      { field: 'montantApprouve', header: 'Montant approuvé', type: 'currency' },
-      { field: 'dateEvaluation', header: 'Date évaluation', type: 'date' },
-      { field: 'agentEvaluateur', header: 'Agent évaluateur', type: 'text' },
-      { field: 'justification', header: 'Justification', type: 'textarea' },
+      { field: 'montantApprouve', header: 'Montant approuvé', type: 'currency', access: [Authority.ADMIN] },
+      { field: 'dateEvaluation', header: 'Date évaluation', type: 'date', access: [Authority.ADMIN, Authority.AGENT] },
+      { field: 'agentEvaluateur', header: 'Agent évaluateur', type: 'text', access: [Authority.ADMIN, Authority.AGENT] },
+      { field: 'justification', header: 'Justification', type: 'textarea', access: [Authority.ADMIN, Authority.AGENT] },
       { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
@@ -118,7 +127,7 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
         { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
         { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: () => this.claimStatuses, label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: () => this.sinistreStatuses, label: 'label', key: 'value' }
       ]
       },
       { field: 'prestation', header: 'Prestation', type: 'object', values: () => this.loadPrestations(), label: 'typePrestation', key: 'id', subfield: [
@@ -149,37 +158,37 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     this.toggleVisibility('sinistre', false);  // Masquer sinistre
   }
 
-  // Chargement des souscriptions associés à une reclamation
-  loadSouscriptions(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  // Chargement des souscriptions associés à une assure
+  loadSouscriptions(): Souscription[] {
+    let data: Souscription[] = [];
+    this.souscriptionService.query().subscribe((data: Souscription[]) => {
       data = data;
     });
     return data;
   }
 
-  // Chargement des souscriptions associés à une reclamation
-  loadSinistres(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  // Chargement des sinistres associés à une prestation
+  loadSinistres(): Sinistre[] {
+    let data: Sinistre[] = [];
+    this.sinistreService.query().subscribe((data: Sinistre[]) => {
       data = data;
     });
     return data;
   }
 
-  // Chargement des souscriptions associés à une reclamation
-  loadPrestations(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  // Chargement des prestations associés à une fournisseur-soin
+  loadPrestations(): Prestation[] {
+    let data: Prestation[] = [];
+    this.prestationService.query().subscribe((data: Prestation[]) => {
       data = data;
     });
     return data;
   }
 
-  // Chargement des souscriptions associés à une reclamation
-  loadPaiements(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
+  // Chargement des reçu de paiement associés à une assure
+  loadPaiements(): Paiement[] {
+    let data: Paiement[] = [];
+    this.paiementService.getPaiementByReclamationId(this.selectedItem.id).subscribe((data: Paiement[]) => {
       data = data;
     });
     return data;
