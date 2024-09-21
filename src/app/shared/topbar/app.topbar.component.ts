@@ -26,7 +26,7 @@ export class AppTopBarComponent implements OnInit {
 
   ngOnInit(): void {
     // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
-    this.accountService.getAuthenticationState().subscribe(account => {
+    this.accountService.getUserState().subscribe(account => {
       this.account = account;
       if (account) {
         // Récupère les notifications non lu de l'utilisateur une fois qu'il est authentifié

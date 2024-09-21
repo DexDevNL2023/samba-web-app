@@ -1,6 +1,6 @@
 import { AuthentificationService } from './../service/authentification.service';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
 import { Login } from './login.model';
@@ -18,7 +18,14 @@ export class LoginService {
 
   login(credentials: Login): Observable<Account | null> {
     return this.authServerProvider.login(credentials).pipe(
-      mergeMap(() => this.accountService.identity(true))
+      mergeMap(() => this.accountService.identity(true)),
+      tap(account => {
+        if (account) {
+          console.log('Utilisateur authentifié :', account);
+        } else {
+          console.log('Erreur lors de l\'authentification');
+        }
+      })
     );
   }
 

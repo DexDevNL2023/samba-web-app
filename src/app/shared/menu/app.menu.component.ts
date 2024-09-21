@@ -1,5 +1,3 @@
-import { RuleReponse } from './../../models/rule.reponse.model';
-import { Account } from './../../models/account.model';
 import { Component, OnInit } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -12,23 +10,28 @@ import { Notification } from '../../models/notification.model';
 })
 export class AppMenuComponent implements OnInit {
 
-    clientMenu: any[];
-    agentMenu: any[];
-    adminMenu: any[];
-    fournisseurMenu: any[];
-    model: any[] = [];
+    menus: any[] = [];
     myNotifs: Notification[] | null = [];
 
     constructor(private accountService: AccountService, private notificationService: NotificationService, public app: AppMainComponent) { }
 
     ngOnInit() {
-        // S'abonne à l'état des notifications non lu
+
+        // S'abonne à l'état des notifications non lues
         this.notificationService.getUnreadNotificationState().subscribe(notifications => {
             this.myNotifs = notifications;
         });
 
-        // Menu pour le Client (Assuré) :
-        this.clientMenu = [
+        // S'abonne aux changements d'état des rôles
+        this.accountService.getRoleState().subscribe(roles => {
+            console.log('Rôles reçus:', roles);
+            this.updateMenu();
+        });
+    }
+
+    // Menu pour le Client (Assuré) :
+    getClientMenu(): any[] {
+        return [
             {
                 label: 'Gestion des assurances',
                 icon: 'pi pi-fw pi-shield',
@@ -59,9 +62,11 @@ export class AppMenuComponent implements OnInit {
                 ]
             }
         ];
+    }
 
-        // Menu pour l'Agent :
-        this.agentMenu = [
+    // Menu pour l'Agent :
+    getAgentMenu(): any[] {
+        return [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
@@ -101,9 +106,11 @@ export class AppMenuComponent implements OnInit {
             { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
+    }
 
-        // Menu pour l'Administrateur :
-        this.adminMenu = [
+    // Menu pour l'Administrateur :
+    getAdminMenu(): any[] {
+        return [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des assurances',
@@ -162,9 +169,11 @@ export class AppMenuComponent implements OnInit {
                 ]
             }
         ];
+    }
 
-        // Menu pour le Fournisseur de Services :
-        this.fournisseurMenu = [
+    // Menu pour le Fournisseur de Services :
+    getFournisseurMenu(): any[] {
+        return [
             { roleKey: 'DASHBOARD_MODULE', label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/admin'] },
             {
                 label: 'Gestion des sinistres',
@@ -191,38 +200,36 @@ export class AppMenuComponent implements OnInit {
             { roleKey: 'DOCUMENT_MODULE', label: 'Documents', icon: 'pi pi-fw pi-folder', routerLink: ['/admin/documents'] },
             { roleKey: 'NOTIFICATION_MODULE', label: 'Notifications', icon: 'pi pi-fw pi-comment', routerLink: ['/admin/notifications'], badge: this.myNotifs.length }
         ];
-
-        // Construire le menu
-        this.accountService.getAuthenticationState().subscribe(account => {
-            if (account) {
-                this.loadMenusBasedOnRole(account);
-            }
-        });
     }
 
-    // Charge les menus en fonction du rôle de l'utilisateur authentifié
-    loadMenusBasedOnRole(account: Account) {
-        this.accountService.getAutorisations(account?.id).subscribe((roles: RuleReponse[]) => {
-            // Vérifie si l'utilisateur possède l'autorisation indiquer
-            if (this.accountService.hasAnyAuthority('ROLE_CLIENT')) {
-                this.buildMenu(this.clientMenu, roles);
-            } else if (this.accountService.hasAnyAuthority('ROLE_AGENT')) {
-                this.buildMenu(this.agentMenu, roles);
-            } else if (this.accountService.hasAnyAuthority('ROLE_ADMIN')) {
-                this.buildMenu(this.adminMenu, roles);
-            } else if (this.accountService.hasAnyAuthority('ROLE_PROVIDER')) {
-                this.buildMenu(this.fournisseurMenu, roles);
-            }
-        });
+    private updateMenu(): void {
+        // Vérifie si l'utilisateur possède l'autorisation indiquer
+        if (this.accountService.hasAnyAuthority('ROLE_CLIENT')) {
+            console.log('1');
+            this.buildMenu(this.getClientMenu());
+        } else if (this.accountService.hasAnyAuthority('ROLE_AGENT')) {
+            console.log('2');
+            this.buildMenu(this.getAgentMenu());
+        } else if (this.accountService.hasAnyAuthority('ROLE_ADMIN')) {
+            console.log('3');
+            this.buildMenu(this.getAdminMenu());
+        } else if (this.accountService.hasAnyAuthority('ROLE_PROVIDER')) {
+            console.log('4');
+            this.buildMenu(this.getFournisseurMenu());
+        } else {
+            console.log('5');
+            this.buildMenu(this.getAdminMenu());
+        }
+
+        console.log(this.menus);
     }
 
     /**
      * Reconstruit un menu basé sur les rôles d'accès de l'utilisateur.
      *
      * @param menu - Un tableau d'objets représentant les éléments du menu. Chaque élément peut avoir une clé de rôle (`roleKey`) et éventuellement des sous-éléments (`items`).
-     * @param roles - Un tableau d'objets représentant les rôles d'accès de l'utilisateur.
      */
-    buildMenu(menu: any[], roles: RuleReponse[]) {
+    buildMenu(menu: any[]) {
         // Initialise un tableau temporaire pour stocker le menu filtré
         let filteredMenu = [];
 
@@ -232,10 +239,10 @@ export class AppMenuComponent implements OnInit {
 
             // Si l'élément a une clé de rôle, vérifie si l'utilisateur a accès
             if (item?.roleKey) {
-                if (this.accountService.hasAccessToModule(item?.roleKey, roles)) {
+                if (this.accountService.hasAccessToModule(item?.roleKey)) {
                     // Si l'élément contient des sous-éléments, traite-les récursivement
                     if (item?.items) {
-                        newItem.items = this.buildMenu(item.items, roles);
+                        newItem.items = this.buildMenu(item.items);
                     }
                     filteredMenu.push(newItem);
                 }
@@ -243,7 +250,7 @@ export class AppMenuComponent implements OnInit {
                 // Si l'élément n'a pas de clé de rôle (ex: catégories de menu)
                 if (item?.items) {
                     // Applique la récursivité sur les sous-éléments
-                    newItem.items = this.buildMenu(item.items, roles);
+                    newItem.items = this.buildMenu(item.items);
                     // Ajoute l'élément seulement si des sous-éléments sont présents après filtrage
                     if (newItem.items.length > 0) {
                         filteredMenu.push(newItem);
@@ -255,7 +262,7 @@ export class AppMenuComponent implements OnInit {
         });
 
         // Met à jour le modèle avec le menu filtré
-        this.model = filteredMenu;
+        this.menus = filteredMenu;
 
         return filteredMenu; // Retourne le menu filtré pour un appel récursif correct
     }
@@ -264,3 +271,4 @@ export class AppMenuComponent implements OnInit {
         this.app.onMenuClick(event);
     }
 }
+

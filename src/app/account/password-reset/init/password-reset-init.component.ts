@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { AuthentificationService } from './../../../service/authentification.service';
 import { Component, AfterViewInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -36,7 +37,8 @@ export default class PasswordResetInitComponent implements AfterViewInit {
 
   constructor(
     private authentificationService: AuthentificationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {
     // Initialisation du formulaire réactif avec les champs nécessaires et validations
     this.resetRequestForm = this.fb.group({
@@ -51,11 +53,14 @@ export default class PasswordResetInitComponent implements AfterViewInit {
   // Méthode pour soumettre la demande de réinitialisation du mot de passe
   requestReset(): void {
     if (this.resetRequestForm.valid) { // Vérifie si le formulaire est valide avant de soumettre
-      const email = this.resetRequestForm.get('email')!.value; // Récupère la valeur de l'email depuis le formulaire
+      const email: string = this.resetRequestForm.get('email')!.value; // Récupère la valeur de l'email depuis le formulaire
 
       // Appel du service pour sauvegarder la demande de réinitialisation
       this.authentificationService.forgotPassword(email).subscribe(() => {
         this.success = true; // Définit l'état de succès à true après une réponse réussie
+        this.resetRequestForm.reset(); // Réinitialise le formulaire
+        this.messageService.add({ key: 'tst', severity: 'success', summary: 'Reinitialisation du mot de passe',
+          detail: 'Vérifiez votre e-mail pour les détails sur la réinitialisation de votre mot de passe.' });
       });
     }
   }

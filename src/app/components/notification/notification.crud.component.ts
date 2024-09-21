@@ -74,7 +74,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-    this.accountService.identity().subscribe(account => {
+    this.accountService.getUserState().subscribe(account => {
       if (account) {
         // Marquer toutes les notifications non lues comme lues
         this.notificationService.markAsReadNotificationsByUserId(account.id).subscribe();

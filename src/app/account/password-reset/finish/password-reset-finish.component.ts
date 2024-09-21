@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { AuthentificationService } from './../../../service/authentification.service';
 import { Component, Inject, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -43,7 +44,8 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
   constructor(
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction de formulaires
     private authentificationService: AuthentificationService, // Service PasswordResetFinishService pour la gestion de la réinitialisation du mot de passe
-    private route: ActivatedRoute // Service ActivatedRoute pour accéder aux paramètres de l'URL
+    private route: ActivatedRoute, // Service ActivatedRoute pour accéder aux paramètres de l'URL
+    private messageService: MessageService
   ) {
     // Initialisation du formulaire de réinitialisation du mot de passe avec des champs et des validateurs
     this.passwordForm = this.formBuilder.group({
@@ -83,6 +85,8 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
         next: () => {
           this.success = true; // Affiche un message de succès après la réinitialisation du mot de passe
           this.passwordForm.reset(); // Réinitialise le formulaire
+          this.messageService.add({ key: 'tst', severity: 'success', summary: 'Reinitialisation du mot de passe',
+            detail: 'Votre mot de passe a été réinitialisé. Veuillez vous!' });
         },
         error: () => {
           this.error = true; // Affiche une erreur en cas d'échec de la réinitialisation du mot de passe

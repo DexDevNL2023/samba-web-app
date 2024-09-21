@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { UserRequest } from './../../models/user.request.model';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -41,6 +42,7 @@ export default class SettingsComponent implements OnInit {
     public accountService: AccountService, // Service pour la gestion du compte utilisateur
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction du formulaire
     private cdr: ChangeDetectorRef,
+    private messageService: MessageService,
     public appMain: AppMainComponent
   ) {
     // Initialisation du formulaire avec les champs et validateurs nécessaires
@@ -49,7 +51,7 @@ export default class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-    this.accountService.getAuthenticationState().subscribe(account => {
+    this.accountService.getUserState().subscribe(account => {
       if (account) {
         this.account = account;
         const userId = this.account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
@@ -179,16 +181,12 @@ export default class SettingsComponent implements OnInit {
       // Appel du service pour sauvegarder les modifications du compte
       this.accountCrudService.updateProfile(user).subscribe(() => {
         this.success = true; // Affiche le succès de la sauvegarde
+        //this.settingsForm.reset(); // Réinitialise le formulaire
+        this.messageService.add({ key: 'tst', severity: 'success', summary: 'Modification du profil',
+          detail: 'Mise à jour du profil avec succès' });
 
         // Recharge les données du compte utilisateur authentifié
-        this.accountService.identity(true).subscribe(account => {
-          if (account) {
-            this.accountService.authenticate(account);
-          }
-
-          // Réactualise l'affichage du template après la mise à jour des données
-          this.cdr.detectChanges();
-        });
+        this.accountService.identity(true);
       });
     }
   }

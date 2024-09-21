@@ -65,7 +65,7 @@ export class AppMainComponent {
     }
 
     public setBreadcrumbItems(items: any[]) {
-      this.breadcrumbService.setItems(items);
+        this.breadcrumbService.setItems(items);
     }
 
     public showInfoViaToast(title: string, message: string) {

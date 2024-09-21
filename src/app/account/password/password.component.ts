@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { ChangePasswordRequest } from './../../models/change.password.request';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -23,6 +24,7 @@ export default class PasswordComponent implements OnInit {
     private formBuilder: FormBuilder, // Service FormBuilder pour la construction de formulaires
     private accountCrudService: AccountCrudService, // Service PasswordService pour la gestion du mot de passe
     private accountService: AccountService, // Service AccountService pour la gestion du compte utilisateur
+    private messageService: MessageService,
     public appMain: AppMainComponent
   ) {
     // Initialisation du formulaire de modification du mot de passe avec des champs et des validateurs
@@ -35,7 +37,7 @@ export default class PasswordComponent implements OnInit {
 
   ngOnInit(): void {
     // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-    this.accountService.identity().subscribe(account => {
+    this.accountService.getUserState().subscribe(account => {
       if (account) {
         this.account = account;
       }
@@ -70,6 +72,8 @@ export default class PasswordComponent implements OnInit {
         next: () => {
           this.success = true; // Affiche un message de succès après la modification du mot de passe
           this.passwordForm.reset(); // Réinitialise le formulaire
+          this.messageService.add({ key: 'tst', severity: 'success', summary: 'Modification du mot de passe',
+            detail: 'Le mot de passe de l\'utilisateur a été changé avec succès' });
         },
         error: () => {
           this.error = true; // Affiche une erreur en cas d'échec de la modification du mot de passe

@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { ToastService } from './../service/toast.service';
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Table } from 'primeng/table';
@@ -41,6 +42,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Configuration des colonnes de la table
   cols: Column[] = [];
   items: Entity[] = [];
+  permissions: { [key: string]: Observable<boolean> } = {};
 
   constructor(
     private toastService: ToastService,
@@ -66,6 +68,15 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
     // Simulate fetching data from a service
     this.fetchDatas();
+
+    // Mise a jour des permissions sur les traitements
+    this.updatePermissions();
+
+    // Subscribe to role changes to update permissions dynamically
+    this.accountService.getRoleState().subscribe(() => {
+      // Mise a jour des permissions sur les traitements
+      this.updatePermissions();
+    });
 
     // S'abonner aux messages de toast des requetes
     this.toastService.toastMessages$.subscribe(toastMessage => {
@@ -515,12 +526,15 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains'); // Applique le filtre global sur la table
   }
 
+  private updatePermissions(): void {
+    this.permissions['WRITE_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'WRITE_PERMISSION');
+    this.permissions['DELETE_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'DELETE_PERMISSION');
+    this.permissions['PRINT_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'PRINT_PERMISSION');
+  }
+
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné
-  protected hasAccessToPermission(permissionKey: string): boolean {
-    this.accountService.getAutorisations(this.accountService.getIdForCurrentAccount()).subscribe((roles: RuleReponse[]) => {
-        return this.accountService.hasAccessToPermission(this.roleKey, permissionKey, roles);
-    });
-    return false;
+  hasAccessToPermission(permissionKey: string): Observable<boolean> {
+    return this.permissions[permissionKey];
   }
 
   protected exportExcel(){

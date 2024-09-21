@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
     ripple: boolean;
 
     theme = 'teal-yellow';
-    
+
     lightMenu = true;
 
     constructor(private primengConfig: PrimeNGConfig) {

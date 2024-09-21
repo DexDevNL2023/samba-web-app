@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { SignupRequest } from './../../models/signup.request';
 import { AuthentificationService } from './../../service/authentification.service';
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
@@ -45,7 +46,8 @@ export default class RegisterComponent implements AfterViewInit {
 
   constructor(
     private fb: FormBuilder, // Service FormBuilder pour la construction du formulaire
-    private authentificationService: AuthentificationService // Service RegisterService pour la gestion de l'inscription
+    private authentificationService: AuthentificationService, // Service RegisterService pour la gestion de l'inscription
+    private messageService: MessageService
   ) {
     // Initialisation du formulaire d'inscription avec les champs et les validateurs nécessaires
     this.registerForm = this.fb.group({
@@ -136,6 +138,9 @@ export default class RegisterComponent implements AfterViewInit {
           console.log('Inscription réussie', response);
           // Gérer le succès de l'inscription
           this.success = true;
+          this.registerForm.reset(); // Réinitialise le formulaire
+          this.messageService.add({ key: 'tst', severity: 'success', summary: 'Creation de compte',
+            detail: 'Inscription réussie ! Veuillez vérifier votre email pour confirmation.' });
         },
         (error) => {
           console.error('Erreur lors de l\'inscription', error);

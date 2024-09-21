@@ -1,26 +1,26 @@
 <div class="grid">
     <div class="col-12">
         <div class="card px-6 py-6">
-			<p-toolbar styleClass="mb-4 gap-2">
-				<ng-template pTemplate="left">
-					<p-fileUpload *ngIf="hasAccessToPermission('WRITE_PERMISSION')" mode="basic" accept=".xlsx" [customUpload]="true"
-						(uploadHandler)="onFileChange($event)" [maxFileSize]="1000000" label="Import"
-						chooseLabel="Import" class="mr-2 inline-block" />
-					<button *ngIf="hasAccessToPermission('WRITE_PERMISSION')" severity="success" pButton pRipple label="New" icon="pi pi-plus"
-						class="p-button-success mr-2" (click)="openNew()"></button>
-					<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" severity="danger" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
-						(click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button>
-				</ng-template>
+            <p-toolbar styleClass="mb-4 gap-2">
+                <ng-template pTemplate="left">
+                  <p-fileUpload *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" mode="basic" accept=".xlsx" [customUpload]="true"
+                    (uploadHandler)="onFileChange($event)" [maxFileSize]="1000000" label="Import"
+                    chooseLabel="Import" class="mr-2 inline-block" />
+                  <button *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" severity="success" pButton pRipple label="New" icon="pi pi-plus"
+                    class="p-button-success mr-2" (click)="openNew()"></button>
+                  <button *ngIf="(hasAccessToPermission('DELETE_PERMISSION') | async)" severity="danger" pButton pRipple label="Delete" icon="pi pi-trash"
+                    class="p-button-danger" (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button>
+                </ng-template>
 
-				<ng-template pTemplate="right">
-					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
-						(click)="showPrintPreview()" pTooltip="PRINT" tooltipPosition="bottom"></button>
-					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
-						(click)="dt.exportCSV()" pTooltip="CSV" tooltipPosition="bottom"></button>
-					<button *ngIf="hasAccessToPermission('PRINT_PERMISSION')" severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
-						(click)="exportExcel()" pTooltip="XLS" tooltipPosition="bottom"></button>
-				</ng-template>
-			</p-toolbar>
+                <ng-template pTemplate="right">
+                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
+                    (click)="showPrintPreview()" pTooltip="PRINT" tooltipPosition="bottom"></button>
+                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
+                    (click)="dt.exportCSV()" pTooltip="CSV" tooltipPosition="bottom"></button>
+                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
+                    (click)="exportExcel()" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
 
 			<p-table #dt [value]="items" [columns]="cols" responsiveLayout="scroll" [rows]="10"
 				[globalFilterFields]="getAllFields()" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions"

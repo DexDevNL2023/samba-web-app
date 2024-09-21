@@ -26,7 +26,7 @@ export class ProfilComponent implements OnInit{
 
     ngOnInit(): void {
         // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-        this.accountService.identity().subscribe(account => {
+        this.accountService.getUserState().subscribe(account => {
           if (account) {
             this.account = account;
             const userId = account?.id; // Remplacez par la logique pour obtenir l'ID de l'utilisateur actuel
