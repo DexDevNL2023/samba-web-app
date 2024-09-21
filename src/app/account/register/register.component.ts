@@ -135,7 +135,6 @@ export default class RegisterComponent implements AfterViewInit {
       // Appel au service pour l'inscription avec signupRequest
       this.authentificationService.register(signupRequest).subscribe(
         (response) => {
-          console.log('Inscription réussie', response);
           // Gérer le succès de l'inscription
           this.success = true;
           this.registerForm.reset(); // Réinitialise le formulaire
@@ -143,13 +142,10 @@ export default class RegisterComponent implements AfterViewInit {
             detail: 'Inscription réussie ! Veuillez vérifier votre email pour confirmation.' });
         },
         (error) => {
-          console.error('Erreur lors de l\'inscription', error);
           // Gérer l'erreur lors de l'inscription
           this.processError(error);
         }
       );
-    } else {
-      console.log('Le formulaire est invalide');
     }
   }
 
@@ -175,7 +171,6 @@ export default class RegisterComponent implements AfterViewInit {
           this.imageUrlPreview = result;
         } else {
           // Vous pouvez gérer le cas où `result` n'est pas une chaîne si nécessaire
-          console.error('Le résultat de la lecture du fichier n\'est pas une chaîne');
           this.imageUrlPreview = null; // Ou gérer différemment
         }
       };

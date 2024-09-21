@@ -58,7 +58,6 @@ export default class SettingsComponent implements OnInit {
         if (userId) {
           this.accountCrudService.getProfile(userId).subscribe(
             (user: UserResponse) => {
-              console.log(user);
               if (user) {
                 this.user = user;
                 this.rebuildFormBasedOnAuthorities();
@@ -71,9 +70,6 @@ export default class SettingsComponent implements OnInit {
                 });
                 this.cdr.detectChanges();
               }
-            },
-            (error) => {
-              console.error('Erreur lors de la récupération du profil utilisateur:', error);
             }
           );
         }
@@ -93,13 +89,10 @@ export default class SettingsComponent implements OnInit {
   private rebuildFormBasedOnAuthorities(): void {
     if (this.account?.authority) { // Vérifiez si 'authority' est défini
       if (this.account.authority === Authority.PROVIDER) {
-        console.log('fournisseur');
         this.buildProviderForm();
       } else if (this.account.authority === Authority.CLIENT) {
-        console.log('assure');
         this.buildAssureForm();
       } else {
-        console.log('agent ou admin');
         this.buildDefaultUserForm();
       }
     }

@@ -1,3 +1,4 @@
+import { VerificationToken } from './../models/verification.token.model';
 import { StateStorageService } from './../core/auth/state-storage.service';
 import { SignupRequest } from './../models/signup.request';
 import { Login } from './../login/login.model';
@@ -50,8 +51,8 @@ export class AuthentificationService extends GenericCrudService<Account> {
     }
 
     // Verify registration token
-    verifyToken(token: string): Observable<string> {
-        return this.http.post<RessourceResponse<string>>(`${this.resourceUrl}/token/verify/${token}`, {}).pipe(
+    verifyToken(token: string): Observable<VerificationToken> {
+        return this.http.post<RessourceResponse<VerificationToken>>(`${this.resourceUrl}/token/verify/${token}`, {}).pipe(
             map(response => this.handleResponse(response, "Vérification de l'enregistrement avec succès!")),
             catchError(error => this.handleError(error, "Erreur lors de la vérification du token"))
         );

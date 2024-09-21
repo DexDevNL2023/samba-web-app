@@ -70,73 +70,36 @@ export class AccountService {
   }
 
   // Récupère l'identité de l'utilisateur, avec possibilité de forcer la récupération, et récupère également les rôles
-  /* identity(force?: boolean): Observable<Account | null> {
-    // Si le cache n'existe pas ou si l'on force la récupération, on rafraîchit les données
+  identity(force?: boolean): Observable<Account | null> {
     if (!this.accountCache$ || force) {
       this.accountCache$ = this.fetchAccount().pipe(
         tap((account: Account) => {
-          //this.userIdentity = account;  // Assurez-vous que userIdentity est bien assignée ici
-          this.authenticate(account); // Authentification avec les données récupérées
+          this.authenticate(account);
         }),
-        mergeMap((account: Account) =>
-          this.getRoles(true).pipe(
-            tap({
-              next: () => {
-                this.navigateToStoredUrl(); // Redirection après authentification
-              },
-              error: (error) => {
-                console.error('Erreur lors de la récupération des rôles :', error);
-              }
-            }),
-            map(() => account) // Retourne l'utilisateur après la récupération des rôles
-          )
-        ),
+        switchMap((account: Account) => {
+          const userId = this.getIdForCurrentAccount();
+          if (userId !== null) {
+            return this.getRoles(true).pipe(
+              tap({
+                next: () => {
+                  this.navigateToStoredUrl();
+                }
+              }),
+              map(() => account)
+            );
+          } else {
+            return of(account); // Renvoyer simplement l'account sans les rôles
+          }
+        }),
         catchError((error) => {
-          console.error('Erreur lors de la récupération du compte utilisateur :', error);
-          return of(null); // Retourne null en cas d'erreur
+          return of(null);
         }),
-        shareReplay(1) // Partage la réponse et évite des appels multiples
+        shareReplay(1)
       );
     }
 
-    // Retourne l'identité de l'utilisateur depuis le cache ou la nouvelle récupération
     return this.accountCache$;
-  } */
-    identity(force?: boolean): Observable<Account | null> {
-      if (!this.accountCache$ || force) {
-        this.accountCache$ = this.fetchAccount().pipe(
-          tap((account: Account) => {
-            this.authenticate(account);
-          }),
-          switchMap((account: Account) => {
-            const userId = this.getIdForCurrentAccount();
-            if (userId !== null) {
-              return this.getRoles(true).pipe(
-                tap({
-                  next: () => {
-                    this.navigateToStoredUrl();
-                  },
-                  error: (error) => {
-                    console.error('Erreur lors de la récupération des rôles :', error);
-                  }
-                }),
-                map(() => account)
-              );
-            } else {
-              console.error('ID utilisateur non trouvé');
-              return of(account); // Renvoyer simplement l'account sans les rôles
-            }
-          }),
-          catchError((error) => {
-            console.error('Erreur lors de la récupération du compte utilisateur :', error);
-            return of(null);
-          }),
-          shareReplay(1)
-        );
-      }
-
-      return this.accountCache$;
-    }
+  }
 
   // Vérifie si l'utilisateur est authentifié
   isAuthenticated(): boolean {
@@ -151,7 +114,6 @@ export class AccountService {
   // Vérifie si l'utilisateur possède une ou plusieurs autorisations
   hasAnyAuthority(authorities: string[] | string): boolean {
     if (!this.userIdentity || !this.userIdentity.authority) {
-      console.log('Utilisateur non authentifié ou pas d\'autorité');
       return false;
     }
     const authorityArray = Array.isArray(authorities) ? authorities : [authorities];

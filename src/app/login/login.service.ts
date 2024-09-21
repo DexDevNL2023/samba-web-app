@@ -18,14 +18,7 @@ export class LoginService {
 
   login(credentials: Login): Observable<Account | null> {
     return this.authServerProvider.login(credentials).pipe(
-      mergeMap(() => this.accountService.identity(true)),
-      tap(account => {
-        if (account) {
-          console.log('Utilisateur authentifié :', account);
-        } else {
-          console.log('Erreur lors de l\'authentification');
-        }
-      })
+      mergeMap(() => this.accountService.identity(true))
     );
   }
 

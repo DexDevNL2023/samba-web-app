@@ -24,7 +24,6 @@ export class AppMenuComponent implements OnInit {
 
         // S'abonne aux changements d'état des rôles
         this.accountService.getRoleState().subscribe(roles => {
-            console.log('Rôles reçus:', roles);
             this.updateMenu();
         });
     }
@@ -205,23 +204,16 @@ export class AppMenuComponent implements OnInit {
     private updateMenu(): void {
         // Vérifie si l'utilisateur possède l'autorisation indiquer
         if (this.accountService.hasAnyAuthority('ROLE_CLIENT')) {
-            console.log('1');
             this.buildMenu(this.getClientMenu());
         } else if (this.accountService.hasAnyAuthority('ROLE_AGENT')) {
-            console.log('2');
             this.buildMenu(this.getAgentMenu());
         } else if (this.accountService.hasAnyAuthority('ROLE_ADMIN')) {
-            console.log('3');
             this.buildMenu(this.getAdminMenu());
         } else if (this.accountService.hasAnyAuthority('ROLE_PROVIDER')) {
-            console.log('4');
             this.buildMenu(this.getFournisseurMenu());
         } else {
-            console.log('5');
             this.buildMenu(this.getAdminMenu());
         }
-
-        console.log(this.menus);
     }
 
     /**
