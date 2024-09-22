@@ -3,14 +3,13 @@ import { DocumentService } from './../../service/document.service';
 import { SouscriptionService } from './../../service/souscription.service';
 import { PrestationService } from './../../service/prestation.service';
 import { SinistreService } from './../../service/sinistre.service';
-import { ToastService } from './../../service/toast.service';
 import { FormBuilder } from '@angular/forms';
 import { AccountService } from './../../core/auth/account.service';
 import { BaseService } from './../../service/base.service';
 import { MessageService } from 'primeng/api';
 import { AppMainComponent } from './../../app.main.component';
 import { Prestation, PrestationType, PrestationStatus } from './../../models/prestation.model';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Sinistre, SinistreStatus } from './../../models/sinistre.model';
 import { GenericCrudComponent } from '../generic.crud.component';
 import { Document } from './../../models/document.model';
@@ -59,14 +58,12 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     sinistreService: SinistreService,
     private prestationService: PrestationService,
     private souscriptionService: SouscriptionService,
     private documentService: DocumentService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, sinistreService, appMain);
+    super(messageService, baseService, accountService, fb, sinistreService, appMain);
     this.entityName = 'Sinistre';
     this.componentLink = '/admin/sinistres';
     this.roleKey = 'SINISTRE_MODULE';
@@ -85,29 +82,29 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
       { field: 'dateReglement', header: 'Date de règlement', type: 'date', access: [Authority.ADMIN] },
       { field: 'datePaiement', header: 'Date de paiement', type: 'date', access: [Authority.ADMIN] },
       { field: 'dateCloture', header: 'Date de clôture', type: 'date', access: [Authority.ADMIN] },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.sinistreStatuses, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'status', header: 'Status', type: 'enum', values: this.sinistreStatuses, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'montantSinistre', header: 'Montant du sinistre', type: 'currency' },
       { field: 'montantAssure', header: 'Montant assuré', type: 'currency' },
-      { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
+      { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.souscriptiontatus, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Fréquence de paiement', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.souscriptiontatus, label: 'label', key: 'value' },
+          { field: 'frequencePaiement', header: 'Fréquence de paiement', type: 'enum', values: this.frequencies, label: 'label', key: 'value' }
         ]
       },
-      { field: 'prestations', header: 'Prestations', type: 'list', values: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+          { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
           { field: 'montant', header: 'Montant', type: 'currency' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value' }
         ]
       },
-      { field: 'documents', header: 'Documents', type: 'list', values: () => this.loadDocuments(), label: 'numeroDocument', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'documents', header: 'Documents', type: 'list', values: [], method: () => this.loadDocuments(), label: 'numeroDocument', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroDocument', header: 'Num Document', type: 'text' },
           { field: 'nom', header: 'Nom', type: 'text' },

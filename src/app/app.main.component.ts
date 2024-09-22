@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import { ToastService } from './service/toast.service';
+import { Component } from '@angular/core';
 import { MenuService } from './service/app.menu.service';
 import { AppComponent } from './app.component';
 import { AccountService } from './core/auth/account.service';
@@ -43,7 +44,15 @@ export class AppMainComponent {
 
     breadcrumbItems: MenuItem[] = [];
 
-    constructor(private accountService: AccountService, private breadcrumbService: BreadcrumbService, private messageService: MessageService, private router: Router, private menuService: MenuService, public app: AppComponent) { }
+    constructor(
+        private accountService: AccountService,
+        private breadcrumbService: BreadcrumbService,
+        private messageService: MessageService,
+        private router: Router,
+        private menuService: MenuService,
+        private toastService: ToastService,
+        public app: AppComponent
+    ) { }
 
     // Méthode exécutée à l'initialisation du composant
     ngOnInit(): void {
@@ -57,10 +66,22 @@ export class AppMainComponent {
 
         // Vérifie si l'utilisateur est déjà authentifié
         this.accountService.identity().subscribe(() => {
-        if (!this.accountService.isAuthenticated()) {
-            // Redirige vers la page de login si pas authentifié
-            this.router.navigate(['/login']);
-        }
+            if (!this.accountService.isAuthenticated()) {
+                // Redirige vers la page de login si pas authentifié
+                this.router.navigate(['/login']);
+            }
+        });
+
+        // S'abonner aux messages de toast des requetes
+        this.toastService.toastMessages$.subscribe(toastMessage => {
+            if (toastMessage) {
+            this.messageService.add({
+                key: 'tst',
+                severity: toastMessage.severity,
+                summary: toastMessage.summary,
+                detail: toastMessage.detail
+            });
+            }
         });
     }
 

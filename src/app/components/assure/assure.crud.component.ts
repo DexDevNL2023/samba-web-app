@@ -8,8 +8,7 @@ import { BrancheService } from './../../service/branche.service';
 import { DossierMedicalService } from './../../service/dossier-medical.service';
 import { SouscriptionService } from './../../service/souscription.service';
 import { RegistrantService } from './../../service/registrant.service';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Assure, Gender } from '../../models/assure.model';
 import { LiteRegistrant } from '../../models/lite.registrant.model';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from '../../models/souscription.model';
@@ -51,8 +50,6 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     assureService: AssureService,
     private registrantService: RegistrantService,
     private souscriptionService: SouscriptionService,
@@ -61,7 +58,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     private fournisseurService: FournisseurService,
     private accountCrudService: AccountCrudService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, assureService, appMain);
+    super(messageService, baseService, accountService, fb, assureService, appMain);
     this.entityName = 'Assuré';
     this.componentLink = '/admin/assures';
     this.roleKey = 'ASSURE_MODULE';
@@ -77,38 +74,38 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
       { field: 'lastName', header: 'Prénom', type: 'text' },
       { field: 'dateNaissance', header: 'Né(e) le', type: 'date' },
       { field: 'numCni', header: 'CNI', type: 'text' },
-      { field: 'sexe', header: 'Sexe', type: 'enum', values: () => this.genders, label: 'label', key: 'value' },
+      { field: 'sexe', header: 'Sexe', type: 'enum', values: this.genders, label: 'label', key: 'value' },
       { field: 'email', header: 'Email', type: 'text' },
       { field: 'telephone', header: 'Telephone', type: 'text' },
       { field: 'addresse', header: 'Addresse', type: 'textarea' },
       { field: 'signature', header: 'Signature', type: 'image' },
-      { field: 'registrant', header: 'Registrant', type: 'objet', values: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
+      { field: 'registrant', header: 'Registrant', type: 'objet', values: [], method: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
-          { field: 'branche', header: 'Branche', type: 'objet', values: () => this.loadBranches(), label: 'ville', key: 'id' },
-          { field: 'partenaire', header: 'Partenaire', type: 'objet', values: () => this.loadPartenaires(), label: 'nom', key: 'id' }
+          { field: 'branche', header: 'Branche', type: 'objet', values: [], method: () => this.loadBranches(), label: 'ville', key: 'id' },
+          { field: 'partenaire', header: 'Partenaire', type: 'objet', values: [], method: () => this.loadPartenaires(), label: 'nom', key: 'id' }
         ]
       },
-      { field: 'account', header: 'Compte', type: 'objet', values: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'account', header: 'Compte', type: 'objet', values: [], method: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'imageUrl', header: 'Avatar', type: 'image' },
           { field: 'fullName', header: 'Nom complet', type: 'text' },
           { field: 'email', header: 'Email', type: 'text' }
         ]
       },
-      { field: 'dossiers', header: 'Dossiers médicaux', type: 'list', values: () => this.loadDossiers(), label: 'numDossierMedical', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'dossiers', header: 'Dossiers médicaux', type: 'list', values:[], method:  () => this.loadDossiers(), label: 'numDossierMedical', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numDossierMedical', header: 'Num Dossier medical', type: 'text' },
           { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },
         ]
       },
-      { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.souscriptiontatus, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.souscriptiontatus, label: 'label', key: 'value' },
+          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], method: () => this.frequencies, label: 'label', key: 'value' }
         ]
       }
     ];

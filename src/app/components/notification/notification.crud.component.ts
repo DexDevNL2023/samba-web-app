@@ -1,6 +1,5 @@
 import { AccountCrudService } from './../../service/account.crud.service';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -24,7 +23,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     { label: 'Rappel', value: TypeNotification.REMINDER },
     { label: 'Réclamation', value: TypeNotification.CLAIM },
     { label: 'Profil', value: TypeNotification.PROFILE },
-    { label: 'Système', value: TypeNotification.SYSTEM }  // Add the new SYSTEM type
+    { label: 'Système', value: TypeNotification.SYSTEM }
   ];
 
   constructor(
@@ -33,12 +32,10 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
     private accountCrudService: AccountCrudService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, notificationService, appMain);
+    super(messageService, baseService, accountService, fb, notificationService, appMain);
     this.entityName = 'Notification';
     this.componentLink = '/admin/notifications';
     this.roleKey = 'NOTIFICATION_MODULE';
@@ -51,17 +48,17 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'lu', header: 'Lu', type: 'boolean' },
       { field: 'titre', header: 'Titre', type: 'text' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.notificationTypes, label: 'label', key: 'value' },
+      { field: 'type', header: 'Type', type: 'enum', values: this.notificationTypes, label: 'label', key: 'value' },
       { field: 'message', header: 'Message', type: 'textarea' },
       { field: 'dateEnvoi', header: 'Envoyé le', type: 'date' },
-      { field: 'destinataire', header: 'Destinataire', type: 'objet', values: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'destinataire', header: 'Destinataire', type: 'objet', values: [], method: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'imageUrl', header: 'Avatar', type: 'image' },
           { field: 'fullName', header: 'Nom complet', type: 'text' },
           { field: 'email', header: 'Email', type: 'text' }
         ]
       },
-      { field: 'emetteur', header: 'Emetteur', type: 'objet', values: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'emetteur', header: 'Emetteur', type: 'objet', values: [], method: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'imageUrl', header: 'Avatar', type: 'image' },
           { field: 'fullName', header: 'Nom complet', type: 'text' },
@@ -77,7 +74,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     this.accountService.getUserState().subscribe(account => {
       if (account) {
         // Marquer toutes les notifications non lues comme lues
-        this.notificationService.markAsReadNotificationsByUserId(account.id).subscribe();
+        this.notificationService.markAsReadNotificationsByUserId(account.id);
 
         // Check if the authenticated user has the ROLE_CLIENT authority
         if (account?.authority === Authority.CLIENT) {
@@ -120,16 +117,16 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
   }
 
   // Chargement des polices associés à une notification
-  loadAccounts(): Account[] {
-    let data: Account[] = [];
-    this.accountCrudService.query().subscribe((data: Account[]) => {
-      data = data;
-    });
-    return data;
+  async loadAccounts(): Promise<Account[]> {
+      try {
+          return await this.accountCrudService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
-  protected getRequiredFields(): string[] { // Ajoutez le modificateur override
-    return ['titre', 'message', 'destinataire', 'emetteur', 'type'];
+  protected getRequiredFields(): string[] {
+    return ['titre', 'message', 'type'];
   }
 }

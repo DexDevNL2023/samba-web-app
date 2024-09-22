@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { ToastService } from './../service/toast.service';
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -12,7 +11,6 @@ import { Column } from '../models/column.model';
 import { BaseEntity } from '../models/base-entity.model';
 import { GenericCrudService } from '../service/generic.crud.service';
 import { PortraitComponent } from '../shared/portrait/portrait.demo.component';
-import { RuleReponse } from '../models/rule.reponse.model';
 
 @Component({
   selector: 'app-generic-crud',
@@ -45,29 +43,32 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   permissions: { [key: string]: Observable<boolean> } = {};
 
   constructor(
-    private toastService: ToastService,
     private messageService: MessageService,
-    private cdr: ChangeDetectorRef,
     private baseService: BaseService,
     public accountService: AccountService,
     private fb: FormBuilder, // Service pour construire des formulaires
     private service: GenericCrudService<Entity>, // Service pour les opérations CRUD génériques
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
-  ) {
-    // Initialisation du groupe de contrôles de formulaire avec les contrôles créés
-    this.formGroup = this.fb.group(this.createFormControls());
-  }
+  ) {}
 
   ngOnInit() {
-    // Initialise les colonnes de la table
-    this.initializeColumns();
     // Récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
     this.getRequiredFields();
+
+    // Initialise les colonnes de la table
+    this.initializeColumns();
+
+    // Initialiser le formGroup ici, après que this.cols soit défini
+    this.formGroup = this.fb.group(this.createFormControls());
+
     // Mettre à jour le breadcrumb initial
     this.updateBreadcrumb();
 
     // Simulate fetching data from a service
     this.fetchDatas();
+
+    // Initialise les autrs donnees
+    this.initializeOthers();
 
     // Mise a jour des permissions sur les traitements
     this.updatePermissions();
@@ -77,35 +78,21 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       // Mise a jour des permissions sur les traitements
       this.updatePermissions();
     });
-
-    // S'abonner aux messages de toast des requetes
-    this.toastService.toastMessages$.subscribe(toastMessage => {
-      if (toastMessage) {
-        this.messageService.add({
-          key: 'tst',
-          severity: toastMessage.severity,
-          summary: toastMessage.summary,
-          detail: toastMessage.detail
-        });
-        // Forcez la détection des changements
-        this.cdr.detectChanges();
-      }
-    });
   }
 
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
   protected abstract initializeColumns(): void;
 
-  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
-  protected abstract getRequiredFields(): string[];
-
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected abstract initializeOthers(): void;
+
+  // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
+  protected abstract getRequiredFields(): string[];
 
   protected fetchDatas(): void {
     // Au chargement du composant, récupère tous les éléments via le service
     this.service.query().subscribe(data => {
-      this.items = data;
+      this.items = data as Entity[];
       this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
     });
   }
@@ -128,55 +115,186 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
 
     // Utilise accountService pour vérifier si l'utilisateur a au moins une des autorités
-    return this.accountService.hasAnyAuthority(authorities);
+    const result: boolean = this.accountService.hasAnyAuthority(authorities);
+    return result;
   }
 
   /**
-   * Ouvre la vue d'un élément spécifique à partir de l'ID et du champ.
-   * @param item - L'objet contenant les informations sur le champ et l'ID.
+   * Met à jour les valeurs d'une colonne spécifique.
+   * @param field - Le champ de la colonne à mettre à jour.
+   * @param values - Les valeurs à assigner à la colonne.
    */
-  protected openItemView(item: { field: string, id: number }) {
+  protected setColumnValues(field: string, values: any[]) {
+    const column = this.cols.find(col => col.field === field);
+    if (column) {
+      column.values = values;
+    }
+  }
+
+  /**
+   * Met à jour les valeurs d'un sous-champ spécifique dans les colonnes.
+   * @param parentField - Le champ parent contenant le sous-champ.
+   * @param subField - Le sous-champ à mettre à jour.
+   * @param values - Les valeurs à assigner au sous-champ.
+   */
+  protected setSubFieldValues(parentField: string, subField: string, values: any[]) {
+    const parentColumn = this.cols.find(col => col.field === parentField);
+    if (parentColumn && parentColumn.subfield) {
+      const subColumn = parentColumn.subfield.find(sub => sub.field === subField);
+      if (subColumn) {
+        subColumn.values = values;
+      }
+    }
+  }
+
+  /**
+   * Met à jour les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
+   */
+  protected updateColumnAndSubFieldValues(): void {
+    this.cols.forEach(column => {
+      // Mettre à jour les valeurs de la colonne
+      if (column.method) {
+        // Met à jour les valeurs de la colonne
+        this.updateColumnValues(column.field);
+      }
+
+      // Mettre à jour les valeurs des sous-champs si disponibles
+      if (column.subfield) {
+        column.subfield.forEach(subColumn => {
+          if (subColumn.method) {
+            // Met à jour les valeurs du sous-champ
+            this.updateSubFieldValues(column.field, subColumn.field);
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Met à jour les valeurs d'une colonne spécifique en exécutant la méthode associée.
+   * @param field - Le champ de la colonne à mettre à jour.
+   */
+  protected async updateColumnValues(field: string): Promise<void> {
+    const column = this.cols.find(col => col.field === field);
+    if (column && column.method) {
+      // Exécute la méthode pour récupérer les valeurs
+      const values = await column.method(); // Attendre les valeurs asynchrones
+      this.setColumnValues(field, values); // Met à jour les valeurs de la colonne
+    }
+  }
+
+  /**
+   * Met à jour les valeurs d'un sous-champ spécifique dans une colonne.
+   * @param parentField - Le champ parent contenant le sous-champ.
+   * @param subField - Le sous-champ à mettre à jour.
+   */
+  protected async updateSubFieldValues(parentField: string, subField: string): Promise<void> {
+    const parentColumn = this.cols.find(col => col.field === parentField);
+    if (parentColumn && parentColumn.subfield) {
+      const subColumn = parentColumn.subfield.find(sub => sub.field === subField);
+      if (subColumn && subColumn.method) {
+        // Exécute la méthode pour récupérer les valeurs du sous-champ
+        const subValues = await subColumn.method(); // Attendre que la méthode asynchrone se termine
+        this.setSubFieldValues(parentField, subField, subValues); // Met à jour les valeurs du sous-champ
+      }
+    }
+  }
+
+  protected async openItemView(item: { field: string, id: number }) {
+    if (!item || item.id == null || !item.field) {
+        console.error('Invalid item parameters provided.');
+        return;
+    }
+
     if (item && item.id != null && item.field) {
-        const { id, field } = item;
+      const { id, field } = item;
 
-        // Trouver la colonne correspondante à partir des colonnes configurées
-        const column = this.cols.find(col => col.field === field);
+      // Find the corresponding column
+      const column = this.cols.find(col => col.field === field);
+      if (column) {
+        // Met à jour les valeurs de la colonne de façon asynchrone
+        await this.updateColumnValues(field);
+        // Update values for the field before opening the view
+        const values = column.values;
 
-        if (column) {
-            // Assurer que la colonne a des valeurs à filtrer
-            const values = column.values; // Appelle la méthode de chargement
+        if (values) {
+          // Filter the item based on the ID
+          const filteredData = this.filterItemById(id, values, 'id');
 
-            if (values) {
-              // Configurer la vue de l'élément avec les colonnes et l'élément trouvé
-              this.selectedItemView = { cols: column.subfield || [], data: values };
-              this.displayItemDialog = true;
-            }
+          if (filteredData) {
+            // Set the selected item view
+            this.selectedItemView = { cols: column.subfield || [], data: filteredData };
+            this.displayItemDialog = true; // Show dialog
+          } else {
+              console.error(`No item found with ID: ${id} in field: ${field}`);
+          }
+        } else {
+            console.error(`No values found for field: ${field}`);
         }
+      } else {
+          console.error(`Column with field: ${field} not found.`);
+      }
+    } else {
+      console.error('Invalid item parameters provided.');
+    }
+  }
+
+  protected async openItemListView(item: { field: string, ids: number[] }) {
+    if (!item || !item.ids || !item.field) {
+        console.error('Invalid item parameters provided.');
+        return;
+    }
+
+    if (item && item.ids && item.field) {
+      const ids = item.ids; // List of IDs to filter
+      const field = item.field; // Field of type 'list'
+
+      // Find the corresponding column
+      const column = this.cols.find(col => col.field === field);
+      if (column) {
+        // Met à jour les valeurs de la colonne de façon asynchrone
+        await this.updateColumnValues(field);
+        // Update values for the field before opening the view
+        const values = column.values;
+
+        if (values) {
+          // Filter the items based on the IDs
+          const filteredDatas = this.filterItemsByIds(ids, values, 'id');
+
+          // Set the selected item list view
+          this.selectedItemListView = { cols: column.subfield || [], data: filteredDatas };
+          this.displayItemListDialog = true; // Show dialog
+        } else {
+            console.error(`No values found for field: ${field}`);
+        }
+      } else {
+          console.error(`Column with field: ${field} not found.`);
+      }
+    } else {
+      console.error('Invalid item parameters provided.');
     }
   }
 
   /**
-   * Ouvre la vue de la liste des éléments en filtrant selon les IDs fournis.
-   * @param item - L'objet contenant les colonnes et les données de l'élément.
+   * Retourne l'élément correspondant à l'ID fourni.
+   * @param id - ID à rechercher.
+   * @param values - Liste des éléments à filtrer.
+   * @param key - Clé de l'élément à comparer (par exemple, 'id').
+   * @returns - L'élément correspondant à l'ID ou `null` si aucun élément n'est trouvé.
    */
-  protected openItemListView(item: { field: string, ids: number[] }) {
-    if (item && item.ids && item.field) {
-        const ids = item.ids; // Liste des IDs à filtrer
-        const field = item.field; // Champ de type 'list'
+  protected filterItemById(id: number, values: any[], key: string): any | null {
+      return values.find(item => item[key] === id) || null;
+  }
 
-        // Trouver la colonne correspondante à partir des colonnes configurées
-        const column = this.cols.find(col => col.field === field);
-
-        if (column) {
-            // Assurer que la colonne a des valeurs à filtrer
-            const values = column.values; // Appelle la méthode de chargement
-            if (values) {
-                // Configurer la vue de la liste avec les colonnes et les données filtrées
-                this.selectedItemListView = { cols: column.subfield || [], data: values };
-                this.displayItemListDialog = true;
-            }
-        }
-    }
+  /**
+   * Retourne les éléments correspondant aux IDs fournis.
+   * @param ids - Liste des IDs à rechercher.
+   * @param values - Liste des éléments à filtrer.
+   * @param key - Clé de l'élément à comparer (par exemple, 'id').
+   * @returns - Liste des éléments correspondant aux IDs.
+   */
+  protected filterItemsByIds(ids: number[], values: any[], key: string): any[] {
+      return values.filter(item => ids.includes(item[key]));
   }
 
   // Method to get the severity class based on the entity status
@@ -358,60 +476,38 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     return listes;
   }
 
-  // Méthode privée pour créer les contrôles de formulaire requis
+  // Méthode pour créer les contrôles de formulaire avec gestion de l'état actif/inactif
   protected createFormControls(): { [key: string]: FormControl } {
-      const controls: { [key: string]: FormControl } = {}; // Initialise un objet vide pour les contrôles de formulaire
-      const requiredFields = this.getRequiredFields(); // Récupère la liste des champs requis
+    const controls: { [key: string]: FormControl } = {}; // Initialise un objet vide pour les contrôles de formulaire
+    const requiredFields = this.getRequiredFields(); // Récupère la liste des champs requis
 
-      this.cols.forEach(col => { // Parcours toutes les colonnes
-          const isRequired = requiredFields.includes(col.field); // Vérifie si le champ est requis
+    this.cols.forEach(col => { // Parcours toutes les colonnes
+        const isRequired = requiredFields.includes(col.field); // Vérifie si le champ est requis
+        const isDisabled = !this.hasAuthority(col.access); // Utilise votre logique pour activer ou désactiver
 
-          switch (col.type) {
-              case 'id':
-                  if (isRequired) {
-                      controls[col.field] = new FormControl({ value: null, disabled: true }, Validators.required);
-                  } else {
-                      controls[col.field] = new FormControl({ value: null, disabled: true });
-                  }
-                  break;
-              case 'boolean':
-                  if (isRequired) {
-                      controls[col.field] = new FormControl(false, Validators.required);
-                  } else {
-                      controls[col.field] = new FormControl(false);
-                  }
-                  break;
-              case 'currency':
-                  if (isRequired) {
-                      controls[col.field] = new FormControl(0, [Validators.required, Validators.min(0)]);
-                  } else {
-                      controls[col.field] = new FormControl(0);
-                  }
-                  break;
-              case 'objet':
-                  if (isRequired) {
-                      controls[col.field] = new FormControl(null, Validators.required);
-                  } else {
-                      controls[col.field] = new FormControl(null);
-                  }
-                  break;
-              case 'list':
-                  if (isRequired) {
-                      controls[col.field] = new FormControl([], Validators.required);
-                  } else {
-                      controls[col.field] = new FormControl([]);
-                  }
-                  break;
-              default:
-                  if (isRequired) {
-                      controls[col.field] = new FormControl('', Validators.required);
-                  } else {
-                      controls[col.field] = new FormControl('');
-                  }
-                  break;
-          }
-      });
-      return controls; // Retourne les contrôles de formulaire créés
+        switch (col.type) {
+            case 'id':
+                controls[col.field] = new FormControl({ value: null, disabled: isDisabled }, isRequired ? Validators.required : null);
+                break;
+            case 'boolean':
+                controls[col.field] = new FormControl({ value: false, disabled: isDisabled }, isRequired ? Validators.required : null);
+                break;
+            case 'currency':
+                controls[col.field] = new FormControl({ value: 0, disabled: isDisabled }, isRequired ? [Validators.required, Validators.min(0)] : null);
+                break;
+            case 'objet':
+                controls[col.field] = new FormControl({ value: null, disabled: isDisabled }, isRequired ? Validators.required : null);
+                break;
+            case 'list':
+                controls[col.field] = new FormControl({ value: [], disabled: isDisabled }, isRequired ? Validators.required : null);
+                break;
+            default:
+                controls[col.field] = new FormControl({ value: '', disabled: isDisabled }, isRequired ? Validators.required : null);
+                break;
+        }
+    });
+
+    return controls; // Retourne les contrôles de formulaire créés
   }
 
   // Méthode privée pour mettre à jour les contrôles de formulaire avec les valeurs de l'élément en cours d'édition// Méthode privée pour mettre à jour les contrôles de formulaire lors de l'édition
@@ -422,6 +518,18 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       });
   }
 
+  // Méthode pour activer ou désactiver les champs selon des conditions
+  protected updateFieldAccessibility() {
+    this.cols.forEach(col => {
+        const control = this.formGroup.get(col.field);
+        if (this.hasAuthority(col.access)) {
+            control?.enable(); // Active le champ si l'utilisateur a l'autorisation
+        } else {
+            control?.disable(); // Désactive le champ si l'utilisateur n'a pas l'autorisation
+        }
+    });
+  }
+
   protected getEnumLabel(enumType: any, value: string) {
     const enumObj = enumType.find((e: any) => e.value === value);
     return enumObj ? enumObj.label : value;
@@ -429,7 +537,10 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
+    // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
+    this.updateColumnAndSubFieldValues();
     this.selectedItem = {} as Entity; // Initialise un nouvel élément
+    this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
@@ -441,8 +552,11 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Méthode pour éditer un élément spécifique
   protected editItem(item: Entity) {
+    // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
+    this.updateColumnAndSubFieldValues();
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
+    this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
   }
 
@@ -455,13 +569,16 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Méthode pour confirmer la suppression de plusieurs éléments sélectionnés
   protected confirmDeleteSelected() {
     this.displayDeleteItemsDialog = false; // Ferme le dialogue de suppression de plusieurs éléments
-    this.selectedItems.forEach(selectedItem => {
-      this.service.delete((selectedItem as any).id).subscribe(() => { // Supprime chaque élément sélectionné via le service
-        this.items = this.items.filter(val => val !== selectedItem); // Met à jour le tableau d'éléments après suppression
-      });
-    });
-    this.appMain.showErrorViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-    this.selectedItems = []; // Réinitialise les éléments sélectionnés
+
+    const selectedIds = this.selectedItems.map(selectedItem => (selectedItem as any).id); // Récupère les IDs des éléments sélectionnés
+
+    if (selectedIds.length > 0) {
+        this.service.deleteAll(selectedIds).subscribe(() => { // Utilise la méthode deleteAll pour supprimer les éléments en une seule requête
+            this.items = this.items.filter(item => !selectedIds.includes((item as any).id)); // Met à jour le tableau d'éléments après suppression
+            this.appMain.showErrorViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
+            this.selectedItems = []; // Réinitialise les éléments sélectionnés
+        });
+    }
   }
 
   // Méthode pour confirmer la suppression d'un élément spécifique

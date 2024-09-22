@@ -2,8 +2,7 @@ import { AuthorizationService } from './../../service/authorization.service';
 import { PermissionFormRequest } from './../../models/permission.form.request';
 import { PermissionService } from './../../service/permission.service';
 import { RoleService } from './../../service/role.service';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { MessageService } from 'primeng/api';
 import { Account, Authority } from '../../models/account.model';
@@ -34,14 +33,12 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     accountCrudService: AccountCrudService,
     private authorizationService: AuthorizationService,
     private roleService: RoleService,
     private permissionService: PermissionService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, accountCrudService, appMain);
+    super(messageService, baseService, accountService, fb, accountCrudService, appMain);
     this.entityName = 'Account';
     this.componentLink = '/admin/accounts';
     this.roleKey = 'ACCOUNT_MODULE';
@@ -57,12 +54,12 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
       { field: 'email', header: 'Email', type: 'text' },
       { field: 'langKey', header: 'Langue', type: 'text' },
       { field: 'login', header: 'Login', type: 'text' },
-      { field: 'authority', header: 'Authorisations', type: 'enum', values: () => this.authorities, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'authority', header: 'Authorisations', type: 'enum', values: this.authorities, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'actived', header: 'Actif', type: 'boolean' },
-      { field: 'roles', header: 'Rôles', type: 'list', values: () => this.loadRoles(), label: 'roleKey', key: 'id', access: [Authority.ADMIN], subfield: [
+      { field: 'roles', header: 'Rôles', type: 'list', values: [], method: () => this.loadRoles(), label: 'roleKey', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'libelle', header: 'Libelle', type: 'text' },
-          { field: 'permissions', header: 'Permissions', type: 'list', values: () => this.loadPermissions(), label: 'libelle', key: 'id', access: [Authority.ADMIN], control: (item: any, event: any) => this.onPermissionsChange(item, event) }
+          { field: 'permissions', header: 'Permissions', type: 'list', values: [], method: () => this.loadPermissions(), label: 'libelle', key: 'id', access: [Authority.ADMIN], control: (item: any, event: any) => this.onPermissionsChange(item, event) }
         ]
       }
     ];

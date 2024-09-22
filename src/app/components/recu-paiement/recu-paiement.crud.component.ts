@@ -1,8 +1,7 @@
 import { RecuPaiementService } from './../../service/recu-paiement.service';
 import { RecuPaiement, RecuPaymentType } from './../../models/Recu-paiement.model';
 import { Authority } from '../../models/account.model';
-import { ToastService } from '../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -43,12 +42,10 @@ export class RecuPaiementCrudComponent extends GenericCrudComponent<RecuPaiement
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     recuPaiementService: RecuPaiementService,
     private paiementService: PaiementService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, recuPaiementService, appMain);
+    super(messageService, baseService, accountService, fb, recuPaiementService, appMain);
     this.entityName = 'Recu de paiement';
     this.componentLink = '/admin/recus/paiements';
     this.roleKey = 'RECU_PAIEMENT_MODULE';
@@ -62,14 +59,14 @@ export class RecuPaiementCrudComponent extends GenericCrudComponent<RecuPaiement
       { field: 'numeroRecu', header: 'Num Recu', type: 'text' },
       { field: 'dateEmission', header: 'Date d\'emission', type: 'date' },
       { field: 'montant', header: 'Montant', type: 'currency' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.recuPaymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN, Authority.AGENT] },
-      { field: 'paiement', header: 'Paiement', type: 'objet', values: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
+      { field: 'type', header: 'Type', type: 'enum', values: this.recuPaymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN, Authority.AGENT] },
+      { field: 'paiement', header: 'Paiement', type: 'objet', values: [], method: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
           { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value' },
-          { field: 'mode', header: 'Mode', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' }
+          { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value' },
+          { field: 'mode', header: 'Mode', type: 'enum', values: this.paymentModes, label: 'label', key: 'value' }
         ]
       }
     ];

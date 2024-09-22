@@ -6,8 +6,7 @@ import { AccountCrudService } from './../../service/account.crud.service';
 import { PrestationService } from './../../service/prestation.service';
 import { Prestation, PrestationStatus, PrestationType } from './../../models/prestation.model';
 import { Account, Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -42,15 +41,13 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     fournisseurService: FournisseurService,
     private prestationService: PrestationService,
     private accountCrudService: AccountCrudService,
     private registrantService: RegistrantService,
     private brancheService: BrancheService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, fournisseurService, appMain);
+    super(messageService, baseService, accountService, fb, fournisseurService, appMain);
     this.entityName = 'Fournisseur';
     this.componentLink = '/admin/fournisseurs';
     this.roleKey = 'FOURNISSEUR_MODULE';
@@ -66,34 +63,34 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
       { field: 'adresse', header: 'Adresse', type: 'textarea' },
       { field: 'telephone', header: 'Telephone', type: 'text' },
       { field: 'email', header: 'Email', type: 'text' },
-      { field: 'branches', header: 'Branches', type: 'list', values: () => this.loadBranches(), label: 'code', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
+      { field: 'branches', header: 'Branches', type: 'list', values: [], method: () => this.loadBranches(), label: 'code', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'code', header: 'Code', type: 'text' },
           { field: 'ville', header: 'Ville', type: 'text' },
           { field: 'isDefaut', header: 'Par defaut', type: 'boolean' }
         ]
       },
-      { field: 'account', header: 'Compte', type: 'objet', values: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'account', header: 'Compte', type: 'objet', values: [], method: () => this.loadAccounts(), label: 'fullName', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'imageUrl', header: 'Avatar', type: 'image' },
           { field: 'fullName', header: 'Nom complet', type: 'text' },
           { field: 'email', header: 'Email', type: 'text' }
         ]
       },
-      { field: 'prestations', header: 'Prestations', type: 'list', values: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+          { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
           { field: 'montant', header: 'Montant', type: 'currency' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value' }
         ]
       },
-      { field: 'registrant', header: 'Registrants', type: 'list', values: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'registrant', header: 'Registrants', type: 'list', values: [], method: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
-          { field: 'branche', header: 'Branche', type: 'objet', values: () => this.loadBranches(), label: 'ville', key: 'id' }
+          { field: 'branche', header: 'Branche', type: 'objet', values: [], method: () => this.loadBranches(), label: 'ville', key: 'id' }
         ]
       }
     ];

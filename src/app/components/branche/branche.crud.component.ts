@@ -1,7 +1,6 @@
 import { FournisseurService } from './../../service/fournisseur.service';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { AppMainComponent } from '../../app.main.component';
 import { MessageService } from 'primeng/api';
 import { Branche } from '../../models/branche.model';
@@ -24,12 +23,10 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     brancheService: BrancheService,
     private fournisseurService: FournisseurService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, brancheService, appMain);
+    super(messageService, baseService, accountService, fb, brancheService, appMain);
     this.entityName = 'Branche';
     this.componentLink = '/admin/branches';
     this.roleKey = 'BRANCHE_MODULE';
@@ -43,7 +40,7 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
       { field: 'code', header: 'Code', type: 'text' },
       { field: 'ville', header: 'Ville', type: 'text' },
       { field: 'isDefaut', header: 'Par defaut', type: 'boolean' },
-      { field: 'registrants', header: 'Partenaires', type: 'list', values: () => this.loadPartenaires(), label: 'nom', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'registrants', header: 'Partenaires', type: 'list', values: [], method: () => this.loadPartenaires(), label: 'nom', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'nom', header: 'Nom', type: 'text' },
           { field: 'telephone', header: 'Telephone', type: 'text' },

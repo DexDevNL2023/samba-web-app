@@ -1,7 +1,6 @@
 import { PrestationService } from './../../service/prestation.service';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -44,12 +43,10 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     financeurService: FinanceurService,
     private prestationService: PrestationService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, financeurService, appMain);
+    super(messageService, baseService, accountService, fb, financeurService, appMain);
     this.entityName = 'Financeur';
     this.componentLink = '/admin/financeurs';
     this.roleKey = 'FINANCEUR_MODULE';
@@ -62,18 +59,18 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'nom', header: 'Name', type: 'text' },
       { field: 'description', header: 'Description', type: 'textarea' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.financeurTypes, label: 'label', key: 'value' },
+      { field: 'type', header: 'Type', type: 'enum', values: this.financeurTypes, label: 'label', key: 'value' },
       { field: 'adresse', header: 'Adresse', type: 'textarea' },
       { field: 'telephone', header: 'Telephone', type: 'text' },
       { field: 'email', header: 'Email', type: 'text' },
-      { field: 'prestations', header: 'Prestations', type: 'list', values: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-        { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+        { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
         { field: 'montant', header: 'Montant', type: 'currency' },
-        { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value' }
         ]
       }
     ];

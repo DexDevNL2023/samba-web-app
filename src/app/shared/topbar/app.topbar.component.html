@@ -43,7 +43,7 @@
           </a>
           <ul class="fadeInDown animated cursor-pointer">
             <li *ngFor="let notification of myNotifs" role="menuitem">
-              <a href="#" (click)="openNotifications(notification)">
+              <a href="#" (click)="openNotifications()">
                 <i *ngIf="notification.typeNotification === 'PAYMENT'" class="pi pi-fw pi-credit-card"></i>
                 <i *ngIf="notification.typeNotification === 'SUBSCRIPTION'" class="pi pi-fw pi-ticket"></i>
                 <i *ngIf="notification.typeNotification === 'CLAIM'" class="pi pi-fw pi-map"></i>
@@ -51,7 +51,7 @@
                 <i *ngIf="notification.typeNotification === 'INFO'" class="pi pi-fw pi-info"></i>
                 <i *ngIf="notification.typeNotification === 'REMINDER'" class="pi pi-fw pi-bell"></i>
                 <i *ngIf="notification.typeNotification === 'PROFILE'" class="pi pi-fw pi-id-card"></i>
-                <span>{{notification.titre}}</span>
+                <span>{{notification.titre}} </span>
                 <span class="topbar-menu-active">{{notification.dateEnvoi | date:'short'}}</span>
               </a>
             </li>

@@ -1,7 +1,6 @@
 import { PoliceAssuranceService } from './../../service/police-assurance.service';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -31,12 +30,10 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     garantieService: GarantieService,
     private policeAssuranceService: PoliceAssuranceService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, garantieService, appMain);
+    super(messageService, baseService, accountService, fb, garantieService, appMain);
     this.entityName = 'Garantie';
     this.componentLink = '/admin/garanties';
     this.roleKey = 'GARANTIE_MODULE';
@@ -54,8 +51,8 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
       { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency', access: [Authority.ADMIN] },
       { field: 'dateDebut', header: 'Date de début', type: 'date', access: [Authority.ADMIN] },
       { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.garantieStatus, label: 'label', key: 'value', access: [Authority.ADMIN] },
-      { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: () => this.loadPolices(), label: 'numeroPolice', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'status', header: 'Status', type: 'enum', values: this.garantieStatus, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], method: () => this.loadPolices(), label: 'numeroPolice', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPolice', header: 'Num Police', type: 'text' },
         { field: 'label', header: 'Libelle', type: 'text' },

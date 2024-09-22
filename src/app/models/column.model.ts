@@ -4,7 +4,8 @@ export interface Column {
   field: string;      // Le champ de l'entité correspondant à cette colonne
   header: string;     // Le nom affiché pour cette colonne
   type: string;       // Le type de donnée (ex: 'string', 'number', 'date', 'image', etc.)
-  values?: () => any[] | any;  // La méthode values retourne un tableau de données : Liste optionnelle de valeurs (ex: pour un champ dropdown ou sélection multiple)
+  values?: any[];     // tableau de données : Liste optionnelle de valeurs
+  method?: () => any[] | any;  // La méthode values retourne un tableau de données : Liste optionnelle de valeurs (ex: pour un champ dropdown ou sélection multiple)
   label?: string;     // Étiquette optionnelle pour la colonne
   key?: string;       // Clé optionnelle pour identifier un champ unique
   access?: string[];  // Liste des rôles qui peuvent voir cette colonne, facultative

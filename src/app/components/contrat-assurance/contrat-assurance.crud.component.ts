@@ -1,8 +1,7 @@
 import { SouscriptionService } from './../../service/souscription.service';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -42,12 +41,10 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     contratAssuranceService: ContratAssuranceService,
     private souscriptionService: SouscriptionService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, contratAssuranceService, appMain);
+    super(messageService, baseService, accountService, fb, contratAssuranceService, appMain);
     this.entityName = 'Contrat d\'assurance';
     this.componentLink = '/admin/contrats/assurances';
     this.roleKey = 'CONTRAT_MODULE';
@@ -60,7 +57,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroContrat', header: 'Num Contrat', type: 'text', access: [Authority.ADMIN] },
       { field: 'dateContrat', header: 'Date du contrat', type: 'date', access: [Authority.ADMIN] },
-      { field: 'typeContrat', header: 'Type', type: 'enum', values: () => this.contratTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'typeContrat', header: 'Type', type: 'enum', values: this.contratTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'couverture', header: 'Couverture', type: 'textarea', access: [Authority.ADMIN] },
       { field: 'montantAssure', header: 'Montant assuré', type: 'currency', access: [Authority.ADMIN] },
       { field: 'franchise', header: 'franchise', type: 'currency', access: [Authority.ADMIN] },
@@ -68,13 +65,13 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
       { field: 'exclusions', header: 'Exclusions', type: 'textarea', access: [Authority.ADMIN] },
       { field: 'dateDebut', header: 'Date de début', type: 'date', access: [Authority.ADMIN] },
       { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
-      { field: 'souscriptions', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
+      { field: 'souscriptions', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.soscriptionStatus, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.soscriptionStatus, label: 'label', key: 'value' },
+          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.frequencies, label: 'label', key: 'value' }
         ]
       }
     ];

@@ -2,8 +2,7 @@ import { SouscriptionService } from './../../service/souscription.service';
 import { GarantieService } from './../../service/garantie.service';
 import { AssuranceService } from './../../service/assurance.service';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -52,14 +51,12 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     policeAssuranceService: PoliceAssuranceService,
     private souscriptionService: SouscriptionService,
     private assuranceService: AssuranceService,
     private garantieService: GarantieService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, policeAssuranceService, appMain);
+    super(messageService, baseService, accountService, fb, policeAssuranceService, appMain);
     this.entityName = 'Police d\'assurance';
     this.componentLink = '/admin/polices/assurances';
     this.roleKey = 'POLICE_ASSURANCE_MODULE';
@@ -75,28 +72,28 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
       { field: 'dureeCouverture', header: 'Durée de couverture', type: 'number, access: [Authority.ADMIN]' },
       { field: 'conditions', header: 'Conditions', type: 'textarea', access: [Authority.ADMIN] },
       { field: 'montantSouscription', header: 'Montant', type: 'currency', access: [Authority.ADMIN] },
-      { field: 'assurance', header: 'Assurance', type: 'objet', values: () => this.loadAssurances(), label: 'nom', key: 'id', subfield: [
+      { field: 'assurance', header: 'Assurance', type: 'objet', values: [], method: () => this.loadAssurances(), label: 'nom', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'nom', header: 'Name', type: 'text' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.insuranceTypes, label: 'label', key: 'value' }
+          { field: 'type', header: 'Type', type: 'enum', values: this.insuranceTypes, label: 'label', key: 'value' }
         ]
       },
-      { field: 'garanties', header: 'Garanties', type: 'list', values: () => this.loadGaranties(), label: 'numeroGarantie', key: 'id', subfield: [
+      { field: 'garanties', header: 'Garanties', type: 'list', values: [], method: () => this.loadGaranties(), label: 'numeroGarantie', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
           { field: 'label', header: 'Label', type: 'text' },
           { field: 'percentage', header: 'Pourcentage', type: 'currency' },
           { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.garantieStatus, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.garantieStatus, label: 'label', key: 'value' }
         ]
       },
-      { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.souscriptionStatus, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.frequencies, label: 'label', key: 'value' },
+          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.souscriptionStatus, label: 'label', key: 'value' }
         ]
       }
     ];

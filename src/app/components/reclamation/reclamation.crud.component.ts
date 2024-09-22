@@ -7,8 +7,7 @@ import { Authority } from './../../models/account.model';
 import { PaymentType, PaymentMode, Paiement } from './../../models/paiement.model';
 import { Sinistre, SinistreStatus } from './../../models/sinistre.model';
 import { Prestation, PrestationStatus, PrestationType } from './../../models/prestation.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -83,15 +82,13 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     reclamationService: ReclamationService,
     private prestationService: PrestationService,
     private souscriptionService: SouscriptionService,
     private sinistreService: SinistreService,
     private paiementService: PaiementService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, reclamationService, appMain);
+    super(messageService, baseService, accountService, fb, reclamationService, appMain);
     this.entityName = 'Reclamation';
     this.componentLink = '/admin/reclamations';
     this.roleKey = 'RECLAMATION_MODULE';
@@ -103,50 +100,50 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.typeReclamations, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
+      { field: 'type', header: 'Type', type: 'enum', values: this.typeReclamations, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'description', header: 'Description', type: 'textarea' },
       { field: 'montantReclame', header: 'Montant reclamé', type: 'currency' },
       { field: 'montantApprouve', header: 'Montant approuvé', type: 'currency', access: [Authority.ADMIN] },
       { field: 'dateEvaluation', header: 'Date évaluation', type: 'date', access: [Authority.ADMIN, Authority.AGENT] },
       { field: 'agentEvaluateur', header: 'Agent évaluateur', type: 'text', access: [Authority.ADMIN, Authority.AGENT] },
       { field: 'justification', header: 'Justification', type: 'textarea', access: [Authority.ADMIN, Authority.AGENT] },
-      { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
+      { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
         { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
         { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: () => this.souscriptiontatus, label: 'label', key: 'value' },
-        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: this.souscriptiontatus, label: 'label', key: 'value' },
+        { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values:this.frequencies, label: 'label', key: 'value' }
       ]
       },
-      { field: 'sinistre', header: 'Sinistre', type: 'object', values: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
+      { field: 'sinistre', header: 'Sinistre', type: 'object', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
         { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-        { field: 'status', header: 'Status', type: 'enum', values: () => this.sinistreStatuses, label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: this.sinistreStatuses, label: 'label', key: 'value' }
       ]
       },
-      { field: 'prestation', header: 'Prestation', type: 'object', values: () => this.loadPrestations(), label: 'typePrestation', key: 'id', subfield: [
+      { field: 'prestation', header: 'Prestation', type: 'object', values: [], method: () => this.loadPrestations(), label: 'typePrestation', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-        { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+        { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
         { field: 'montant', header: 'Montant', type: 'currency' },
-        { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+        { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value' }
       ]
       },
-      { field: 'paiements', header: 'Paiements', type: 'list', values: () => this.loadPaiements(), label: 'montantPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'paiements', header: 'Paiements', type: 'list', values: [], method: () => this.loadPaiements(), label: 'montantPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
         { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
         { field: 'montant', header: 'Montant', type: 'currency' },
-        { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value' },
-        { field: 'mode', header: 'Mode', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' }
+        { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value' },
+        { field: 'mode', header: 'Mode', type: 'enum', values: this.paymentModes, label: 'label', key: 'value' }
       ]
       }
     ];

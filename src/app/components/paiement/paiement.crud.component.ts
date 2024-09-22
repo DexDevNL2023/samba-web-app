@@ -4,8 +4,7 @@ import { ReclamationService } from './../../service/reclamation.service';
 import { SouscriptionService } from './../../service/souscription.service';
 import { Authority } from './../../models/account.model';
 import { Reclamation, StatutReclamation, TypeReclamation } from './../../models/reclamation.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -63,14 +62,12 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     paiementService: PaiementService,
     private souscriptionService: SouscriptionService,
     private reclamationService: ReclamationService,
     private recuPaiementService: RecuPaiementService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, paiementService, appMain);
+    super(messageService, baseService, accountService, fb, paiementService, appMain);
     this.entityName = 'Paiement';
     this.componentLink = '/admin/paiements';
     this.roleKey = 'PAIEMENT_MODULE';
@@ -84,26 +81,26 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
       { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
       { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
       { field: 'montant', header: 'Montant', type: 'currency' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
-      { field: 'mode', header: 'Mode de Paiement', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' },
-      { field: 'souscription', header: 'Souscription', type: 'objet', values: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
+      { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
+      { field: 'mode', header: 'Mode de Paiement', type: 'enum', values: this.paymentModes, label: 'label', key: 'value' },
+      { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.souscriptionStatus, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.souscriptionStatus, label: 'label', key: 'value' },
+          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.frequencies, label: 'label', key: 'value' }
         ]
       },
-      { field: 'reclamation', header: 'Reclamation', type: 'objet', values: () => this.loadRecuReclamations(), label: 'numeroReclamation', key: 'id', subfield: [
+      { field: 'reclamation', header: 'Reclamation', type: 'objet', values: [], method: () => this.loadRecuReclamations(), label: 'numeroReclamation', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.typeReclamations, label: 'label', key: 'value' },
+          { field: 'type', header: 'Type', type: 'enum', values: this.typeReclamations, label: 'label', key: 'value' },
           { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value' }
         ]
       },
-      { field: 'recuPaiement', header: 'Reçu du paiement', type: 'objet', values: () => this.loadRecuPaiements(), label: 'numeroRecu', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'recuPaiement', header: 'Reçu du paiement', type: 'objet', values: [], method: () => this.loadRecuPaiements(), label: 'numeroRecu', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroRecu', header: 'Num Reçu', type: 'text' },
           { field: 'dateEmission', header: 'Date d\'émission', type: 'date' },

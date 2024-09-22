@@ -159,10 +159,10 @@
 								</td>
 							</ng-container>
 							<td>
-								<button *ngIf="hasAccessToPermission('EDIT_PERMISSION')" pButton pRipple icon="pi pi-pencil"
+								<button *ngIf="(hasAccessToPermission('EDIT_PERMISSION') | async)" pButton pRipple icon="pi pi-pencil"
 									class="p-button-rounded p-button-success mr-2"
 									(click)="editItem(item)"></button>
-								<button *ngIf="hasAccessToPermission('DELET_PERMISSION')" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+								<button *ngIf="(hasAccessToPermission('DELET_PERMISSION') | async)" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
 									(click)="deleteItem(item)"></button>
 							</td>
 						</tr>
@@ -191,60 +191,51 @@
                                     <input *ngSwitchCase="'text'" type="text" class="p-inputtext p-component p-element"
                                         pInputText name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-dropdown *ngSwitchCase="'enum'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" placeholder="Select a {{ field.header }}"
                                         formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
                                         optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <textarea *ngSwitchCase="'textarea'" class="p-inputtextarea p-component p-element"
                                         pInputTextarea name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" rows="5"
-                                        cols="30" [disabled]="!hasAuthority(field.access)"
+                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" rows="5" cols="30"
                                         (change)="col.control ? col.control(selectedItem, $event) : null"></textarea>
                                     <p-calendar *ngSwitchCase="'date'" name="{{ field.field }}" id="{{ field.field }}"
                                         formControlName="{{ field.field }}" [showIcon]="true" inputId="icon"
-                                        dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
-                                        placeholder="Sélectionnez une {{ field.header }}" [disabled]="!hasAuthority(field.access)"
+                                        dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true"
+                                        yearRange="1900:{{ currentYear }}" placeholder="Sélectionnez une {{ field.header }}"
                                         (change)="col.control ? col.control(selectedItem, $event) : null"></p-calendar>
                                     <p-inputNumber *ngSwitchCase="'percentage'" name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
                                         [minFractionDigits]="2" [maxFractionDigits]="2" [suffix]="'%'" [min]="0"
                                         [max]="100" [step]="0.01" [showButtons]="true"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-inputNumber *ngSwitchCase="'currency'" name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="currency" currency="XAF"
                                         currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0"
                                         [min]="0" [max]="100000000000000000" [showButtons]="true"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-inputNumber *ngSwitchCase="'number'" name="{{ field.field }}" id="{{ field.field }}"
                                         placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
                                         [showButtons]="true" [min]="0" [max]="100000000000000000"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-dropdown *ngSwitchCase="'objet'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" placeholder="Select a {{ field.header }}"
                                         formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
                                         optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <p-multiSelect *ngSwitchCase="'list'" name="{{ field.field }}" id="{{ field.field }}"
                                         [options]="field.values" formControlName="{{ field.field }}"
                                         optionLabel="{{ field.label }}" optionValue="{{ field.key }}" [showClear]="true"
                                         appendTo="body" [style]="{'width':'100%'}" [panelStyle]="{'max-height':'200px'}"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null"></p-multiSelect>
                                     <p-checkbox *ngSwitchCase="'boolean'" name="{{ field.field }}" id="{{ field.field }}"
                                         [label]="field.header" formControlName="{{ field.field }}" binary="true" [styleClass]="'p-mr-2'"
-                                        [disabled]="!hasAuthority(field.access)"
                                         (change)="col.control ? col.control(selectedItem, $event) : null" />
                                     <div *ngSwitchCase="'image'">
                                         <img name="{{ field.field }}" id="{{ field.field }}" formControlName="{{ field.field }}" src="{{ imageUrlPreview || '../../../assets/layout/images/avatar.png' }}" alt="Preview"
-                                        style="max-width: 200px; max-height: 200px;" size="xlarge" [disabled]="!hasAuthority(field.access)" />
+                                        style="max-width: 200px; max-height: 200px;" size="xlarge" />
                                         <p-fileUpload
                                             mode="basic"
                                             for="{{ field.field }}"
@@ -254,7 +245,6 @@
                                             [showUploadButton]="false"
                                             [showCancelButton]="true"
                                             [auto]="true"
-                                            [disabled]="!hasAuthority(field.access)"
                                             (change)="col.control ? col.control(selectedItem, $event) : null"></p-fileUpload>
                                     </div>
                                 </ng-container>
@@ -321,7 +311,6 @@
 							<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
 								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
 								optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
-                                [disabled]="!hasAuthority(col.access)"
                                 (change)="col.control ? col.control(selectedItemView?.data, $event) : null" />
                             <!-- MultiSelect -->
 							<p-multiSelect *ngSwitchCase="'list'" [options]="col.values"
@@ -329,7 +318,6 @@
 								optionValue="{{ col.key }}" [showClear]="true"
 								appendTo="body" [style]="{'width':'100%'}"
 								[panelStyle]="{'max-height':'200px'}"
-                                [disabled]="!hasAuthority(col.access)"
                                 (change)="col.control ? col.control(selectedItemView?.data, $event) : null"></p-multiSelect>
                         </ng-container>
                     </div>
@@ -427,7 +415,6 @@
 											<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
 											[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
 											optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
-                                            [disabled]="!hasAuthority(col.access)"
                                             (change)="col.control ? col.control(item, $event) : null" />
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'list'">
@@ -437,7 +424,6 @@
 												optionValue="{{ col.key }}" [showClear]="true"
 												appendTo="body" [style]="{'width':'100%'}"
 												[panelStyle]="{'max-height':'200px'}"
-                                                [disabled]="!hasAuthority(col.access)"
                                                 (change)="col.control ? col.control(item, $event) : null"></p-multiSelect>
                                         </ng-container>
                                         <ng-container *ngSwitchDefault>

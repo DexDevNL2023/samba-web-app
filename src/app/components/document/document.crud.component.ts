@@ -2,8 +2,7 @@ import { Prestation } from './../../models/prestation.model';
 import { Sinistre } from './../../models/sinistre.model';
 import { PrestationService } from './../../service/prestation.service';
 import { SinistreService } from './../../service/sinistre.service';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -31,13 +30,11 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     documentService: DocumentService,
     private sinistreService: SinistreService,
     private prestationService: PrestationService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, documentService, appMain);
+    super(messageService, baseService, accountService, fb, documentService, appMain);
     this.entityName = 'Document';
     this.componentLink = '/admin/documents';
     this.roleKey = 'DOCUMENT_MODULE';
@@ -50,17 +47,17 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroDocument', header: 'Num Document', type: 'text' },
       { field: 'nom', header: 'Nom', type: 'text' },
-      { field: 'type', header: 'Type', type: 'enum', values: () => this.typeDocuments, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
+      { field: 'type', header: 'Type', type: 'enum', values: this.typeDocuments, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'description', header: 'description', type: 'textarea' },
       { field: 'url', header: 'Telecharger', type: 'url' },
-      { field: 'sinistre', header: 'Sinistre', type: 'objet', values: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
+      { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
           { field: 'dateSurvenance', header: 'Date de survenance', type: 'date' },
           { field: 'montantSinistre', header: 'Montant', type: 'currency' }
         ]
       },
-      { field: 'prestation', header: 'Prestation', type: 'objet', values: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', subfield: [
+      { field: 'prestation', header: 'Prestation', type: 'objet', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },

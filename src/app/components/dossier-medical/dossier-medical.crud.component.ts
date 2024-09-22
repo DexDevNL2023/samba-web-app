@@ -1,8 +1,7 @@
 import { Assure } from './../../models/assure.model';
 import { AssureService } from './../../service/assure.service';
 import { Authority } from './../../models/account.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -24,12 +23,10 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     dossierMedicalService: DossierMedicalService,
     private assureService: AssureService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, dossierMedicalService, appMain);
+    super(messageService, baseService, accountService, fb, dossierMedicalService, appMain);
     this.entityName = 'Dossier medical';
     this.componentLink = '/admin/dossiers/medicaux';
     this.roleKey = 'DOCUMENT_MODULE';
@@ -41,7 +38,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
-      { field: 'patient', header: 'Patient', type: 'objet', values: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
+      { field: 'patient', header: 'Patient', type: 'objet', values: [], method: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numNiu', header: 'Niu', type: 'text' },
           { field: 'firstName', header: 'Nom', type: 'text' },

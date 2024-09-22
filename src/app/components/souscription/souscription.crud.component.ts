@@ -6,8 +6,7 @@ import { SinistreService } from './../../service/sinistre.service';
 import { ReclamationService } from './../../service/reclamation.service';
 import { Authority } from './../../models/account.model';
 import { PrestationStatus, PrestationType } from './../../models/prestation.model';
-import { ToastService } from './../../service/toast.service';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
@@ -93,8 +92,6 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    toastService: ToastService,
-    cdr: ChangeDetectorRef,
     souscriptionService: SouscriptionService,
     private reclamationService: ReclamationService,
     private sinistreService: SinistreService,
@@ -103,7 +100,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     private policeAssuranceService: PoliceAssuranceService,
     private assureService: AssureService
   ) {
-    super(toastService, messageService, cdr, baseService, accountService, fb, souscriptionService, appMain);
+    super(messageService, baseService, accountService, fb, souscriptionService, appMain);
     this.entityName = 'Souscription';
     this.componentLink = '/admin/souscriptions';
     this.roleKey = 'SOUSCRIPTION_MODULE';
@@ -118,9 +115,9 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
       { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date', access: [Authority.ADMIN] },
       { field: 'montantCotisation', header: 'Montant des cotisations', type: 'currency', access: [Authority.ADMIN] },
-      { field: 'status', header: 'Status', type: 'enum', values: () => this.soscriptionStatus, label: 'label', key: 'value' },
-      { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: () => this.frequencies, label: 'label', key: 'value' },
-      { field: 'assure', header: 'Assuré', type: 'objet', values: () => this.loadAssures(), label: 'numNiu', key: 'id', subfield: [
+      { field: 'status', header: 'Status', type: 'enum', values: this.soscriptionStatus, label: 'label', key: 'value' },
+      { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.frequencies, label: 'label', key: 'value' },
+      { field: 'assure', header: 'Assuré', type: 'objet', values: [], method: () => this.loadAssures(), label: 'numNiu', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numNiu', header: 'Niu', type: 'text' },
           { field: 'firstName', header: 'Nom', type: 'text' },
@@ -128,18 +125,18 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
           { field: 'addresse', header: 'Addresse', type: 'textarea' }
         ]
       },
-      { field: 'police', header: 'Polices d\'assurance', type: 'objet', values: () => this.loadPolices(), label: 'numeroPolice', key: 'id', subfield: [
+      { field: 'police', header: 'Polices d\'assurance', type: 'objet', values: [], method: () => this.loadPolices(), label: 'numeroPolice', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPolice', header: 'Num Police', type: 'text' },
           { field: 'label', header: 'Libelle', type: 'text' },
           { field: 'montantSouscription', header: 'Coût', type: 'currency' }
         ]
       },
-      { field: 'contrats', header: 'Contrats', type: 'list', values: () => this.loadContrats(), label: 'numeroContrat', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'contrats', header: 'Contrats', type: 'list', values: [], method: () => this.loadContrats(), label: 'numeroContrat', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroContrat', header: 'Num Contrat', type: 'text' },
           { field: 'dateContrat', header: 'Date du contrat', type: 'date' },
-          { field: 'typeContrat', header: 'Type', type: 'enum', values: () => this.contratTypes, label: 'label', key: 'value' },
+          { field: 'typeContrat', header: 'Type', type: 'enum', values: this.contratTypes, label: 'label', key: 'value' },
           { field: 'couverture', header: 'Couverture', type: 'textarea' },
           { field: 'montantAssure', header: 'Montant assuré', type: 'currency' },
           { field: 'franchise', header: 'franchise', type: 'currency' },
@@ -149,40 +146,40 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
           { field: 'dateFin', header: 'Date de fin', type: 'date' }
         ]
       },
-      { field: 'paiements', header: 'Paiements', type: 'list', values: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'paiements', header: 'Paiements', type: 'list', values: [], method: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
           { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.paymentTypes, label: 'label', key: 'value' },
-          { field: 'mode', header: 'Mode', type: 'enum', values: () => this.paymentModes, label: 'label', key: 'value' }
+          { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value' },
+          { field: 'mode', header: 'Mode', type: 'enum', values: this.paymentModes, label: 'label', key: 'value' }
         ]
       },
-      { field: 'sinistres', header: 'Sinistres', type: 'list', values: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'sinistres', header: 'Sinistres', type: 'list', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
           { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.sinistreStatuses, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.sinistreStatuses, label: 'label', key: 'value' }
         ]
       },
-      { field: 'reclamations', header: 'Reclamations', type: 'list', values: () => this.loadReclamations(), label: 'numeroReclamation', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'reclamations', header: 'Reclamations', type: 'list', values: [], method: () => this.loadReclamations(), label: 'numeroReclamation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.typeReclamations, label: 'label', key: 'value' },
+          { field: 'type', header: 'Type', type: 'enum', values: this.typeReclamations, label: 'label', key: 'value' },
           { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.statutReclamations, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value' }
         ]
       },
-      { field: 'prestations', header: 'Prestations', type: 'list', values: () => this.loadReclamations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadReclamations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
-          { field: 'type', header: 'Type', type: 'enum', values: () => this.prestationTypes, label: 'label', key: 'value' },
+          { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
           { field: 'montant', header: 'Montant', type: 'currency' },
-          { field: 'status', header: 'Status', type: 'enum', values: () => this.prestationStatuses, label: 'label', key: 'value' }
+          { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value' }
         ]
       }
     ];

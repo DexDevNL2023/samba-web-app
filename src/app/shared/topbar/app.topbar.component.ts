@@ -30,7 +30,7 @@ export class AppTopBarComponent implements OnInit {
       this.account = account;
       if (account) {
         // Récupère les notifications non lu de l'utilisateur une fois qu'il est authentifié
-        this.notificationService.getUnreadNotificationsByUserId(account.id).subscribe();
+        this.notificationService.getUnreadNotificationsByUserId(account.id);
       }
     });
 
