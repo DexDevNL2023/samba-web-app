@@ -32,7 +32,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    private notificationService: NotificationService,
+    notificationService: NotificationService,
     private accountCrudService: AccountCrudService
   ) {
     super(messageService, baseService, accountService, fb, notificationService, appMain);
@@ -70,42 +70,34 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
-    // Charge les données du compte utilisateur actuellement authentifié lors de l'initialisation du composant
-    this.accountService.getUserState().subscribe(account => {
-      if (account) {
-        // Marquer toutes les notifications non lues comme lues
-        this.notificationService.markAsReadNotificationsByUserId(account.id);
+    // Check if the authenticated user has the ROLE_CLIENT authority
+    if (this. hasAuthority([Authority.CLIENT])) {
+      // If the user is a client, find and select the dropdown fields for emitter and recipient
+      const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
+      const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
 
-        // Check if the authenticated user has the ROLE_CLIENT authority
-        if (account?.authority === Authority.CLIENT) {
-          // If the user is a client, find and select the dropdown fields for emitter and recipient
-          const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
-          const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
-
-          // Set the emitter dropdown to the current user's account
-          if (emitterDropdown) {
-            this.selectDropdownValue(emitterDropdown, account.id);
-          }
-
-          // Set the recipient dropdown to the system account (SYSTEM_ACCOUNT_ID)
-          if (recipientDropdown) {
-            this.selectDropdownValue(recipientDropdown, 1);
-          }
-        } else {
-          // If the user is not a client, set both emitter and recipient to the system account
-          const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
-          const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
-
-          // Set both dropdown fields to SYSTEM_ACCOUNT_ID
-          if (emitterDropdown) {
-            this.selectDropdownValue(emitterDropdown, 1);
-          }
-          if (recipientDropdown) {
-            this.selectDropdownValue(recipientDropdown, 1);
-          }
-        }
+      // Set the emitter dropdown to the current user's account
+      if (emitterDropdown) {
+        this.selectDropdownValue(emitterDropdown, this.accountService.getIdForCurrentAccount());
       }
-    });
+
+      // Set the recipient dropdown to the system account (SYSTEM_ACCOUNT_ID)
+      if (recipientDropdown) {
+        this.selectDropdownValue(recipientDropdown, 1);
+      }
+    } else {
+      // If the user is not a client, set both emitter and recipient to the system account
+      const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
+      const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
+
+      // Set both dropdown fields to SYSTEM_ACCOUNT_ID
+      if (emitterDropdown) {
+        this.selectDropdownValue(emitterDropdown, 1);
+      }
+      if (recipientDropdown) {
+        this.selectDropdownValue(recipientDropdown, 1);
+      }
+    }
   }
 
   // Helper method to set the value of a dropdown by ID

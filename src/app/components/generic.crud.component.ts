@@ -537,6 +537,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
   protected openNew() {
+    // Initialise les autrs donnees
+    this.initializeOthers();
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
     this.updateColumnAndSubFieldValues();
     this.selectedItem = {} as Entity; // Initialise un nouvel élément
@@ -552,6 +554,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   // Méthode pour éditer un élément spécifique
   protected editItem(item: Entity) {
+    // Initialise les autrs donnees
+    this.initializeOthers();
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
     this.updateColumnAndSubFieldValues();
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
@@ -577,6 +581,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
             this.items = this.items.filter(item => !selectedIds.includes((item as any).id)); // Met à jour le tableau d'éléments après suppression
             this.appMain.showErrorViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
             this.selectedItems = []; // Réinitialise les éléments sélectionnés
+
+            // Simulate fetching data from a service
+            this.fetchDatas();
         });
     }
   }
@@ -588,6 +595,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
       this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
       this.selectedItem = {} as Entity; // Réinitialise l'élément
+
+      // Simulate fetching data from a service
+      this.fetchDatas();
     });
   }
 
@@ -612,6 +622,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
           this.selectedItem = {} as Entity; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
+
+          // Simulate fetching data from a service
+          this.fetchDatas();
         });
       } else { // Sinon, crée un nouvel élément
         this.service.create(this.selectedItem).subscribe(newItem => { // Crée un nouvel élément via le service
@@ -621,6 +634,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
           this.displayDialog = false; // Masque le dialogue d'ajout/modification
           this.selectedItem = {} as Entity; // Réinitialise l'élément
           this.formGroup.reset(); // Réinitialise les contrôles de formulaire
+
+          // Simulate fetching data from a service
+          this.fetchDatas();
         });
       }
     }
