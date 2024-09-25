@@ -116,30 +116,30 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.query().subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadRecuReclamations(): Reclamation[] {
-    let data: Reclamation[] = [];
-    this.reclamationService.query().subscribe((data: Reclamation[]) => {
-      data = data;
-    });
-    return data;
+  async loadRecuReclamations(): Promise<Reclamation[]> {
+      try {
+          return await this.reclamationService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadRecuPaiements(): RecuPaiement {
-    let data: RecuPaiement = null;
-    this.recuPaiementService.getByPaiementId(this.selectedItem.id).subscribe((data: RecuPaiement) => {
-      data = data;
-    });
-    return data;
+  async loadRecuPaiements(): Promise<RecuPaiement> {
+      try {
+          return await this.recuPaiementService.getByPaiementId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return {};
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

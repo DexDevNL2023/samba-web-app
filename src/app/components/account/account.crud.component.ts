@@ -70,21 +70,21 @@ export class AccountCrudComponent extends GenericCrudComponent<Account> {
   }
 
   // Chargement des rôles associés à une account
-  loadRoles(): Rule[] {
-    let data: Rule[] = [];
-    this.roleService.getAllByAccountId(this.selectedItem.id).subscribe((data: Rule[]) => {
-      data = data;
-    });
-    return data;
+  async loadRoles(): Promise<Rule[]> {
+      try {
+          return await this.roleService.getAllByAccountId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement toutes les permissions
-  loadPermissions(): Permission[] {
-    let data: Permission[] = [];
-    this.permissionService.query().subscribe((data: Permission[]) => {
-      data = data;
-    });
-    return data;
+  async loadPermissions(): Promise<Permission[]> {
+      try {
+          return await this.permissionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

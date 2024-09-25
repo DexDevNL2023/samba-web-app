@@ -56,12 +56,12 @@ export class BrancheCrudComponent extends GenericCrudComponent<Branche> {
   }
 
   // Chargement des polices associés à une branche
-  loadPartenaires(): Fournisseur[] {
-    let data: Fournisseur[] = [];
-    this.fournisseurService.getFournisseurWithBranchesById(this.selectedItem.id).subscribe((data: Fournisseur[]) => {
-      data = data;
-    });
-    return data;
+  async loadPartenaires(): Promise<Fournisseur[]> {
+      try {
+          return await this.fournisseurService.getFournisseurWithBranchesById(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

@@ -67,12 +67,12 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
   }
 
   // Chargement des polices associés à une assurance
-  loadPolices(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getWithGarantiesById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
-      data = data;
-    });
-    return data;
+  async loadPolices(): Promise<PoliceAssurance[]> {
+      try {
+          return await this.policeAssuranceService.getWithGarantiesById(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

@@ -101,38 +101,39 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadPrestations(): Prestation[] {
-    let data: Prestation[] = [];
-    this.prestationService.getByFournisseurId(this.selectedItem.id).subscribe((data: Prestation[]) => {
-      data = data;
-    });
-    return data;
+  async loadPrestations(): Promise<Prestation[]> {
+      try {
+          return await this.prestationService.getByFournisseurId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement aux registrants associés à une assure
-  loadRegistrants(): LiteRegistrant[] {
-    let data: LiteRegistrant[] = [];
-    this.registrantService.getByFournisseurId(this.selectedItem.id).subscribe((data: LiteRegistrant[]) => {
-      data = data;
-    });
-    return data;
+  async loadRegistrants(): Promise<LiteRegistrant[]> {
+      try {
+          return await this.registrantService.getByFournisseurId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
-  loadAccounts(): Account[] {
-    let data: Account[] = [];
-    this.accountCrudService.query().subscribe((data: Account[]) => {
-      data = data;
-    });
-    return data;
+  // Chargement aux registrants associés à une assure
+  async loadAccounts(): Promise<Account[]> {
+      try {
+          return await this.accountCrudService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): Branche[] {
-    let data: Branche[] = [];
-    this.brancheService.query().subscribe((data: Branche[]) => {
-      data = data;
-    });
-    return data;
+  async loadBranches(): Promise<Branche[]> {
+      try {
+          return await this.brancheService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

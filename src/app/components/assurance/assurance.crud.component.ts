@@ -67,11 +67,11 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
   }
 
   // Chargement des polices associés à une assurance
-  loadPolices(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).subscribe((data: PoliceAssurance[]) => {
-      data = data;
-    });
-    return data;
+  async loadPolices(): Promise<PoliceAssurance[]> {
+      try {
+          return await this.policeAssuranceService.getAllWithAssuranceById(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 }

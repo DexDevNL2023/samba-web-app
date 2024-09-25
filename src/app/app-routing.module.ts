@@ -1,3 +1,4 @@
+import { ScanCniComponent } from './account/scan-cni/scan-cni.component';
 import { RecuPaiementCrudComponent } from './components/recu-paiement/recu-paiement.crud.component';
 import {RouterModule} from '@angular/router';
 import {NgModule} from '@angular/core';
@@ -75,6 +76,7 @@ import { CompanyComponent } from './company/company.component';
             { path: 'reset/request', component: PasswordResetInitComponent },
             { path: 'reset/finish', component: PasswordResetFinishComponent },
             { path: 'register', component: RegisterComponent },
+            { path: 'scan/cni', component: ScanCniComponent },
             { path: '', redirectTo: '/login', pathMatch: 'full' },
         ], {scrollPositionRestoration: 'enabled'})
     ],

@@ -104,30 +104,30 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
   }
 
   // Chargement des assurances associés à une police-assurance
-  loadAssurances(): Assurance[] {
-    let data: Assurance[] = [];
-    this.assuranceService.query().subscribe((data: Assurance[]) => {
-      data = data;
-    });
-    return data;
+  async loadAssurances(): Promise<Assurance[]> {
+      try {
+          return await this.assuranceService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des garanties associés à une police-assurance
-  loadGaranties(): Garantie[] {
-    let data: Garantie[] = [];
-    this.garantieService.query().subscribe((data: Garantie[]) => {
-      data = data;
-    });
-    return data;
+  async loadGaranties(): Promise<Garantie[]> {
+      try {
+          return await this.garantieService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des souscriptions associés à une police-assurance
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.getAllByPoliceId(this.selectedItem.id).subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.getAllByPoliceId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

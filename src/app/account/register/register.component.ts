@@ -7,7 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html',
+  templateUrl: './register.component.html'
 })
 export default class RegisterComponent implements AfterViewInit {
   @ViewChild('login') login!: ElementRef; // Référence à l'élément d'entrée de nom d'utilisateur dans le template
@@ -144,6 +144,7 @@ export default class RegisterComponent implements AfterViewInit {
         (error) => {
           // Gérer l'erreur lors de l'inscription
           this.processError(error);
+          this.messageService.add({ key: 'tst', severity: 'error', summary: 'Erreur', detail: 'Échec de l\'inscription !' });
         }
       );
     }

@@ -38,7 +38,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
-      { field: 'patient', header: 'Patient', type: 'objet', values: [], method: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
+      { field: 'patient', header: 'Patient', type: 'objet', values: [], method: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT, Authority.CLIENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numNiu', header: 'Niu', type: 'text' },
           { field: 'firstName', header: 'Nom', type: 'text' },
@@ -70,12 +70,12 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
   }
 
   // Chargement des polices associés à une medical-record
-  loadPatients(): Assure[] {
-    let data: Assure[] = [];
-    this.assureService.query().subscribe((data: Assure[]) => {
-      data = data;
-    });
-    return data;
+  async loadPatients(): Promise<Assure[]> {
+      try {
+          return await this.assureService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

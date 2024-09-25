@@ -156,39 +156,39 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.query().subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des sinistres associés à une prestation
-  loadSinistres(): Sinistre[] {
-    let data: Sinistre[] = [];
-    this.sinistreService.query().subscribe((data: Sinistre[]) => {
-      data = data;
-    });
-    return data;
+  async loadSinistres(): Promise<Sinistre[]> {
+      try {
+          return await this.sinistreService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadPrestations(): Prestation[] {
-    let data: Prestation[] = [];
-    this.prestationService.query().subscribe((data: Prestation[]) => {
-      data = data;
-    });
-    return data;
+  async loadPrestations(): Promise<Prestation[]> {
+      try {
+          return await this.prestationService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadPaiements(): Paiement[] {
-    let data: Paiement[] = [];
-    this.paiementService.getPaiementByReclamationId(this.selectedItem.id).subscribe((data: Paiement[]) => {
-      data = data;
-    });
-    return data;
+  async loadPaiements(): Promise<Paiement[]> {
+      try {
+          return await this.paiementService.getPaiementByReclamationId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

@@ -79,21 +79,21 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
   }
 
   // Chargement des assures associés à une souscription
-  loadSinistres(): Sinistre[] {
-    let data: Sinistre[] = [];
-    this.sinistreService.query().subscribe((data: Sinistre[]) => {
-      data = data;
-    });
-    return data;
+  async loadSinistres(): Promise<Sinistre[]> {
+      try {
+          return await this.sinistreService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des polices associés à une souscription
-  loadPrestations(): Prestation[] {
-    let data: Prestation[] = [];
-    this.prestationService.query().subscribe((data: Prestation[]) => {
-      data = data;
-    });
-    return data;
+  async loadPrestations(): Promise<Prestation[]> {
+      try {
+          return await this.prestationService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   onTypeChange(item: any, event: any): void {

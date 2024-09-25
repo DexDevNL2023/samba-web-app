@@ -119,30 +119,30 @@ export class SinistreCrudComponent extends GenericCrudComponent<Sinistre> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.query().subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des polices associés à une sinistre
-  loadPrestations(): Prestation[] {
-    let data: Prestation[] = [];
-    this.prestationService.getBySinistreId(this.selectedItem.id).subscribe((data: Prestation[]) => {
-      data = data;
-    });
-    return data;
+  async loadPrestations(): Promise<Prestation[]> {
+      try {
+          return await this.prestationService.getBySinistreId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des documents associés à une prestation
-  loadDocuments(): Document[] {
-    let data: Document[] = [];
-    this.documentService.getAllBySinistreId(this.selectedItem.id).subscribe((data: Document[]) => {
-      data = data;
-    });
-    return data;
+  async loadDocuments(): Promise<Document[]> {
+      try {
+          return await this.documentService.getAllBySinistreId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

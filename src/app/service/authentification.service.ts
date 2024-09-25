@@ -1,3 +1,4 @@
+import { ScanRequest } from './../models/scan.request';
 import { VerificationToken } from './../models/verification.token.model';
 import { StateStorageService } from './../core/auth/state-storage.service';
 import { SignupRequest } from './../models/signup.request';
@@ -45,6 +46,14 @@ export class AuthentificationService extends GenericCrudService<Account> {
     // Register a new user
     register(signUpRequest: SignupRequest): Observable<Account> {
         return this.http.post<RessourceResponse<Account>>(`${this.resourceUrl}/register`, signUpRequest).pipe(
+            map(response => this.handleResponse(response, "Utilisateur enregistré avec succès!")),
+            catchError(error => this.handleError(error, "Erreur lors de l'enregistrement"))
+        );
+    }
+
+    // Register a new user by cni scan
+    scanCniRegister(signupRequest: ScanRequest): Observable<Account> {
+        return this.http.post<RessourceResponse<Account>>(`${this.resourceUrl}/scan/register`, signupRequest).pipe(
             map(response => this.handleResponse(response, "Utilisateur enregistré avec succès!")),
             catchError(error => this.handleError(error, "Erreur lors de l'enregistrement"))
         );

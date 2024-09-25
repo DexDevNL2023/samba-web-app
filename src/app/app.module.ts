@@ -1,3 +1,4 @@
+import { ScanCniComponent } from './account/scan-cni/scan-cni.component';
 import { RecuPaiementCrudComponent } from './components/recu-paiement/recu-paiement.crud.component';
 import { RecuPaiementService } from './service/recu-paiement.service';
 import { RoleService } from './service/role.service';
@@ -290,6 +291,7 @@ import { CompanyComponent } from './company/company.component';
         SouscriptionCrudComponent,
         PortraitComponent,
         CompanyComponent,
+        ScanCniComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

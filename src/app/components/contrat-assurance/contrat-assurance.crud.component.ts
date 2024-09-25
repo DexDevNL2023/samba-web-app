@@ -81,17 +81,17 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
   protected initializeOthers(): void {
   }
 
+  // Chargement des souscriptions associés à une police-assurance
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
+  }
+
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] { // Ajoutez le modificateur override
     return ['numeroContrat', 'dateContrat', 'couverture', 'montantAssure', 'conditions', 'exclusions', 'dateDebut', 'dateFin'];
-  }
-
-  // Chargement des souscriptions associés à une police-assurance
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.query().subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
   }
 }

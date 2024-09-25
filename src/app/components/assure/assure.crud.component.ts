@@ -105,7 +105,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.souscriptiontatus, label: 'label', key: 'value' },
-          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: [], method: () => this.frequencies, label: 'label', key: 'value' }
+          { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.frequencies, label: 'label', key: 'value' }
         ]
       }
     ];
@@ -116,56 +116,57 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
   }
 
   // Chargement aux registrants associés à une assure
-  loadRegistrants(): LiteRegistrant[] {
-    let data: LiteRegistrant[] = [];
-    this.registrantService.query().subscribe((data: LiteRegistrant[]) => {
-      data = data;
-    });
-    return data;
-  }
-
-  loadAccounts(): Account[] {
-    let data: Account[] = [];
-    this.accountCrudService.query().subscribe((data: Account[]) => {
-      data = data;
-    });
-    return data;
+  async loadRegistrants(): Promise<LiteRegistrant[]> {
+      try {
+          return await this.registrantService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.getAllByAssureId(this.selectedItem.id).subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadAccounts(): Promise<Account[]> {
+      try {
+          return await this.accountCrudService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
+  }
+
+  // Chargement des souscriptions associés à une assure
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.getAllByAssureId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des dossiers médicaux associés à une assure
-  loadDossiers(): DossierMedical[] {
-    let data: DossierMedical[] = [];
-    this.dossierMedicalService.getDossierMedicalWithPatientById(this.selectedItem.id).subscribe((data: DossierMedical[]) => {
-      data = data;
-    });
-    return data;
+  async loadDossiers(): Promise<DossierMedical[]> {
+      try {
+          return await this.dossierMedicalService.getDossierMedicalWithPatientById(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des prestations associés à une fournisseur-soin
-  loadBranches(): Branche[] {
-    let data: Branche[] = [];
-    this.brancheService.query().subscribe((data: Branche[]) => {
-      data = data;
-    });
-    return data;
+  async loadBranches(): Promise<Branche[]> {
+      try {
+          return await this.brancheService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des polices associés à une branche
-  loadPartenaires(): Fournisseur[] {
-    let data: Fournisseur[] = [];
-    this.fournisseurService.query().subscribe((data: Fournisseur[]) => {
-      data = data;
-    });
-    return data;
+  async loadPartenaires(): Promise<Fournisseur[]> {
+      try {
+          return await this.fournisseurService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

@@ -77,12 +77,12 @@ export class RecuPaiementCrudComponent extends GenericCrudComponent<RecuPaiement
   }
 
   // Chargement des reçu de paiement associés à une assure
-  loadPaiements(): Paiement[] {
-    let data: Paiement[] = [];
-    this.paiementService.query().subscribe((data: Paiement[]) => {
-      data = data;
-    });
-    return data;
+  async loadPaiements(): Promise<Paiement[]> {
+      try {
+          return await this.paiementService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

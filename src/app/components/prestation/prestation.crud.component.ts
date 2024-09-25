@@ -136,48 +136,48 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
   }
 
   // Chargement des souscriptions associés à une assure
-  loadSouscriptions(): Souscription[] {
-    let data: Souscription[] = [];
-    this.souscriptionService.query().subscribe((data: Souscription[]) => {
-      data = data;
-    });
-    return data;
+  async loadSouscriptions(): Promise<Souscription[]> {
+      try {
+          return await this.souscriptionService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des fournisseurs associés à une prestation
-  loadFournisseurs(): Fournisseur[] {
-    let data: Fournisseur[] = [];
-    this.fournisseurService.query().subscribe((data: Fournisseur[]) => {
-      data = data;
-    });
-    return data;
+  async loadFournisseurs(): Promise<Fournisseur[]> {
+      try {
+          return await this.fournisseurService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des sinistres associés à une prestation
-  loadSinistres(): Sinistre[] {
-    let data: Sinistre[] = [];
-    this.sinistreService.query().subscribe((data: Sinistre[]) => {
-      data = data;
-    });
-    return data;
+  async loadSinistres(): Promise<Sinistre[]> {
+      try {
+          return await this.sinistreService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des financeurs associés à une prestation
-  loadFinanceurs(): Financeur[] {
-    let data: Financeur[] = [];
-    this.financeurService.query().subscribe((data: Financeur[]) => {
-      data = data;
-    });
-    return data;
+  async loadFinanceurs(): Promise<Financeur[]> {
+      try {
+          return await this.financeurService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des documents associés à une prestation
-  loadDocuments(): Document[] {
-    let data: Document[] = [];
-    this.documentService.getAllByPrestationId(this.selectedItem.id).subscribe((data: Document[]) => {
-      data = data;
-    });
-    return data;
+  async loadDocuments(): Promise<Document[]> {
+      try {
+          return await this.documentService.getAllByPrestationId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

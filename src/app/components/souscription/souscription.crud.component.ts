@@ -190,57 +190,57 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
   }
 
   // Chargement des assures associés à une souscription
-  loadAssures(): Assure[] {
-    let data: Assure[] = [];
-    this.assureService.query().subscribe((data: Assure[]) => {
-      data = data;
-    });
-    return data;
+  async loadAssures(): Promise<Assure[]> {
+      try {
+          return await this.assureService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des polices associés à une souscription
-  loadPolices(): PoliceAssurance[] {
-    let data: PoliceAssurance[] = [];
-    this.policeAssuranceService.query().subscribe((data: PoliceAssurance[]) => {
-      data = data;
-    });
-    return data;
+  async loadPolices(): Promise<PoliceAssurance[]> {
+      try {
+          return await this.policeAssuranceService.query().toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des contrats associés à une souscription
-  loadContrats(): ContratAssurance[] {
-    let data: ContratAssurance[] = [];
-    this.contratAssuranceService.getContratsBySouscriptionId(this.selectedItem.id).subscribe((data: ContratAssurance[]) => {
-      data = data;
-    });
-    return data;
+  async loadContrats(): Promise<ContratAssurance[]> {
+      try {
+          return await this.contratAssuranceService.getContratsBySouscriptionId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des paiements associés à une souscription
-  loadPaiements(): Paiement[] {
-    let data: Paiement[] = [];
-    this.paiementService.getPaiementsBySouscriptionId(this.selectedItem.id).subscribe((data: Paiement[]) => {
-      data = data;
-    });
-    return data;
+  async loadPaiements(): Promise<Paiement[]> {
+      try {
+          return await this.paiementService.getPaiementsBySouscriptionId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des sinistres associés à une souscription
-  loadSinistres(): Sinistre[] {
-    let data: Sinistre[] = [];
-    this.sinistreService.getBySouscriptionId(this.selectedItem.id).subscribe((data: Sinistre[]) => {
-      data = data;
-    });
-    return data;
+  async loadSinistres(): Promise<Sinistre[]> {
+      try {
+          return await this.sinistreService.getBySouscriptionId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Chargement des reclamations associés à une souscription
-  loadReclamations(): Reclamation[] {
-    let data: Reclamation[] = [];
-    this.reclamationService.getBySouscriptionId(this.selectedItem.id).subscribe((data: Reclamation[]) => {
-      data = data;
-    });
-    return data;
+  async loadReclamations(): Promise<Reclamation[]> {
+      try {
+          return await this.reclamationService.getBySouscriptionId(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)

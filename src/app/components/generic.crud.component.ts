@@ -51,7 +51,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     public appMain: AppMainComponent // Donne acces aux methodes de app.main.component depuis le composant fille
   ) {}
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     // Récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
     this.getRequiredFields();
 
@@ -65,7 +65,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.updateBreadcrumb();
 
     // Simulate fetching data from a service
-    this.fetchDatas();
+    await this.fetchDatas();
 
     // Initialise les autrs donnees
     this.initializeOthers();
@@ -89,12 +89,15 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected abstract getRequiredFields(): string[];
 
-  protected fetchDatas(): void {
+  protected async fetchDatas(): Promise<void> {
     // Au chargement du composant, récupère tous les éléments via le service
-    this.service.query().subscribe(data => {
-      this.items = data as Entity[];
+      try {
+        this.items = await this.service.query().toPromise();
+        this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
+    } catch (error) {
+      this.items = [];
       this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
-    });
+    }
   }
 
   protected updateBreadcrumb() {
@@ -117,6 +120,53 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     // Utilise accountService pour vérifier si l'utilisateur a au moins une des autorités
     const result: boolean = this.accountService.hasAnyAuthority(authorities);
     return result;
+  }
+
+  /**
+   * Met à jour les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
+   */
+  protected async updateColumnAndSubFieldValues(): Promise<void> {
+    for (const column of this.cols) {
+      // Mettre à jour les valeurs de la colonne
+      if (column.method) {
+        // Met à jour les valeurs de la colonne
+        await this.updateColumnValues(column.field);
+      }
+
+      // Mettre à jour les valeurs des sous-champs si disponibles
+      if (column.subfield) {
+        for (const subColumn of column.subfield) {
+          if (subColumn.method) {
+            // Met à jour les valeurs du sous-champ
+            await this.updateSubFieldValues(column.field, subColumn.field);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Met à jour les valeurs des colonnes et de leurs sous-champs à partir de field en exécutant les méthodes associées.
+   * @param field - Le champ de la colonne à mettre à jour.
+   */
+  protected async updateColumnAndSubFieldValuesByField(field: string): Promise<void> {
+    for (const column of this.cols) {
+      // Mettre à jour les valeurs de la colonne
+      if (column.method && column.field === field) {
+        // Met à jour les valeurs de la colonne
+        await this.updateColumnValues(column.field);
+      }
+
+      // Mettre à jour les valeurs des sous-champs si disponibles
+      if (column.subfield) {
+        for (const subColumn of column.subfield) {
+          if (subColumn.method && subColumn.field === field) {
+            // Met à jour les valeurs du sous-champ
+            await this.updateSubFieldValues(column.field, subColumn.field);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -145,29 +195,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
         subColumn.values = values;
       }
     }
-  }
-
-  /**
-   * Met à jour les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
-   */
-  protected updateColumnAndSubFieldValues(): void {
-    this.cols.forEach(column => {
-      // Mettre à jour les valeurs de la colonne
-      if (column.method) {
-        // Met à jour les valeurs de la colonne
-        this.updateColumnValues(column.field);
-      }
-
-      // Mettre à jour les valeurs des sous-champs si disponibles
-      if (column.subfield) {
-        column.subfield.forEach(subColumn => {
-          if (subColumn.method) {
-            // Met à jour les valeurs du sous-champ
-            this.updateSubFieldValues(column.field, subColumn.field);
-          }
-        });
-      }
-    });
   }
 
   /**
@@ -213,7 +240,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       const column = this.cols.find(col => col.field === field);
       if (column) {
         // Met à jour les valeurs de la colonne de façon asynchrone
-        await this.updateColumnValues(field);
+        await this.updateColumnAndSubFieldValuesByField(field);
         // Update values for the field before opening the view
         const values = column.values;
 
@@ -253,7 +280,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       const column = this.cols.find(col => col.field === field);
       if (column) {
         // Met à jour les valeurs de la colonne de façon asynchrone
-        await this.updateColumnValues(field);
+        await this.updateColumnAndSubFieldValuesByField(field);
         // Update values for the field before opening the view
         const values = column.values;
 
@@ -536,11 +563,11 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour ouvrir le dialogue d'ajout d'un nouvel élément
-  protected openNew() {
+  protected async openNew() {
     // Initialise les autrs donnees
     this.initializeOthers();
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
-    this.updateColumnAndSubFieldValues();
+    await this.updateColumnAndSubFieldValues();
     this.selectedItem = {} as Entity; // Initialise un nouvel élément
     this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.submitted = false; // Réinitialise le soumission du formulaire
@@ -553,11 +580,11 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour éditer un élément spécifique
-  protected editItem(item: Entity) {
+  protected async editItem(item: Entity) {
     // Initialise les autrs donnees
     this.initializeOthers();
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
-    this.updateColumnAndSubFieldValues();
+    await this.updateColumnAndSubFieldValues();
     this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
@@ -571,34 +598,108 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   // Méthode pour confirmer la suppression de plusieurs éléments sélectionnés
-  protected confirmDeleteSelected() {
-    this.displayDeleteItemsDialog = false; // Ferme le dialogue de suppression de plusieurs éléments
+  protected async confirmDeleteSelected(): Promise<void> {
+      this.displayDeleteItemsDialog = false;
 
-    const selectedIds = this.selectedItems.map(selectedItem => (selectedItem as any).id); // Récupère les IDs des éléments sélectionnés
+      const selectedIds = this.selectedItems.map((item: any) => item.id);
 
-    if (selectedIds.length > 0) {
-        this.service.deleteAll(selectedIds).subscribe(() => { // Utilise la méthode deleteAll pour supprimer les éléments en une seule requête
-            this.items = this.items.filter(item => !selectedIds.includes((item as any).id)); // Met à jour le tableau d'éléments après suppression
-            this.appMain.showErrorViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-            this.selectedItems = []; // Réinitialise les éléments sélectionnés
+      if (selectedIds.length > 0) {
+          try {
+              await this.service.deleteAll(selectedIds).toPromise(); // Utilisation de `await` pour attendre la suppression
+              this.items = this.items.filter(item => !selectedIds.includes((item as any).id));
+              this.showToast('Successful', `${this.entityName} Deleted`, 'error');
+              this.selectedItems = [];
 
-            // Simulate fetching data from a service
-            this.fetchDatas();
-        });
-    }
+              // Appel asynchrone pour récupérer les nouvelles données
+              await this.fetchDatas();
+          } catch (error) {
+              this.showToast('Error', `Failed to delete ${this.entityName}`, 'error');
+              console.error('Error deleting items:', error);
+          }
+      }
   }
 
   // Méthode pour confirmer la suppression d'un élément spécifique
-  protected confirmDelete() {
-    this.displayDeleteDialog = false; // Ferme le dialogue de suppression d'un élément
-    this.service.delete((this.selectedItem as any).id).subscribe(() => { // Supprime l'élément via le service
-      this.items = this.items.filter(val => val !== this.selectedItem); // Met à jour le tableau d'éléments après suppression
-      this.appMain.showWarnViaToast('Successful', this.entityName + ' Deleted'); // Affiche un message de succès pour la suppression
-      this.selectedItem = {} as Entity; // Réinitialise l'élément
+  protected async confirmDelete(): Promise<void> {
+      this.displayDeleteDialog = false;
 
-      // Simulate fetching data from a service
-      this.fetchDatas();
-    });
+      try {
+          await this.service.delete((this.selectedItem as any).id).toPromise(); // Suppression avec `await`
+          this.items = this.items.filter(val => val !== this.selectedItem);
+          this.showToast('Successful', `${this.entityName} Deleted`, 'warn');
+          this.selectedItem = {} as Entity;
+
+          // Appel asynchrone pour récupérer les nouvelles données
+          await this.fetchDatas();
+      } catch (error) {
+          this.showToast('Error', `Failed to delete ${this.entityName}`, 'error');
+          console.error('Error deleting item:', error);
+      }
+  }
+
+  // Méthode pour sauvegarder un nouvel élément ou mettre à jour un élément existant
+  protected async saveItem(): Promise<void> {
+      this.submitted = true;
+
+      if (this.formGroup.valid) {
+          this.selectedItem = { ...this.formGroup.value }; // Copie des valeurs du formulaire
+
+          try {
+              if ((this.selectedItem as any).id) {
+                  // Mise à jour de l'élément existant
+                  const updatedItem = await this.service.update(this.selectedItem).toPromise();
+                  this.items[this.findIndexById((this.selectedItem as any).id)] = updatedItem;
+                  this.showToast('Successful', `${this.entityName} Updated`, 'info');
+              } else {
+                  // Création d'un nouvel élément
+                  const newItem = await this.service.create(this.selectedItem).toPromise();
+                  this.items.push(newItem);
+                  this.showToast('Successful', `${this.entityName} Created`, 'success');
+              }
+
+              this.items = [...this.items]; // Mise à jour des éléments
+              this.displayDialog = false; // Fermer le dialogue
+              this.resetForm(); // Réinitialise le formulaire
+              await this.fetchDatas(); // Récupère les nouvelles données
+          } catch (error) {
+              this.showToast('Error', `Failed to save ${this.entityName}`, 'error');
+              console.error('Error saving item:', error);
+          }
+      }
+  }
+
+  /**
+   * Réinitialise le formulaire et les données sélectionnées.
+   */
+  private resetForm(): void {
+      this.selectedItem = {} as Entity;
+      this.formGroup.reset();
+  }
+
+  /**
+   * Affiche un toast avec un message et une gravité spécifique.
+   * @param title - Le titre du toast
+   * @param message - Le message du toast
+   * @param severity - La gravité ('success', 'info', 'warn', 'error')
+   */
+  private showToast(title: string, message: string, severity: 'success' | 'info' | 'warn' | 'error'): void {
+    switch (severity) {
+      case 'success':
+        this.appMain.showSuccessViaToast(title, message);
+        break;
+      case 'info':
+        this.appMain.showInfoViaToast(title, message);
+        break;
+      case 'warn':
+        this.appMain.showWarnViaToast(title, message);
+        break;
+      case 'error':
+        this.appMain.showErrorViaToast(title, message);
+        break;
+      default:
+        this.appMain.showInfoViaToast(title, message);
+        break;
+    }
   }
 
   // Méthode pour masquer le dialogue d'ajout/modification
@@ -606,40 +707,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.displayDialog = false; // Masque le dialogue d'ajout/modification
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.formGroup.reset(); // Réinitialise les contrôles de formulaire
-  }
-
-  // Méthode pour sauvegarder un nouvel élément ou mettre à jour un élément existant
-  protected saveItem() {
-    this.submitted = true; // Indique que le formulaire est soumis
-
-    if (this.formGroup.valid) { // Vérifie la validité du formulaire
-      this.selectedItem = { ...this.formGroup.value }; // Copie les valeurs du formulaire dans l'élément à sauvegarder
-      if ((this.selectedItem as any).id) { // Si l'élément a un ID, effectue une mise à jour
-        this.service.update(this.selectedItem).subscribe(() => { // Met à jour l'élément via le service
-          this.items[this.findIndexById((this.selectedItem as any).id)] = this.selectedItem; // Met à jour le tableau d'éléments avec l'élément mis à jour
-          this.appMain.showInfoViaToast('Successful', this.entityName + ' Updated'); // Affiche un message de succès pour la mise à jour
-          this.items = [...this.items]; // Met à jour le tableau d'éléments
-          this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Entity; // Réinitialise l'élément
-          this.formGroup.reset(); // Réinitialise les contrôles de formulaire
-
-          // Simulate fetching data from a service
-          this.fetchDatas();
-        });
-      } else { // Sinon, crée un nouvel élément
-        this.service.create(this.selectedItem).subscribe(newItem => { // Crée un nouvel élément via le service
-          this.items.push(newItem); // Ajoute le nouvel élément au tableau d'éléments
-          this.appMain.showSuccessViaToast('Successful', this.entityName + ' Created'); // Affiche un message de succès pour la création
-          this.items = [...this.items]; // Met à jour le tableau d'éléments
-          this.displayDialog = false; // Masque le dialogue d'ajout/modification
-          this.selectedItem = {} as Entity; // Réinitialise l'élément
-          this.formGroup.reset(); // Réinitialise les contrôles de formulaire
-
-          // Simulate fetching data from a service
-          this.fetchDatas();
-        });
-      }
-    }
   }
 
   // Méthode pour trouver l'index d'un élément dans le tableau d'éléments par son ID

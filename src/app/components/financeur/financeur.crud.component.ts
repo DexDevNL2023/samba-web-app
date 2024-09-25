@@ -81,12 +81,12 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
   }
 
   // Chargement des prestations associés à une financeur-soin
-  loadPrestations(): Prestation[] {
-    let data: Prestation[] = [];
-    this.prestationService.getWithFinanceursById(this.selectedItem.id).subscribe((data: Prestation[]) => {
-      data = data;
-    });
-    return data;
+  async loadPrestations(): Promise<Prestation[]> {
+      try {
+          return await this.prestationService.getWithFinanceursById(this.selectedItem.id).toPromise();
+      } catch (error) {
+          return [];
+      }
   }
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
