@@ -68,6 +68,7 @@ export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAss
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
       { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+      { field: 'imageUrl', header: 'Image', type: 'image' },
       { field: 'label', header: 'Libellé', type: 'text' },
       { field: 'dureeCouverture', header: 'Durée de couverture', type: 'number, access: [Authority.ADMIN]' },
       { field: 'conditions', header: 'Conditions', type: 'textarea', access: [Authority.ADMIN] },

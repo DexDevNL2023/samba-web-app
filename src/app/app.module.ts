@@ -1,3 +1,10 @@
+import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
+import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
+import { ProduitDetailComponent } from './site/detail/produit-detail.component';
+import { ProduitComponent } from './site/produit/produit.component';
+import { HeaderComponent } from './site/header/header.component';
+import { FooterComponent } from './site/footer/footer.component';
+import { SiteComponent } from './site/main/site.component';
 import { ScanCniComponent } from './account/scan-cni/scan-cni.component';
 import { RecuPaiementCrudComponent } from './components/recu-paiement/recu-paiement.crud.component';
 import { RecuPaiementService } from './service/recu-paiement.service';
@@ -292,6 +299,13 @@ import { CompanyComponent } from './company/company.component';
         PortraitComponent,
         CompanyComponent,
         ScanCniComponent,
+        SiteComponent,
+        FooterComponent,
+        HeaderComponent,
+        ProduitComponent,
+        ProduitDetailComponent,
+        SouscriptionListComponent,
+        SouscriptionDetailComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

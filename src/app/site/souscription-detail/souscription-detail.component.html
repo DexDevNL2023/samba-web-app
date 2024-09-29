@@ -1,0 +1,114 @@
+<div class="surface-section px-4 md:px-6 lg:px-8">
+    <div class="grid my-4">
+        <div class="col-12 lg:col-12">
+            <h2 class="text-xl font-medium text-900 mb-4">{{ souscription?.numeroSouscription }}</h2>
+            <div class="mb-5">
+                <span class="text-900 font-medium text-3xl block">Date de souscription : {{ souscription?.dateSouscription | date }}</span>
+                <span class="text-900 font-medium text-3xl block">Date d'expiration : {{ souscription?.dateExpiration | date }}</span>
+                <span class="text-900 font-medium text-3xl block">Periode de paiement des primes : <p-tag [value]="getFrequenceEnumLabel(souscription?.frequencePaiement)"
+                    [severity]="getFrequenceSeverity(souscription?.frequencePaiement)" [rounded]="true"></p-tag></span>
+                <span class="text-900 font-medium text-3xl block">Montant des cotisation : {{ souscription?.montantCotisation }} XAF</span>
+                <span class="text-900 font-medium text-3xl block">Status de l'police : <p-tag [value]="getStatutEnumLabel(souscription?.status)"
+                    [severity]="getStatutSeverity(souscription?.status)" [rounded]="true"></p-tag></span>
+            </div>
+            <div class="flex flex-wrap sm:align-items-center sm:justify-content-between">
+                <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
+                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
+                        (click)="declarerSinistre(souscription?.id)">
+                        <span class="p-button-label">Déclarer un sinistre</span>
+                    </button>
+                </div>
+                <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
+                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
+                        (click)="demanderRemboursement(souscription?.id)">
+                        <span class="p-button-label">Demander un remboursement</span>
+                    </button>
+                </div>
+                <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
+                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
+                        (click)="payerPrime(souscription?.id)">
+                        <span class="p-button-label">Payer une prime</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-tabview>
+        <p-tabPanel header="Détails">
+            <div class="grid mt-4" *ngIf="police">
+                <div class="col-12 lg:col-4">
+                    <div class="font-medium text-xl text-900 mb-3">{{ police?.label }}</div>
+                    <div class="mb-4">
+                        <label class="block font-normal text-900 mb-2">Conditions</label>
+                        <p>{{ police?.conditions }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block font-normal text-900 mb-2">Duree de couverture</label>
+                        <span>{{ police?.dureeCouverture }}</span>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Contrats">
+            <p-table [value]="contrats" [tableStyle]="{ 'min-width': '60rem' }" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Numéro de Contrat</th>
+                        <th>Type de Contrat</th>
+                        <th>Montant Assuré</th>
+                        <th>Franchise</th>
+                        <th>Date de Début</th>
+                        <th>Date de Fin</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-contrat>
+                    <tr>
+                        <td>{{ contrat?.numeroContrat }}</td>
+                        <td><p-tag [value]="getContratEnumLabel(contrat?.typeContrat)"
+                                [severity]="getContratSeverity(contrat?.typeContrat)" [rounded]="true"></p-tag></td>
+                        <td>{{ contrat?.montantAssure | currency: 'XAF' }}</td>
+                        <td>{{ contrat?.franchise | currency: 'XAF' }}</td>
+                        <td>{{ contrat?.dateDebut | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ contrat?.dateFin | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                            <p-button icon="pi pi-info" (click)="openDialog(contrat)" label="Détails"
+                                class="p-button-text"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabview>
+</div>
+
+<p-dialog [(visible)]="selectedContrat" header="Détails du Contrat d'Assurance" [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true" style="width: 40vw">
+    <div class="p-dialog-content">
+        <div class="flex flex-wrap border-top-1 surface-border pt-4">
+            <div class="bg-blue-50 flex align-items-center justify-content-center py-3 px-0 w-full md:w-4 border-round">
+                <img src="assets/layout/images/security.svg" alt="Image de sécurité" class="w-9" />
+            </div>
+            <div class="text-700 line-height-3 m-0 p-5 w-full md:w-8">
+                <!-- Panel pour la Couverture -->
+                <p-panel header="Couverture" [toggleable]="true">
+                    <p>{{ selectedContrat?.couverture }}</p>
+                </p-panel>
+                <!-- Panel pour les Conditions -->
+                <p-panel header="Conditions" [toggleable]="true">
+                    <p>{{ selectedContrat?.conditions }}</p>
+                </p-panel>
+                <!-- Panel pour les Exclusions -->
+                <p-panel header="Exclusions" [toggleable]="true">
+                    <p>{{ selectedContrat?.exclusions }}</p>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+    <div class="p-dialog-footer">
+        <button pButton icon="pi pi-times" label="Retour" class="p-button-text" (click)="hideDialog()"></button>
+    </div>
+</p-dialog>

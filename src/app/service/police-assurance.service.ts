@@ -37,4 +37,20 @@ export class PoliceAssuranceService extends GenericCrudService<PoliceAssurance> 
             catchError(() => of(null))
         );
     }
+
+    // Récupérer toutes les polices d'assurance liées à une assurance donnée
+    getAll(): Observable<PoliceAssurance[]> {
+        return this.http.get<RessourceResponse<PoliceAssurance[]>>(`${this.baseUrl}/api/public/police/assurance`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer toutes les polices d\'assurance')),
+            catchError(() => of([]))
+        );
+    }
+
+    // Récupérer toutes les polices d'assurance liées à une assurance donnée
+    getById(id: number): Observable<PoliceAssurance> {
+        return this.http.get<RessourceResponse<PoliceAssurance>>(`${this.baseUrl}/api/public/police/assurance/by/${id}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer toutes les polices d\'assurance')),
+            catchError(() => of(null))
+        );
+    }
 }

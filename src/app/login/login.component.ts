@@ -3,8 +3,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AccountService } from '../core/auth/account.service';
+import { Account, Authority } from '../models/account.model';
 import { LoginService } from './login.service';
-import { Login } from './login.model';
 
 @Component({
   selector: 'app-login',
@@ -52,10 +52,10 @@ export default class LoginComponent implements OnInit, AfterViewInit {
 
   // Méthode exécutée à l'initialisation du composant
   ngOnInit(): void {
-    /* if (this.accountService.isAuthenticated()) {
+    if (this.accountService.getCurrentAccount()) {
       // Redirige vers la page d'acceuil si authentifié
       this.router.navigate(['/admin']);
-    } */
+    }
   }
 
   // Méthode exécutée après l'initialisation de la vue
@@ -75,7 +75,12 @@ export default class LoginComponent implements OnInit, AfterViewInit {
         this.authenticationError = false;
         // Si aucune navigation en cours, redirige vers la page d'acceuil
         if (!this.router.getCurrentNavigation()) {
-          this.router.navigate(['/admin']);
+          const account: Account = this.accountService.getCurrentAccount();
+          if (account.authority === Authority.CLIENT) {
+            this.router.navigate(['/site']);
+          } else {
+            this.router.navigate(['/admin']);
+          }
         }
       },
       // En cas d'erreur, met à jour l'état d'erreur d'authentification

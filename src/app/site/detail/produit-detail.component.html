@@ -1,0 +1,100 @@
+<div class="surface-section px-4 md:px-6 lg:px-8">
+    <div class="grid my-4">
+        <div class="col-12 lg:col-6">
+            <div class="flex">
+                <img class="w-full" [src]="produit?.imageUrl || 'assets/layout/images/default-image-2.jpg'"
+                    alt="Image du produit" />
+            </div>
+        </div>
+        <div class="col-12 lg:col-6 py-3 lg:pl-6">
+            <h2 class="text-xl font-medium text-900 mb-4">{{ produit?.numeroPolice }}</h2>
+            <div class="mb-5">
+                <span class="text-900 font-medium text-3xl block">Libelle de la police : {{ produit?.label }}</span>
+                <span class="text-900 font-medium text-3xl block">Duree de couverture : {{ produit?.dureeCouverture }}</span>
+                <span class="text-900 font-medium text-3xl block">Montant de souscription : {{ produit?.montantSouscription }} XAF</span>
+            </div>
+            <div class="flex flex-wrap sm:align-items-center sm:justify-content-between">
+                <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
+                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
+                        (click)="souscrire(produit?.id)">
+                        <span class="p-button-label">Souscrire à cette police d\'assurance</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-tabview>
+        <p-tabPanel header="Détails">
+            <div class="grid mt-4" *ngIf="assurance">
+                <div class="col-12 lg:col-4">
+                    <div class="font-medium text-xl text-900 mb-3">{{ assurance?.nom }}</div>
+                    <div class="mb-4">
+                        <label class="block font-normal text-900 mb-2">Description</label>
+                        <p>{{ assurance?.description }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block font-normal text-900 mb-2">Type</label>
+                        <p-tag [value]="getAssuranceEnumLabel(assurance?.type)" [severity]="getAssuranceSeverity(assurance?.type)"></p-tag>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Conditions">
+            <p class="line-height-3 text-700" *ngIf="produit?.conditions">{{ produit?.conditions }}</p>
+        </p-tabPanel>
+
+        <p-tabPanel header="Garanties">
+            <p-table [value]="garanties" [tableStyle]="{ 'min-width': '60rem' }" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Label</th>
+                        <th>Numéro de Garantie</th>
+                        <th>Pourcentage</th>
+                        <th>Plafond Assuré</th>
+                        <th>Date de Début</th>
+                        <th>Date de Fin</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-garantie>
+                    <tr>
+                        <td>{{ garantie?.label }}</td>
+                        <td>{{ garantie?.numeroGarantie }}</td>
+                        <td>{{ garantie?.percentage }}%</td>
+                        <td>{{ garantie?.plafondAssure | currency: 'XAF' }}</td>
+                        <td>{{ garantie?.dateDebut | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ garantie?.dateFin | date: 'dd/MM/yyyy' }}</td>
+                        <td><p-tag [value]="getGarantieEnumLabel(garantie?.status)" [severity]="getGarantieSeverity(garantie?.status)"></p-tag></td>
+                        <td>
+                            <p-button icon="pi pi-info" (click)="openDialog(garantie)" label="Détails"
+                                class="p-button-text"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabview>
+</div>
+
+<p-dialog [(visible)]="selectedGarantie" header="Détails de la Garantie" [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true" style="width: 40vw">
+    <div class="p-dialog-content">
+        <div class="flex flex-wrap border-top-1 surface-border pt-4">
+            <div class="bg-blue-50 flex align-items-center justify-content-center py-3 px-0 w-full md:w-4 border-round">
+                <img src="assets/layout/images/security.svg" alt="Image de sécurité" class="w-9" />
+            </div>
+            <div class="text-700 line-height-3 m-0 p-5 w-full md:w-8"></div>
+                <!-- Panel pour les Termes -->
+                <p-panel header="Termes" [toggleable]="true">
+                    <p>{{ selectedGarantie?.termes }}</p>
+                </p-panel>
+            </div>
+        </div>
+    <div class="p-dialog-footer">
+        <button pButton icon="pi pi-times" label="Retour" class="p-button-text" (click)="hideDialog()"></button>
+    </div>
+</p-dialog>

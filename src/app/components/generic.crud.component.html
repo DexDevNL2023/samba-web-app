@@ -3,250 +3,282 @@
         <div class="card px-6 py-6">
             <p-toolbar styleClass="mb-4 gap-2">
                 <ng-template pTemplate="left">
-                  <p-fileUpload *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" mode="basic" accept=".xlsx" [customUpload]="true"
-                    (uploadHandler)="onFileChange($event)" [maxFileSize]="1000000" label="Import"
-                    chooseLabel="Import" class="mr-2 inline-block" />
-                  <button *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" severity="success" pButton pRipple label="New" icon="pi pi-plus"
-                    class="p-button-success mr-2" (click)="openNew()"></button>
-                  <button *ngIf="(hasAccessToPermission('DELETE_PERMISSION') | async)" severity="danger" pButton pRipple label="Delete" icon="pi pi-trash"
-                    class="p-button-danger" (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length"></button>
+                    <p-fileUpload *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" mode="basic"
+                        accept=".xlsx" [customUpload]="true" (uploadHandler)="onFileChange($event)"
+                        [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block" />
+                    <button *ngIf="(hasAccessToPermission('WRITE_PERMISSION') | async)" severity="success" pButton
+                        pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                        (click)="openNew()"></button>
+                    <button *ngIf="(hasAccessToPermission('DELETE_PERMISSION') | async)" severity="danger" pButton
+                        pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                        (click)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems?.length"></button>
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-print" class="p-button-secondary mr-2"
-                    (click)="showPrintPreview()" pTooltip="PRINT" tooltipPosition="bottom"></button>
-                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-file" class="p-button-help mr-2"
-                    (click)="dt.exportCSV()" pTooltip="CSV" tooltipPosition="bottom"></button>
-                  <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple icon="pi pi-file-excel" class="p-button-success mr-2"
-                    (click)="exportExcel()" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple
+                        icon="pi pi-print" class="p-button-secondary mr-2" (click)="showPrintPreview()" pTooltip="PRINT"
+                        tooltipPosition="bottom"></button>
+                    <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple
+                        icon="pi pi-file" class="p-button-help mr-2" (click)="dt.exportCSV()" pTooltip="CSV"
+                        tooltipPosition="bottom"></button>
+                    <button *ngIf="(hasAccessToPermission('PRINT_PERMISSION') | async)" severity="help" pButton pRipple
+                        icon="pi pi-file-excel" class="p-button-success mr-2" (click)="exportExcel()" pTooltip="XLS"
+                        tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
 
-			<p-table #dt [value]="items" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-				[globalFilterFields]="getAllFields()" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions"
-				[showCurrentPageReport]="true"
-				currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-				[(selection)]="selectedItems" selectionMode="multiple" [rowHover]="true" dataKey="id">
-				<ng-template pTemplate="caption">
-					<div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-						<h5 class="m-0">{{entityName}}s</h5>
-						<span class="block mt-2 md:mt-0 p-input-icon-left">
-							<i class="pi pi-search"></i>
-							<input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-								placeholder="Search..." class="w-full sm:w-auto" />
-						</span>
-					</div>
-				</ng-template>
-				<ng-template pTemplate="header">
-					<tr>
-						<th style="width: 3rem">
-							<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-						</th>
-						<ng-container *ngFor="let col of cols">
-							<th style="min-width:15rem"
-								*ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'"
-								[pSortableColumn]="col.field">
-								{{ col.header }}
-								<p-sortIcon [field]="col.field"></p-sortIcon>
-							</th>
-							<th style="min-width:15rem" *ngIf="col.type === 'image'">
-								{{ col.header }}
-							</th>
-							<th style="min-width:25rem" *ngIf="col.type === 'textarea'"
-								[pSortableColumn]="col.field">
-								{{ col.header }}
-								<p-sortIcon [field]="col.field"></p-sortIcon>
-							</th>
-                            <th style="min-width:15rem" *ngIf="col.type === 'percentage'" [pSortableColumn]="col.field">
-                                {{ col.header }} %
-                                <p-sortIcon [field]="col.field"></p-sortIcon>
+            <p-table #dt [value]="items" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="getAllFields()" [paginator]="true" [rowsPerPageOptions]="rowsPerPageOptions"
+                [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                [(selection)]="selectedItems" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">{{entityName}}s</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <ng-container *ngFor="let col of cols">
+                            <th style="min-width:15rem"
+                                *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
+                                [pSortableColumn]="col?.field">
+                                {{ col?.header }}
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
                             </th>
-							<th style="min-width:15rem" *ngIf="col.type === 'currency'"
-								[pSortableColumn]="col.field">
-								{{ col.header }} XAF
-								<p-sortIcon [field]="col.field"></p-sortIcon>
-							</th>
-							<th style="min-width:5rem" *ngIf="col.type === 'id'" [pSortableColumn]="col.field">
-								{{ col.header }}
-								<p-sortIcon [field]="col.field"></p-sortIcon>
-							</th>
-							<th style="min-width:5rem" *ngIf="col.type === 'objet' || col.type === 'list'"
-								[pSortableColumn]="col.field">
-								{{ col.header }}
-							</th>
-							<th style="min-width:8rem"
-								*ngIf="col.type === 'boolean' || col.type === 'date' || col.type === 'enum'"
-								[pSortableColumn]="col.field">
-								{{ col.header }}
-								<p-sortIcon [field]="col.field"></p-sortIcon>
-							</th>
-						</ng-container>
-						<th style="min-width:15rem"></th>
-					</tr>
-				</ng-template>
-				<ng-template pTemplate="body" let-item>
-					<ng-container *ngIf="loading; else data">
-						<tr>
-							<td>
-								<p-skeleton></p-skeleton>
-							</td>
-							<ng-container *ngFor="let col of cols">
-								<td>
-									<span class="p-column-title">{{ col.header }}</span>
-									<p-skeleton></p-skeleton>
-								</td>
-							</ng-container>
-							<td>
-								<p-skeleton></p-skeleton>
-							</td>
-						</tr>
-					</ng-container>
-					<ng-template #data>
-						<tr>
-							<td>
-								<p-tableCheckbox [value]="item"></p-tableCheckbox>
-							</td>
-							<ng-container *ngFor="let col of cols">
-								<td [ngSwitch]="col.type">
-									<ng-container *ngSwitchCase="'percentage'">
-										<span class="p-column-title">{{ col.header }} %</span>
-										{{ item[col.field] }}
-									</ng-container>
-									<ng-container *ngSwitchCase="'currency'">
-										<span class="p-column-title">{{ col.header }} XAF</span>
-										{{ item[col.field] }}
-									</ng-container>
-									<ng-container *ngSwitchCase="'image'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<img [src]="item[col.field]" [alt]="item[col.altField]" width="100"
-											class="shadow-4" />
-									</ng-container>
-									<ng-container *ngSwitchCase="'enum'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<p-tag [value]="getEnumLabel(col.values, item[col.field])"
-											[severity]="getSeverity(item[col.field])" [rounded]="true"></p-tag>
-									</ng-container>
-									<ng-container *ngSwitchCase="'date'">
-										<span class="p-column-title">{{ col.header }}</span>
-										{{ item[col.field] | date }}
-									</ng-container>
-									<ng-container *ngSwitchCase="'boolean'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<p-checkbox [(ngModel)]="item[col.field]" [binary]="true"></p-checkbox>
-									</ng-container>
-									<ng-container *ngSwitchCase="'textarea'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<p>
-											{{ item[col.field] }}
-										</p>
-									</ng-container>
-									<ng-container *ngSwitchCase="'objet'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<button pButton pRipple icon="pi pi-eye"
-											class="p-button-rounded p-button-info"
-											(click)="openItemView({ field: col.field, id: item[col.field] })"></button>
-									</ng-container>
-									<ng-container *ngSwitchCase="'list'">
-										<span class="p-column-title">{{ col.header }}</span>
-										<button pButton pRipple icon="pi pi-list"
-											class="p-button-rounded p-button-info"
-											(click)="openItemListView({ field: col.field, ids: item[col.field] })"></button>
-									</ng-container>
-									<ng-container *ngSwitchDefault>
-										<span class="p-column-title">{{ col.header }}</span>
-										{{ item[col.field] }}
-									</ng-container>
-								</td>
-							</ng-container>
-							<td>
-								<button *ngIf="(hasAccessToPermission('EDIT_PERMISSION') | async)" pButton pRipple icon="pi pi-pencil"
-									class="p-button-rounded p-button-success mr-2"
-									(click)="editItem(item)"></button>
-								<button *ngIf="(hasAccessToPermission('DELET_PERMISSION') | async)" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-									(click)="deleteItem(item)"></button>
-							</td>
-						</tr>
-					</ng-template>
-				</ng-template>
-				<ng-template pTemplate="emptymessage">
-					<tr>
-						<td colspan="{{ cols.length + 2 }}" class="text-center">No records found</td>
-					</tr>
-				</ng-template>
-			</p-table>
+                            <th style="min-width:15rem" *ngIf="col?.type === 'image'">
+                                {{ col?.header }}
+                            </th>
+                            <th style="min-width:25rem" *ngIf="col?.type === 'textarea'" [pSortableColumn]="col?.field">
+                                {{ col?.header }}
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
+                            </th>
+                            <th style="min-width:15rem" *ngIf="col?.type === 'percentage'"
+                                [pSortableColumn]="col?.field">
+                                {{ col?.header }} %
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
+                            </th>
+                            <th style="min-width:15rem" *ngIf="col?.type === 'currency'" [pSortableColumn]="col?.field">
+                                {{ col?.header }} XAF
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
+                            </th>
+                            <th style="min-width:5rem" *ngIf="col?.type === 'id'" [pSortableColumn]="col?.field">
+                                {{ col?.header }}
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
+                            </th>
+                            <th style="min-width:5rem" *ngIf="col?.type === 'objet' || col?.type === 'list'"
+                                [pSortableColumn]="col?.field">
+                                {{ col?.header }}
+                            </th>
+                            <th style="min-width:8rem"
+                                *ngIf="col?.type === 'boolean' || col?.type === 'date' || col?.type === 'enum'"
+                                [pSortableColumn]="col?.field">
+                                {{ col?.header }}
+                                <p-sortIcon [field]="col?.field"></p-sortIcon>
+                            </th>
+                        </ng-container>
+                        <th style="min-width:15rem"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <ng-container *ngIf="loading; else data">
+                        <tr>
+                            <td>
+                                <p-skeleton></p-skeleton>
+                            </td>
+                            <ng-container *ngFor="let col of cols">
+                                <td>
+                                    <span class="p-column-title">{{ col?.header }}</span>
+                                    <p-skeleton></p-skeleton>
+                                </td>
+                            </ng-container>
+                            <td>
+                                <p-skeleton></p-skeleton>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <ng-template #data>
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                            </td>
+                            <ng-container *ngFor="let col of cols">
+                                <td [ngSwitch]="col?.type">
+                                    <ng-container *ngSwitchCase="'percentage'">
+                                        <span class="p-column-title">{{ col?.header }} %</span>
+                                        {{ item[col?.field] }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'currency'">
+                                        <span class="p-column-title">{{ col?.header }} XAF</span>
+                                        {{ item[col?.field] }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'image'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <img *ngIf="item && item[col?.field]"
+                                            [src]="item[col?.field] || 'assets/layout/images/default-image-2.jpg'"
+                                            [alt]="item[col?.field]" width="100" class="shadow-4" />
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'enum'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <p-tag [value]="getEnumLabel(col?.values, item[col?.field])"
+                                            [severity]="getSeverity(item[col?.field])" [rounded]="true"></p-tag>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'date'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        {{ item[col?.field] | date }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'boolean'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <p-checkbox [(ngModel)]="item[col?.field]" [binary]="true"></p-checkbox>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'textarea'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <p>
+                                            {{ item[col?.field] }}
+                                        </p>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'objet'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
+                                            (click)="openItemView(item, { field: col?.field, id: item[col?.field] })"></button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'list'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <button pButton pRipple icon="pi pi-list" class="p-button-rounded p-button-info"
+                                            (click)="openItemListView(item, { field: col?.field, ids: item[col?.field] })"></button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'file'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <button pButton pRipple class="p-button p-component p-button-rounded"
+                                            (click)="col?.action ? col?.action(item) : null">{{ col?.header ||
+                                            'Afficher' }}</button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'lien'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <a [href]="item && item[col?.field] ? item[col?.field] : '#'" target="_blank">
+                                            {{ col?.header || 'Ouvrir le lien' }}
+                                        </a>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'button'">
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        <button pButton pRipple class="p-button p-component p-button-rounded"
+                                            (click)="col?.action ? col?.action(item) : null">{{ col?.header ||
+                                            'Executer' }}</button>
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        <span class="p-column-title">{{ col?.header }}</span>
+                                        {{ item[col?.field] }}
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <td>
+                                <button *ngIf="(hasAccessToPermission('EDIT_PERMISSION') | async)" pButton pRipple
+                                    icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                    (click)="editItem(item)"></button>
+                                <button *ngIf="(hasAccessToPermission('DELET_PERMISSION') | async)" pButton pRipple
+                                    icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deleteItem(item)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="{{ cols?.length + 2 }}" class="text-center">No records found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
 
             <p-dialog header="{{ selectedItem && selectedItem.id ? 'Edit ' + entityName : 'New ' + entityName }}"
                 [(visible)]="displayDialog" [modal]="true" [style]="{ width: '50vw' }"
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
                 <form [formGroup]="formGroup" (ngSubmit)="saveItem()">
                     <div class="p-fluid">
-                        <ng-container *ngFor="let field of cols">
+                        <ng-container *ngFor="let col of cols">
                             <div class="mb-4">
-                                <label *ngIf="field.type !== 'boolean' && field.type !== 'id'" for="{{ field.field }}"
-                                    class="block font-normal text-900 mb-2">{{ field.header }}</label>
-                                <span *ngIf="field.type === 'id' && selectedItem?.id" class="block font-normal text-900 mb-2">{{
+                                <label *ngIf="col?.type !== 'boolean' && col?.type !== 'id'" for="{{ col?.field }}"
+                                    class="block font-normal text-900 mb-2">{{ col?.header }}</label>
+                                <span *ngIf="col?.type === 'id' && selectedItem?.id"
+                                    class="block font-normal text-900 mb-2">{{
                                     selectedItem?.id }}</span>
 
-                                <ng-container [ngSwitch]="field.type">
+                                <ng-container [ngSwitch]="col?.type">
                                     <input *ngSwitchCase="'text'" type="text" class="p-inputtext p-component p-element"
-                                        pInputText name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
-                                    <p-dropdown *ngSwitchCase="'enum'" name="{{ field.field }}" id="{{ field.field }}"
-                                        [options]="field.values" placeholder="Select a {{ field.header }}"
-                                        formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
-                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
+                                        pInputText name="{{ col?.field }}" id="{{ col?.field }}"
+                                        placeholder="{{ col?.header }}" formControlName="{{ col?.field }}"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
+                                    <p-dropdown *ngSwitchCase="'enum'" name="{{ col?.field }}" id="{{ col?.field }}"
+                                        [options]="col?.values" placeholder="Select a {{ col?.header }}"
+                                        formControlName="{{ col?.field }}" optionLabel="{{ col?.label }}"
+                                        optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
                                     <textarea *ngSwitchCase="'textarea'" class="p-inputtextarea p-component p-element"
-                                        pInputTextarea name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" rows="5" cols="30"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null"></textarea>
-                                    <p-calendar *ngSwitchCase="'date'" name="{{ field.field }}" id="{{ field.field }}"
-                                        formControlName="{{ field.field }}" [showIcon]="true" inputId="icon"
+                                        pInputTextarea name="{{ col?.field }}" id="{{ col?.field }}"
+                                        placeholder="{{ col?.header }}" formControlName="{{ col?.field }}" rows="5"
+                                        cols="30"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null"></textarea>
+                                    <p-calendar *ngSwitchCase="'date'" name="{{ col?.field }}" id="{{ col?.field }}"
+                                        formControlName="{{ col?.field }}" [showIcon]="true" inputId="icon"
                                         dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true"
-                                        yearRange="1900:{{ currentYear }}" placeholder="Sélectionnez une {{ field.header }}"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null"></p-calendar>
-                                    <p-inputNumber *ngSwitchCase="'percentage'" name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
-                                        [minFractionDigits]="2" [maxFractionDigits]="2" [suffix]="'%'" [min]="0"
-                                        [max]="100" [step]="0.01" [showButtons]="true"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
-                                    <p-inputNumber *ngSwitchCase="'currency'" name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="currency" currency="XAF"
+                                        yearRange="1900:{{ currentYear }}"
+                                        placeholder="Sélectionnez une {{ col?.header }}"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null"></p-calendar>
+                                    <p-inputNumber *ngSwitchCase="'percentage'" name="{{ col?.field }}"
+                                        id="{{ col?.field }}" placeholder="{{ col?.header }}"
+                                        formControlName="{{ col?.field }}" mode="decimal" [minFractionDigits]="2"
+                                        [maxFractionDigits]="2" [suffix]="'%'" [min]="0" [max]="100" [step]="0.01"
+                                        [showButtons]="true"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
+                                    <p-inputNumber *ngSwitchCase="'currency'" name="{{ col?.field }}"
+                                        id="{{ col?.field }}" placeholder="{{ col?.header }}"
+                                        formControlName="{{ col?.field }}" mode="currency" currency="XAF"
                                         currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0"
                                         [min]="0" [max]="100000000000000000" [showButtons]="true"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
-                                    <p-inputNumber *ngSwitchCase="'number'" name="{{ field.field }}" id="{{ field.field }}"
-                                        placeholder="{{ field.header }}" formControlName="{{ field.field }}" mode="decimal"
-                                        [showButtons]="true" [min]="0" [max]="100000000000000000"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
-                                    <p-dropdown *ngSwitchCase="'objet'" name="{{ field.field }}" id="{{ field.field }}"
-                                        [options]="field.values" placeholder="Select a {{ field.header }}"
-                                        formControlName="{{ field.field }}" optionLabel="{{ field.label }}"
-                                        optionValue="{{ field.key }}" [showClear]="true" appendTo="body"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
-                                    <p-multiSelect *ngSwitchCase="'list'" name="{{ field.field }}" id="{{ field.field }}"
-                                        [options]="field.values" formControlName="{{ field.field }}"
-                                        optionLabel="{{ field.label }}" optionValue="{{ field.key }}" [showClear]="true"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
+                                    <p-inputNumber *ngSwitchCase="'number'" name="{{ col?.field }}"
+                                        id="{{ col?.field }}" placeholder="{{ col?.header }}"
+                                        formControlName="{{ col?.field }}" mode="decimal" [showButtons]="true" [min]="0"
+                                        [max]="100000000000000000"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
+                                    <p-dropdown *ngSwitchCase="'objet'" name="{{ col?.field }}" id="{{ col?.field }}"
+                                        [options]="col?.values" placeholder="Select a {{ col?.header }}"
+                                        formControlName="{{ col?.field }}" optionLabel="{{ col?.label }}"
+                                        optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
+                                    <p-multiSelect *ngSwitchCase="'list'" name="{{ col?.field }}" id="{{ col?.field }}"
+                                        [options]="col?.values" formControlName="{{ col?.field }}"
+                                        optionLabel="{{ col?.label }}" optionValue="{{ col?.key }}" [showClear]="true"
                                         appendTo="body" [style]="{'width':'100%'}" [panelStyle]="{'max-height':'200px'}"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null"></p-multiSelect>
-                                    <p-checkbox *ngSwitchCase="'boolean'" name="{{ field.field }}" id="{{ field.field }}"
-                                        [label]="field.header" formControlName="{{ field.field }}" binary="true" [styleClass]="'p-mr-2'"
-                                        (change)="col.control ? col.control(selectedItem, $event) : null" />
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null"></p-multiSelect>
+                                    <p-checkbox *ngSwitchCase="'boolean'" name="{{ col?.field }}" id="{{ col?.field }}"
+                                        [label]="col?.header" formControlName="{{ col?.field }}" binary="true"
+                                        [styleClass]="'p-mr-2'"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
                                     <div *ngSwitchCase="'image'">
-                                        <img name="{{ field.field }}" id="{{ field.field }}" formControlName="{{ field.field }}" src="{{ imageUrlPreview || '../../../assets/layout/images/avatar.png' }}" alt="Preview"
-                                        style="max-width: 200px; max-height: 200px;" size="xlarge" />
-                                        <p-fileUpload
-                                            mode="basic"
-                                            for="{{ field.field }}"
-                                            chooseLabel="Upload a {{ field.header }}"
-                                            accept="image/*"
-                                            (onSelect)="onFileSelected($event)"
-                                            [showUploadButton]="false"
-                                            [showCancelButton]="true"
-                                            [auto]="true"
-                                            (change)="col.control ? col.control(selectedItem, $event) : null"></p-fileUpload>
+                                        <img *ngIf="selectedItem && selectedItem[col?.field]" name="{{ col?.field }}"
+                                            id="{{ col?.field }}" formControlName="{{ col?.field }}"
+                                            src="{{ selectedItem[col?.field] || 'assets/layout/images/default-image-2.jpg' }}"
+                                            alt="Preview" style="max-width: 200px; max-height: 200px;" size="xlarge" />
+                                        <p-fileUpload mode="basic" for="{{ col?.field }}"
+                                            chooseLabel="Upload a {{ col?.header }}" accept="image/*"
+                                            (onSelect)="onFileSelected(selectedItem[col?.field], $event)"
+                                            [showUploadButton]="false" [showCancelButton]="true" [auto]="true"
+                                            (onChange)="col?.control ? col?.control(selectedItem, $event) : null"
+                                            [files]="selectedItem[col?.field] ? [selectedItem[col?.field]] : []"></p-fileUpload>
                                     </div>
+                                    <p-fileUpload *ngSwitchCase="'file'" mode="basic" for="{{ col?.field }}"
+                                        chooseLabel="Upload a {{ col?.header }}" accept="*"
+                                        (onSelect)="onFileSelected(selectedItem[col?.field], $event)"
+                                        [showUploadButton]="false" [showCancelButton]="true" [auto]="true"
+                                        (onChange)="col?.control ? col?.control(selectedItem, $event) : null"
+                                        [files]="selectedItem[col?.field] ? [selectedItem[col?.field]] : []"></p-fileUpload>
                                 </ng-container>
                             </div>
                         </ng-container>
@@ -264,61 +296,66 @@
                 </form>
             </p-dialog>
 
-            <p-dialog [(visible)]="displayItemDialog" [style]="{width: '450px'}" header="Details" [modal]="true" class="p-fluid"
-                [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+            <p-dialog [(visible)]="displayItemDialog" [style]="{width: '450px'}" header="Details" [modal]="true"
+                class="p-fluid" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+                [maximizable]="true">
                 <ng-template pTemplate="content">
                     <div *ngFor="let col of selectedItemView?.cols" class="mb-4">
                         <!-- Label pour les champs de type différent de 'textarea' et 'boolean' -->
-                        <label *ngIf="col.type !== 'boolean' && col.type !== 'textarea'"
+                        <label *ngIf="col?.type !== 'boolean' && col?.type !== 'textarea'"
                             [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">
-                            {{ col.header }}
+                            {{ col?.header }}
                         </label>
 
                         <!-- Affichage des différentes valeurs en fonction du type -->
-                        <ng-container [ngSwitch]="col.type">
+                        <ng-container [ngSwitch]="col?.type">
                             <!-- ID -->
                             <span *ngSwitchCase="'id'" class="block font-normal text-900 mb-2">
-                                {{ selectedItemView?.data[col.field] }}
+                                {{ selectedItemView?.data[col?.field] }}
                             </span>
                             <!-- Valeurs générales -->
                             <span *ngSwitchDefault>
-                                {{ selectedItemView?.data[col.field] }}
+                                {{ selectedItemView?.data[col?.field] }}
                             </span>
                             <!-- Pourcentage -->
-                            <span *ngSwitchCase="'percentage'">{{ selectedItemView?.data[col.field] | percent:'1.2-2' }}</span>
+                            <span *ngSwitchCase="'percentage'">{{ selectedItemView?.data[col?.field] | percent:'1.2-2'
+                                }}</span>
                             <!-- Montants en XAF -->
-                            <span *ngSwitchCase="'currency'">{{ selectedItemView?.data[col.field] | currency: 'XAF ' }}</span>
+                            <span *ngSwitchCase="'currency'">{{ selectedItemView?.data[col?.field] | currency: 'XAF '
+                                }}</span>
                             <!-- Currency -->
-                            <span *ngSwitchCase="'number'">{{ selectedItemView?.data[col.field] | number:'1.0-0' }}</span>
+                            <span *ngSwitchCase="'number'">{{ selectedItemView?.data[col?.field] | number:'1.0-0'
+                                }}</span>
                             <!-- Image -->
-                            <img *ngSwitchCase="'image'" [src]="selectedItemView?.data[col.field]"
-                                [alt]="selectedItemView?.data[col.field]" width="100" class="shadow-4" />
+                            <img *ngSwitchCase="'image'"
+                                [src]="selectedItemView?.data[col?.field] || 'assets/layout/images/default-image-2.jpg'"
+                                [alt]="selectedItemView?.data[col?.field]" width="100" class="shadow-4" />
                             <!-- Enum -->
-                            <p-tag *ngSwitchCase="'enum'" [value]="getEnumLabel(col.values, selectedItemView?.data[col.field])"
-                                [severity]="getSeverity(selectedItemView?.data[col.field])" [rounded]="true"></p-tag>
+                            <p-tag *ngSwitchCase="'enum'"
+                                [value]="getEnumLabel(col?.values, selectedItemView?.data[col?.field])"
+                                [severity]="getSeverity(selectedItemView?.data[col?.field])" [rounded]="true"></p-tag>
                             <!-- Date -->
                             <span *ngSwitchCase="'date'">
-                                {{ selectedItemView?.data[col.field] | date }}
+                                {{ selectedItemView?.data[col?.field] | date }}
                             </span>
                             <!-- Boolean -->
-                            <p-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="selectedItemView?.data[col.field]"
-                                [label]="col.header" [binary]="true" inputId="binary"></p-checkbox>
+                            <p-checkbox *ngSwitchCase="'boolean'" [(ngModel)]="selectedItemView?.data[col?.field]"
+                                [label]="col?.header" [binary]="true" inputId="binary"></p-checkbox>
                             <!-- Textarea -->
-                            <p-panel *ngSwitchCase="'textarea'" header="{{ col.header }}" [toggleable]="true">
-                                <p>{{ selectedItemView?.data[col.field] }}</p>
+                            <p-panel *ngSwitchCase="'textarea'" header="{{ col?.header }}" [toggleable]="true">
+                                <p>{{ selectedItemView?.data[col?.field] }}</p>
                             </p-panel>
                             <!-- Dropdown -->
-							<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
-								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
-								optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
-                                (change)="col.control ? col.control(selectedItemView?.data, $event) : null" />
+                            <p-dropdown *ngSwitchCase="'objet'" [options]="col?.values"
+                                [(ngModel)]="selectedItemView?.data[col?.field]" optionLabel="{{ col?.label }}"
+                                optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                (onChange)="col?.control ? col?.control(selectedItemView?.data, $event) : null" />
                             <!-- MultiSelect -->
-							<p-multiSelect *ngSwitchCase="'list'" [options]="col.values"
-								[(ngModel)]="selectedItemView?.data[col.field]" optionLabel="{{ col.label }}"
-								optionValue="{{ col.key }}" [showClear]="true"
-								appendTo="body" [style]="{'width':'100%'}"
-								[panelStyle]="{'max-height':'200px'}"
-                                (change)="col.control ? col.control(selectedItemView?.data, $event) : null"></p-multiSelect>
+                            <p-multiSelect *ngSwitchCase="'list'" [options]="col?.values"
+                                [(ngModel)]="selectedItemView?.data[col?.field]" optionLabel="{{ col?.label }}"
+                                optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                [style]="{'width':'100%'}" [panelStyle]="{'max-height':'200px'}"
+                                (onChange)="col?.control ? col?.control(selectedItemView?.data, $event) : null"></p-multiSelect>
                         </ng-container>
                     </div>
                 </ng-template>
@@ -329,47 +366,51 @@
                 [maximizable]="true">
                 <ng-template pTemplate="content">
                     <p-table [value]="selectedItemListView?.data" [columns]="selectedItemListView?.cols"
-                        styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10" [rows]="10" [paginator]="true"
-                        [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true"
-                        dataKey="id">
+                        styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10" [rows]="10"
+                        [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [rowHover]="true" dataKey="id">
                         <ng-template pTemplate="header">
                             <tr>
                                 <ng-container *ngFor="let col of selectedItemListView?.cols">
                                     <th style="min-width:15rem"
-                                        *ngIf="col.type !== 'image' && col.type !== 'textarea' && col.type !== 'currency' && col.type !== 'id' && col.type !== 'boolean' && col.type !== 'date' && col.type !== 'enum' && col.type !== 'objet' && col.type !== 'list'"
-                                        [pSortableColumn]="col.field">
-                                        {{ col.header }}
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }}
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
-                                    <th style="min-width:15rem" *ngIf="col.type === 'image'">
-                                        {{ col.header }}
+                                    <th style="min-width:15rem" *ngIf="col?.type === 'image'">
+                                        {{ col?.header }}
                                     </th>
-                                    <th style="min-width:25rem" *ngIf="col.type === 'textarea'" [pSortableColumn]="col.field">
-                                        {{ col.header }}
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    <th style="min-width:25rem" *ngIf="col?.type === 'textarea'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }}
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
-                                    <th style="min-width:15rem" *ngIf="col.type === 'percentage'" [pSortableColumn]="col.field">
-                                        {{ col.header }} %
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    <th style="min-width:15rem" *ngIf="col?.type === 'percentage'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }} %
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
-                                    <th style="min-width:15rem" *ngIf="col.type === 'currency'" [pSortableColumn]="col.field">
-                                        {{ col.header }} XAF
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    <th style="min-width:15rem" *ngIf="col?.type === 'currency'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }} XAF
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
-                                    <th style="min-width:5rem" *ngIf="col.type === 'id'" [pSortableColumn]="col.field">
-                                        {{ col.header }}
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    <th style="min-width:5rem" *ngIf="col?.type === 'id'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }}
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
-                                    <th style="min-width:5rem" *ngIf="col.type === 'objet' || col.type === 'list'"
-                                        [pSortableColumn]="col.field">
-                                        {{ col.header }}
+                                    <th style="min-width:5rem" *ngIf="col?.type === 'objet' || col?.type === 'list'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }}
                                     </th>
                                     <th style="min-width:8rem"
-                                        *ngIf="col.type === 'boolean' || col.type === 'date' || col.type === 'enum'"
-                                        [pSortableColumn]="col.field">
-                                        {{ col.header }}
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        *ngIf="col?.type === 'boolean' || col?.type === 'date' || col?.type === 'enum'"
+                                        [pSortableColumn]="col?.field">
+                                        {{ col?.header }}
+                                        <p-sortIcon [field]="col?.field"></p-sortIcon>
                                     </th>
                                 </ng-container>
                             </tr>
@@ -377,58 +418,57 @@
                         <ng-template pTemplate="body" let-item>
                             <tr>
                                 <ng-container *ngFor="let col of selectedItemListView?.cols">
-                                    <td [ngSwitch]="col.type">
+                                    <td [ngSwitch]="col?.type">
                                         <ng-container *ngSwitchCase="'percentage'">
-                                            <span class="p-column-title">{{ col.header }} %</span>
-                                            {{ item[col.field] }}
+                                            <span class="p-column-title">{{ col?.header }} %</span>
+                                            {{ item[col?.field] }}
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'currency'">
-                                            <span class="p-column-title">{{ col.header }} XAF</span>
-                                            {{ item[col.field] }}
+                                            <span class="p-column-title">{{ col?.header }} XAF</span>
+                                            {{ item[col?.field] }}
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'image'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-                                            <img [src]="item[col.field]" [alt]="item[col.altField]" width="100"
-                                                class="shadow-4" />
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            <img [src]="item[col?.field] || 'assets/layout/images/default-image-2.jpg'"
+                                                [alt]="item[col?.field]" width="100" class="shadow-4" />
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'enum'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-                                            <p-tag [value]="getEnumLabel(col.values, item[col.field])"
-                                                [severity]="getSeverity(item[col.field])" [rounded]="true"></p-tag>
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            <p-tag [value]="getEnumLabel(col?.values, item[col?.field])"
+                                                [severity]="getSeverity(item[col?.field])" [rounded]="true"></p-tag>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'date'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-                                            {{ item[col.field] | date }}
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            {{ item[col?.field] | date }}
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'boolean'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-                                            <p-checkbox [(ngModel)]="item[col.field]" [binary]="true"></p-checkbox>
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            <p-checkbox [(ngModel)]="item[col?.field]" [binary]="true"></p-checkbox>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'textarea'">
-                                            <span class="p-column-title">{{ col.header }}</span>
+                                            <span class="p-column-title">{{ col?.header }}</span>
                                             <p>
-                                                {{ item[col.field] }}
+                                                {{ item[col?.field] }}
                                             </p>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'objet'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-											<p-dropdown *ngSwitchCase="'objet'" [options]="col.values"
-											[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
-											optionValue="{{ col.key }}" [showClear]="true" appendTo="body"
-                                            (change)="col.control ? col.control(item, $event) : null" />
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            <p-dropdown *ngSwitchCase="'objet'" [options]="col?.values"
+                                                [(ngModel)]="item[col?.field]" optionLabel="{{ col?.label }}"
+                                                optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                                (onChange)="col?.control ? col?.control(item, $event) : null" />
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'list'">
-                                            <span class="p-column-title">{{ col.header }}</span>
-											<p-multiSelect *ngSwitchCase="'list'" [options]="col.values"
-												[(ngModel)]="item[col.field]" optionLabel="{{ col.label }}"
-												optionValue="{{ col.key }}" [showClear]="true"
-												appendTo="body" [style]="{'width':'100%'}"
-												[panelStyle]="{'max-height':'200px'}"
-                                                (change)="col.control ? col.control(item, $event) : null"></p-multiSelect>
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            <p-multiSelect *ngSwitchCase="'list'" [options]="col?.values"
+                                                [(ngModel)]="item[col?.field]" optionLabel="{{ col?.label }}"
+                                                optionValue="{{ col?.key }}" [showClear]="true" appendTo="body"
+                                                [style]="{'width':'100%'}" [panelStyle]="{'max-height':'200px'}"
+                                                (onChange)="col?.control ? col?.control(item, $event) : null"></p-multiSelect>
                                         </ng-container>
                                         <ng-container *ngSwitchDefault>
-                                            <span class="p-column-title">{{ col.header }}</span>
-                                            {{ item[col.field] }}
+                                            <span class="p-column-title">{{ col?.header }}</span>
+                                            {{ item[col?.field] }}
                                         </ng-container>
                                     </td>
                                 </ng-container>
@@ -440,9 +480,15 @@
 
             <p-dialog header="Confirm" [(visible)]="displayDeleteDialog" [modal]="true" [style]="{ width: '50rem' }"
                 [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span>Etes-vous sûr que vous voulez supprimer <b>{{ entityName }}</b>?</span>
+                <div class="p-dialog-content">
+                    <div class="flex flex-wrap border-top-1 surface-border pt-4">
+                        <div class="bg-blue-50 flex align-items-center justify-content-center py-3 px-0 w-full md:w-4 border-round">
+                            <img src="assets/layout/images/security.svg" alt="Image de sécurité" class="w-9" />
+                        </div>
+                        <p class="text-700 line-height-3 m-0 p-5 w-full md:w-8">
+                            <span>Etes-vous sûr que vous voulez supprimer <b>{{ entityName }}</b>?</span>
+                        </p>
+                    </div>
                 </div>
                 <p-footer class="align-right">
                     <div class="button-wrapper">
@@ -456,11 +502,17 @@
                 </p-footer>
             </p-dialog>
 
-            <p-dialog header="Confirm" [(visible)]="displayDeleteItemsDialog" [modal]="true" [style]="{ width: '50rem' }"
-                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-                <div class="flex align-items-center justify-content-center">
-                    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                    <span>Etes-vous sûr de vouloir supprimer les éléments sélectionnés ?</span>
+            <p-dialog header="Confirm" [(visible)]="displayDeleteItemsDialog" [modal]="true"
+                [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+                <div class="p-dialog-content">
+                    <div class="flex flex-wrap border-top-1 surface-border pt-4">
+                        <div class="bg-blue-50 flex align-items-center justify-content-center py-3 px-0 w-full md:w-4 border-round">
+                            <img src="assets/layout/images/security.svg" alt="Image de sécurité" class="w-9" />
+                        </div>
+                        <p class="text-700 line-height-3 m-0 p-5 w-full md:w-8">
+                            <span>Etes-vous sûr de vouloir supprimer les éléments sélectionnés ?</span>
+                        </p>
+                    </div>
                 </div>
                 <p-footer class="align-right">
                     <div class="button-wrapper">
@@ -479,6 +531,6 @@
 
 <!-- app-invoice.component.html -->
 <p-dialog header="Print Preview" [(visible)]="printPreviewVisible" [modal]="true" [style]="{width: '80vw'}"
-	[modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-	<app-demo-portrait [cols]="cols" [items]="items" [titlePage]="entityName"></app-demo-portrait>
+    [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+    <app-demo-portrait [cols]="cols" [items]="items" [titlePage]="entityName"></app-demo-portrait>
 </p-dialog>

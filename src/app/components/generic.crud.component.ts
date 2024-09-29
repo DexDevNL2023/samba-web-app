@@ -21,13 +21,13 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   printPreviewVisible: boolean = false;
   rowsPerPageOptions = [5, 10, 20]; // Options pour le nombre d'éléments par page
   displayItemDialog: boolean = false;
-  selectedItemView: any;
+  selectedItemView: any = {};
   displayItemListDialog: boolean = false;
-  selectedItemListView: any;
+  selectedItemListView: any = {};
   displayDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue d'ajout/modification d'élément
   displayDeleteDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression d'un élément
   displayDeleteItemsDialog: boolean = false; // Variable pour contrôler l'affichage du dialogue de suppression de plusieurs éléments
-  selectedItem: Entity; // Élément de type Entity actuellement sélectionné ou en cours de modification
+  selectedItem: Entity | null = {} as Entity; // Élément de type Entity actuellement sélectionné ou en cours de modification
   selectedItems: Entity[] = []; // Tableau d'éléments de type Entity sélectionnés
   submitted: boolean = false; // Indicateur pour soumission de formulaire
   componentLink: string = '';
@@ -36,7 +36,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   formGroup: FormGroup; // Groupe de contrôles de formulaire
   // Déclaration de la variable loading pour contrôler l'affichage du skeleton loader
   loading: boolean = true;
-  imageUrlPreview: string | ArrayBuffer | null = null;
   // Configuration des colonnes de la table
   cols: Column[] = [];
   items: Entity[] = [];
@@ -146,30 +145,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   }
 
   /**
-   * Met à jour les valeurs des colonnes et de leurs sous-champs à partir de field en exécutant les méthodes associées.
-   * @param field - Le champ de la colonne à mettre à jour.
-   */
-  protected async updateColumnAndSubFieldValuesByField(field: string): Promise<void> {
-    for (const column of this.cols) {
-      // Mettre à jour les valeurs de la colonne
-      if (column.method && column.field === field) {
-        // Met à jour les valeurs de la colonne
-        await this.updateColumnValues(column.field);
-      }
-
-      // Mettre à jour les valeurs des sous-champs si disponibles
-      if (column.subfield) {
-        for (const subColumn of column.subfield) {
-          if (subColumn.method && subColumn.field === field) {
-            // Met à jour les valeurs du sous-champ
-            await this.updateSubFieldValues(column.field, subColumn.field);
-          }
-        }
-      }
-    }
-  }
-
-  /**
    * Met à jour les valeurs d'une colonne spécifique.
    * @param field - Le champ de la colonne à mettre à jour.
    * @param values - Les valeurs à assigner à la colonne.
@@ -227,8 +202,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
   }
 
-  protected async openItemView(item: { field: string, id: number }) {
-    if (!item || item.id == null || !item.field) {
+  protected async openItemView(parent: Entity, item: { field: string, id: number }) {
+    this.selectedItem = { ...parent }; // Copie l'élément à éditer dans la variable parent
+    if (!this.selectedItem || !item || item.id == null || !item.field) {
         console.error('Invalid item parameters provided.');
         return;
     }
@@ -240,7 +216,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       const column = this.cols.find(col => col.field === field);
       if (column) {
         // Met à jour les valeurs de la colonne de façon asynchrone
-        await this.updateColumnAndSubFieldValuesByField(field);
+        await this.updateColumnAndSubFieldValues();
         // Update values for the field before opening the view
         const values = column.values;
 
@@ -266,8 +242,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     }
   }
 
-  protected async openItemListView(item: { field: string, ids: number[] }) {
-    if (!item || !item.ids || !item.field) {
+  protected async openItemListView(parent: Entity, item: { field: string, ids: number[] }) {
+    this.selectedItem = { ...parent }; // Copie l'élément à éditer dans la variable item
+    if (!this.selectedItem || !item || !item.ids || !item.field) {
         console.error('Invalid item parameters provided.');
         return;
     }
@@ -280,7 +257,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       const column = this.cols.find(col => col.field === field);
       if (column) {
         // Met à jour les valeurs de la colonne de façon asynchrone
-        await this.updateColumnAndSubFieldValuesByField(field);
+        await this.updateColumnAndSubFieldValues();
         // Update values for the field before opening the view
         const values = column.values;
 
@@ -456,14 +433,20 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     return this.cols.map(col => col.field);
   }
 
-  protected onFileSelected(event: any): void {
+  protected onFileSelected(field: string, event: any): void {
       const file = event.files[0];
       if (file) {
+          // Lecture du fichier pour une prévisualisation
           const reader = new FileReader();
           reader.onload = (e) => {
-              this.imageUrlPreview = reader.result;
+            const base64String = (reader.result as string);
+            // Mise à jour de la valeur du champ dans le formGroup
+            this.formGroup.get(field)?.setValue(base64String);
           };
           reader.readAsDataURL(file);
+
+          // Optionnel : Log ou traitement selon le type de fichier
+          console.log('Fichier sélectionné:', file);
       }
   }
 
@@ -522,6 +505,10 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
             case 'currency':
                 controls[col.field] = new FormControl({ value: 0, disabled: isDisabled }, isRequired ? [Validators.required, Validators.min(0)] : null);
                 break;
+            case 'image':
+              // Make sure 'imageUrl' field exists and is handled properly
+              controls[col.field] = new FormControl({ value: '', disabled: isDisabled }, isRequired ? Validators.required : null);
+              break;
             case 'objet':
                 controls[col.field] = new FormControl({ value: null, disabled: isDisabled }, isRequired ? Validators.required : null);
                 break;
@@ -566,9 +553,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   protected async openNew() {
     // Initialise les autrs donnees
     this.initializeOthers();
+    this.selectedItem = {} as Entity; // Initialise un nouvel élément
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
     await this.updateColumnAndSubFieldValues();
-    this.selectedItem = {} as Entity; // Initialise un nouvel élément
     this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
@@ -583,9 +570,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   protected async editItem(item: Entity) {
     // Initialise les autrs donnees
     this.initializeOthers();
+    this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
     await this.updateColumnAndSubFieldValues();
-    this.selectedItem = { ...item }; // Copie l'élément à éditer dans la variable item
     this.updateFormControls(); // Met à jour les contrôles de formulaire lors de l'édition
     this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification
@@ -728,8 +715,12 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
 
   private updatePermissions(): void {
     this.permissions['WRITE_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'WRITE_PERMISSION');
-    this.permissions['DELETE_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'DELETE_PERMISSION');
+    this.permissions['EDIT_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'EDIT_PERMISSION');
+    this.permissions['DELET_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'DELET_PERMISSION');
+    this.permissions['READ_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'READ_PERMISSION');
     this.permissions['PRINT_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'PRINT_PERMISSION');
+    this.permissions['ACTIVE_ACCOUNT_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'ACTIVE_ACCOUNT_PERMISSION');
+    this.permissions['CHANGE_PERMISSION'] = this.accountService.hasAccessToPermission(this.roleKey, 'CHANGE_PERMISSION');
   }
 
   // Vérifie si l'utilisateur possède l'autorisation d'accéder à un traitement donné

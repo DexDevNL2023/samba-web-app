@@ -1,0 +1,50 @@
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+    <div class="flex justify-content-between flex-wrap">
+        <div class="flex align-items-center mb-4 md:mb-0">
+            <div class="text-900 font-bold text-3xl">Vos souscriptions </div>
+            <p-badge styleclass="ml-3 bg-gray-200 text-gray-900 p-0 border-circle" class="p-element">
+                <span class="ml-3 bg-gray-200 text-gray-900 p-0 border-circle p-badge p-component ng-star-inserted">
+                    {{ souscriptions.length }}
+                </span>
+            </p-badge>
+        </div>
+        <p-divider styleclass="w-full border-gray-200" class="p-element">
+            <div role="separator"
+                class="w-full border-gray-200 p-divider p-component p-divider-horizontal p-divider-solid p-divider-left">
+                <div class="p-divider-content"></div>
+            </div>
+        </p-divider>
+    </div>
+
+    <!-- Input de recherche globale -->
+    <div class="flex align-items-center flex-auto">
+        <div class="p-input-icon-left w-full p-input-filled">
+            <i class="pi pi-search"></i>
+            <input type="text" placeholder="Product search" class="p-inputtext p-component p-element w-full"
+                [(ngModel)]="searchQuery" (input)="onGlobalFilter()">
+        </div>
+    </div>
+
+    <!-- Affichage des souscriptions filtrés -->
+    <div class="col-12">
+        <div class="grid mt-4">
+            <div *ngFor="let souscription of filteredSouscriptions" class="col-12 md:col-6 lg:col-3 mb-5 lg:mb-0">
+                <div class="mb-3 relative">
+                    <p-tag [value]="getEnumLabel(souscription?.status)"
+                        [severity]="getSeverity(souscription?.status)" [rounded]="true"></p-tag>
+                    <button type="button" pripple="" (click)="onSelectSouscription(souscription?.id)"
+                        class="p-ripple p-element border-1 border-white-alpha-20 border-round py-2 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold"
+                        style="bottom: 1rem; left: 1rem; width: calc(100% - 2rem); backdrop-filter: blur(4px);">
+                        <i class="pi pi-shopping-cart mr-3 text-base"></i>
+                        <span class="text-base">Details</span>
+                    </button>
+                </div>
+                <div class="flex flex-column align-items-center">
+                    <span class="text-xl text-900 font-medium mb-3">Numero de souscription : {{ souscription?.numeroSouscription }}</span>
+                    <span class="text-xl text-900 mb-3">Montant des cotisation : {{ souscription?.montantCotisation }} XAF</span>
+                    <span class="text-xl text-900 mb-3">Date d'expiration : {{ souscription?.dateExpiration | date }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

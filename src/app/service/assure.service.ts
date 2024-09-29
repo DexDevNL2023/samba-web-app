@@ -15,18 +15,26 @@ export class AssureService extends GenericCrudService<Assure> {
     }
 
     // Fetch assures by dossier ID
-    getAssuresByDossierId(dossierId: number): Observable<Assure[]> {
-    return this.http.get<RessourceResponse<Assure[]>>(`${this.resourceUrl}/find/by/dossier/${dossierId}`).pipe(
+    getAssureByUserId(userId: number): Observable<Assure> {
+    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/user/${userId}`).pipe(
+            map(response => this.handleResponse(response, 'Assuré trouvés avec succès')),
+            catchError(() => of(null))
+        );
+    }
+
+    // Fetch assures by dossier ID
+    getAssuresByDossierId(dossierId: number): Observable<Assure> {
+    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/dossier/${dossierId}`).pipe(
             map(response => this.handleResponse(response, 'Assurés trouvés avec succès')),
-            catchError(() => of([]))
+            catchError(() => of(null))
         );
     }
 
     // Fetch assures by souscription ID
-    getAssuresBySouscriptionId(souscriptionId: number): Observable<Assure[]> {
-    return this.http.get<RessourceResponse<Assure[]>>(`${this.resourceUrl}/find/by/souscription/${souscriptionId}`).pipe(
+    getAssuresBySouscriptionId(souscriptionId: number): Observable<Assure> {
+    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/souscription/${souscriptionId}`).pipe(
             map(response => this.handleResponse(response, 'Assurés trouvés avec succès')),
-            catchError(() => of([]))
+            catchError(() => of(null))
         );
     }
 }

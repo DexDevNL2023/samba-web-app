@@ -2,6 +2,7 @@ import { BaseEntity } from "./base-entity.model";
 
 export interface PoliceAssurance extends BaseEntity {
   numeroPolice?: string | null;
+  imageUrl?: string | null;
   label?: string | null;
   dureeCouverture?: number;
   conditions?: string | null;

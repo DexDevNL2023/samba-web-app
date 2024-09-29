@@ -35,7 +35,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     { label: 'Semestriel', value: PaymentFrequency.SEMESTRIEL },
     { label: 'Trimestriel', value: PaymentFrequency.TRIMESTRIEL }
   ];
-  soscriptionStatus = [
+  souscriptionStatus = [
     { label: 'On risk', value: SubscriptionStatus.ON_RISK },
     { label: 'Resiliee', value: SubscriptionStatus.RESILIE },
     { label: 'En attente', value: SubscriptionStatus.WAITING }
@@ -115,7 +115,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
       { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date', access: [Authority.ADMIN] },
       { field: 'montantCotisation', header: 'Montant des cotisations', type: 'currency', access: [Authority.ADMIN] },
-      { field: 'status', header: 'Status', type: 'enum', values: this.soscriptionStatus, label: 'label', key: 'value' },
+      { field: 'status', header: 'Status', type: 'enum', values: this.souscriptionStatus, label: 'label', key: 'value' },
       { field: 'frequencePaiement', header: 'Frequency', type: 'enum', values: this.frequencies, label: 'label', key: 'value' },
       { field: 'assure', header: 'Assuré', type: 'objet', values: [], method: () => this.loadAssures(), label: 'numNiu', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },

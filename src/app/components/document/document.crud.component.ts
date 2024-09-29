@@ -30,7 +30,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    documentService: DocumentService,
+    private documentService: DocumentService,
     private sinistreService: SinistreService,
     private prestationService: PrestationService
   ) {
@@ -49,7 +49,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
       { field: 'nom', header: 'Nom', type: 'text' },
       { field: 'type', header: 'Type', type: 'enum', values: this.typeDocuments, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'description', header: 'description', type: 'textarea' },
-      { field: 'url', header: 'Telecharger', type: 'url' },
+      { field: 'url', header: 'Telecharger', type: 'file', action: (item: any) => this.downloadFile(item) }, // Action pour le téléchargement
       { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
@@ -119,5 +119,23 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
       // Si l'élément est trouvé, modifier sa visibilité
       element.style.display = isVisible ? 'block' : 'none';
     }
+  }
+
+  // Usage in Component
+  downloadFile(item: any) {
+      const fileUrl = item.url;  // The absolute file URL
+      if (fileUrl) {
+          this.documentService.downloadFile(fileUrl).subscribe(blob => {
+              if (blob) {
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = fileUrl.split('/').pop();  // Extract the file name from the URL
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+              }
+          });
+      }
   }
 }

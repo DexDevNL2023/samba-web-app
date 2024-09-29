@@ -1,3 +1,8 @@
+import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
+import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
+import { ProduitDetailComponent } from './site/detail/produit-detail.component';
+import { ProduitComponent } from './site/produit/produit.component';
+import { SiteComponent } from './site/main/site.component';
 import { ScanCniComponent } from './account/scan-cni/scan-cni.component';
 import { RecuPaiementCrudComponent } from './components/recu-paiement/recu-paiement.crud.component';
 import {RouterModule} from '@angular/router';
@@ -36,12 +41,25 @@ import { CompanyComponent } from './company/company.component';
 @NgModule({
     imports: [
         RouterModule.forRoot([
+            // Route par défaut redirigeant vers /site
+            { path: '', redirectTo: '/site', pathMatch: 'full' },
+
+            { path: 'site', component: SiteComponent, children: [
+                // Route par défaut de /site, redirige vers ProduitComponent
+                { path: '', component: ProduitComponent },
+                { path: 'produit/detail/:id', component: ProduitDetailComponent },
+                { path: 'souscription/list', component: SouscriptionListComponent },
+                { path: 'souscription/detail/:id', component: SouscriptionDetailComponent },
+            ]},
+
+            // Routes pour la section admin
             {
                 path: 'admin',
                 component: AppMainComponent,
                 children: [
                     { path: '', component: DashboardComponent },
 
+                    // Autres routes de l'application admin...
                     { path: 'accounts', component: AccountCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
                     { path: 'assurances', component: AssuranceCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'] } },
                     { path: 'assures', component: AssureCrudComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN', 'ROLE_AGENT'] } },
@@ -67,17 +85,19 @@ import { CompanyComponent } from './company/company.component';
 
                     { path: 'company', component: CompanyComponent, canActivate: [UserRouteAccessService], data: { authorities: ['ROLE_ADMIN'] } },
 
+                    // Routes pour pages d'erreurs
                     { path: 'accessdenied', component: AppAccessdeniedComponent },
                     { path: 'notfound', component: AppNotfoundComponent },
                     { path: '**', redirectTo: '/notfound' },
                 ]
             },
+
+            // Auth routes (login, register, reset password)
             { path: 'login', component: LoginComponent },
             { path: 'reset/request', component: PasswordResetInitComponent },
             { path: 'reset/finish', component: PasswordResetFinishComponent },
             { path: 'register', component: RegisterComponent },
             { path: 'scan/cni', component: ScanCniComponent },
-            { path: '', redirectTo: '/login', pathMatch: 'full' },
         ], {scrollPositionRestoration: 'enabled'})
     ],
     exports: [RouterModule]

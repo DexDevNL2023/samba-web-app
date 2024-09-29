@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AppMainComponent } from '../../app.main.component';
 import { AccountService } from '../../core/auth/account.service';
 import { NotificationService } from '../../service/notification.service';
-import { Notification, TypeNotification } from '../../models/notification.model';
+import { Notification } from '../../models/notification.model';
 import { LoginService } from '../../login/login.service';
 import { Account } from '../../models/account.model';
 
@@ -25,6 +25,13 @@ export class AppTopBarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // On recupere l'utilisateur actuel
+    const account: Account = this.accountService.getCurrentAccount();
+    if (account) {
+      // Récupère les notifications non lu de l'utilisateur une fois qu'il est authentifié
+      this.notificationService.getUnreadNotificationsByUserId(account.id);
+    }
+
     // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
     this.accountService.getUserState().subscribe(account => {
       this.account = account;

@@ -1,7 +1,43 @@
 <div class="grid">
     <div class="col-12">
-        <div class="card px-4 py-2">
+        <div class="card px-4 py-0">
             <p-toast></p-toast>
+            <div
+                style="height: 200px; background: url('assets/layout/images/cover.png') no-repeat; background-size: cover;">
+            </div>
+            <div class="px-4 py-0 md:px-6 lg:px-8 surface-section">
+                <div class="flex flex-column lg:flex-row lg:align-items-center lg:justify-content-between relative"
+                    style="margin-top: -2rem; top: -70px; margin-bottom: -70px;">
+                    <div>
+                        <div class="mb-3 surface-card shadow-2 flex align-items-center justify-content-center"
+                            style="width: 140px; height: 140px; border-radius: 10px;">
+                            <img [src]="company?.logo" alt="Company Logo" width="70" height="70">
+                        </div>
+                        <div class="text-900 text-3xl font-medium mb-3">{{ company?.name }}</div>
+                        <p class="mt-0 mb-3 text-700 text-xl">{{ company?.adresse }}, {{ company?.ville }}</p>
+                        <div class="text-600 font-medium">
+                            <span>{{ company?.telephone }} | {{ company?.email }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 lg:mt-0">
+                        <button pbutton="" pripple="" label="Modifier" icon="pi pi-pencil"
+                            class="p-element p-ripple p-button-outlined mr-2 p-button p-component"
+                            (click)="makeEditable()" >
+                            <span class="p-button-icon p-button-icon-left pi pi-pencil" aria-hidden="true"></span>
+                            <span class="p-button-label">Modifier</span>
+                            <span class="p-ink"></span>
+                        </button>
+                        <button pbutton="" pripple="" label="Website" icon="pi pi-link"
+                            class="p-element p-ripple mr-2 p-button p-component" [routerLink]="[company?.site]"
+                            target="_blank">
+                            <span class="p-button-icon p-button-icon-left pi pi-link" aria-hidden="true"></span>
+                            <span class="p-button-label">Website</span>
+                            <span class="p-ink"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <p-toolbar styleClass="mb-1">
                 <ng-template pTemplate="left">
                     <div class="my-2">
@@ -10,11 +46,6 @@
                         <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-success"
                             (click)="saveForm()" [disabled]="isEditable"></button>
                     </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button pButton pRipple [label]="editButtonLabel" [icon]="editButtonIcon" class="p-button-secondary"
-                        (click)="makeEditable()"></button>
                 </ng-template>
             </p-toolbar>
         </div>
@@ -26,79 +57,89 @@
                     <!-- Name, sigle, email -->
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="name">Nom</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="name" [(ngModel)]="company.name" required autofocus
-                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.name}" [readonly]="isEditable" />
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.name">Nom obligatoire.</small>
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="name"
+                            [(ngModel)]="company.name" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && company?.name}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && company?.name">Nom obligatoire.</small>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="sigle">Sigle</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="sigle" [(ngModel)]="company.sigle" required
-                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.sigle}" [readonly]="isEditable" />
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.sigle">Sigle
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="sigle"
+                            [(ngModel)]="company.sigle" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && company?.sigle}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && company?.sigle">Sigle
                             obligatoire.</small>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="email">Email</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="email" [(ngModel)]="company.email" required
-                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.email}" [readonly]="isEditable" />
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.email">Email
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="email"
+                            [(ngModel)]="company.email" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && company?.email}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && company?.email">Email
                             obligatoire.</small>
                     </div>
 
                     <!-- Telephone, telephone2, adresse -->
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="telephone">Téléphone</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="telephone" [(ngModel)]="company.telephone" required
-                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.telephone}"
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="telephone"
+                            [(ngModel)]="company.telephone" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && company?.telephone}"
                             [readonly]="isEditable" />
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.telephone">Téléphone
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && company?.telephone">Téléphone
                             obligatoire.</small>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="telephone2">Téléphone 2</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="telephone2" [(ngModel)]="company.telephone2"
-                            [readonly]="isEditable" />
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="telephone2"
+                            [(ngModel)]="company.telephone2" [readonly]="isEditable" />
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="adresse">Adresse</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="adresse" [(ngModel)]="company.adresse"
-                            [readonly]="isEditable" />
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="adresse"
+                            [(ngModel)]="company.adresse" [readonly]="isEditable" />
                     </div>
 
                     <!-- Ville, BP, site web -->
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="ville">Ville</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="ville" [(ngModel)]="company.ville" required
-                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !company.ville}" [readonly]="isEditable" />
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !company.ville">Ville
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="ville"
+                            [(ngModel)]="company.ville" required
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && company?.ville}" [readonly]="isEditable" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && company?.ville">Ville
                             obligatoire.</small>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="bp">Boîte postale</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="bp" [(ngModel)]="company.bp" [readonly]="isEditable" />
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="bp"
+                            [(ngModel)]="company.bp" [readonly]="isEditable" />
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="site">Site web</label>
-                        <input class="p-inputtext p-component p-element" type="text" pInputText id="site" [(ngModel)]="company.site" [readonly]="isEditable" />
+                        <input class="p-inputtext p-component p-element" type="text" pInputText id="site"
+                            [(ngModel)]="company.site" [readonly]="isEditable" />
                     </div>
 
                     <!-- Logo, entêtes, pieds de page -->
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="entete">Entête gauche</label>
-                        <textarea class="p-inputtextarea p-component p-element" id="entete" [(ngModel)]="company.enteteGauche" [readonly]="isEditable"></textarea>
+                        <textarea class="p-inputtextarea p-component p-element" id="entete"
+                            [(ngModel)]="company.enteteGauche" [readonly]="isEditable"></textarea>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="entete">Entête droite</label>
-                        <textarea class="p-inputtextarea p-component p-element" id="entete" [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
+                        <textarea class="p-inputtextarea p-component p-element" id="entete"
+                            [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
                     </div>
                     <div class="field col-12 md:col-4">
                         <label class="block font-normal text-900 mb-2" htmlFor="pied">Pieds de page</label>
-                        <textarea class="p-inputtextarea p-component p-element" id="pied" [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
+                        <textarea class="p-inputtextarea p-component p-element" id="pied"
+                            [(ngModel)]="company.enteteDroite" [readonly]="isEditable"></textarea>
                     </div>
                     <div class="field col-12 md:col-4" *ngIf="!isEditable">
                         <label class="block font-normal text-900 mb-2" htmlFor="logo">Votre logo</label>
-                        <p-fileUpload name="file" customUpload="true" (uploadHandler)="onFileSelected($event)" [auto]="true"
-                            [chooseLabel]="'Choisir un fichier'" [cancelLabel]="'Annuler'"
+                        <p-fileUpload name="file" customUpload="true" (uploadHandler)="onFileSelected($event)"
+                            [auto]="true" [chooseLabel]="'Choisir un fichier'" [cancelLabel]="'Annuler'"
                             [uploadLabel]="'Uploader'"></p-fileUpload>
                     </div>
                 </div>

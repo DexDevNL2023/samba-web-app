@@ -29,4 +29,12 @@ export class DocumentService extends GenericCrudService<Document> {
             catchError(() => of([]))
         );
     }
+
+    // Download the file by URL
+    downloadFile(fileUrl: string): Observable<Blob> {
+        return this.http.get(`${this.resourceUrl}/download`, { params: { filePath: fileUrl }, responseType: 'blob' }).pipe(
+            map(blob => blob),
+            catchError(() => of(null))
+        );
+    }
 }

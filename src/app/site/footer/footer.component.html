@@ -1,0 +1,108 @@
+<p-divider styleClass="w-full border-gray-200 m-0" class="p-element">
+    <div role="separator"
+        class="w-full border-gray-200 m-0 p-divider p-component p-divider-horizontal p-divider-solid p-divider-left">
+        <div class="p-divider-content"></div>
+    </div>
+</p-divider>
+
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+    <div class="grid grid-nogutter flex-wrap p-2 lg:p-4 bg-cyan-50 border-round mb-4 text-center lg:text-left">
+        <!-- Section d'Abonnement pour les Offres de Micro-Assurance -->
+        <div class="col-12 lg:col-6 p-4 flex flex-column justify-content-center">
+            <span class="text-xl block text-cyan-900 font-bold">Recevez des Offres Exclusives de SAMB'A Assurances Gabon S.A</span>
+            <span class="block text-cyan-600 mt-3">Inscrivez-vous pour recevoir les dernières mises à jour et offres
+                sur nos produits de micro-assurance. Nous vous garantissons aucune publicité indésirable.</span>
+
+            <!-- Formulaire d'abonnement -->
+            <div class="p-inputgroup relative mt-4" style="border-radius: 30px; max-width: 90%;">
+                <input type="email" pInputText placeholder="Votre adresse email"
+                    class="p-inputtext p-component p-element bg-white-alpha-90 text-black-alpha-90 px-4 border-cyan-100"
+                    style="border-radius: 30px; height: 3.5rem;">
+
+                <!-- Bouton S'abonner -->
+                <button type="button" pButton pRipple routerLink="/site"
+                    class="p-element p-ripple bg-cyan-500 border-none absolute text-white p-button p-component"
+                    style="border-radius: 30px; right: 8px; top: 8px; height: 2.5rem; z-index: 1;">
+                    <span class="p-button-label">S'abonner</span>
+                    <span class="p-ink"></span>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Section Club Exclusif Micro-Assurances -->
+        <div class="col-12 lg:col-6 p-4">
+            <div class="w-full h-full bg-no-repeat bg-center bg-cover p-5"
+                style="background: url(assets/layout/images/categorypage-1-1.png); border-radius: 30px;">
+                <span class="text-cyan-500 font-bold block">Club Exclusif Micro-Assurances</span>
+                <span class="text-white font-bold block mt-3 line-height-3">Rejoignez notre Club Exclusif pour
+                    bénéficier de tarifs réduits, de conseils personnalisés et d'offres spéciales sur nos produits de
+                    micro-assurance.</span>
+                <button type="button" pButton pRipple routerLink="/login"
+                    class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                    style="border-radius: 30px;">
+                    <span class="p-button-label">Adhérez dès aujourd'hui</span>
+                    <span class="p-ink"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Liens de Pied de Page -->
+        <div class="grid grid-nogutter text-center sm:text-left flex-wrap mt-8">
+            <div class="col-12 sm:col-6 md:col-4 lg:col-3 flex-column mt-4">
+                <span class="text-900 text-xl block">Mon Compte</span>
+                <ul class="list-none p-0">
+                    <li><a routerLink="/admin/profile"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Gérer mon
+                            profil</a></li>
+                </ul>
+            </div>
+            <div class="col-12 sm:col-6 md:col-4 lg:col-3 flex-column mt-4">
+                <span class="text-900 text-xl block">Sinistres et Reclamations</span>
+                <ul class="list-none p-0">
+                    <li><a routerLink="/souscription/list"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Déclarer
+                            un sinistre</a></li>
+                    <li><a routerLink="/souscription/list"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Demander
+                            un remboursement</a></li>
+                </ul>
+            </div>
+            <div class="col-12 sm:col-6 md:col-4 lg:col-3 flex-column mt-4">
+                <span class="text-900 text-xl block">Souscriptions</span>
+                <ul class="list-none p-0">
+                    <li><a routerLink="/site"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Souscrire
+                            à une nouvelle police d'assurance</a></li>
+                    <li><a routerLink="/admin/assurances"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Explorer
+                            nos produits d'assurance</a></li>
+                </ul>
+            </div>
+            <div class="col-12 sm:col-6 md:col-4 lg:col-3 flex-column mt-4">
+                <span class="text-900 text-xl block">Gestion des paiements</span>
+                <ul class="list-none p-0">
+                    <li><a routerLink="/souscription/list"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Payer vos
+                            primes</a></li>
+                    <li><a routerLink="/admin/paiements"
+                            class="text-600 hover:text-900 transition-duration-150 cursor-pointer mt-3 block">Historique
+                            des paiements</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Inférieure du Pied de Page -->
+    <div
+        class="surface-200 px-4 py-2 md:px-6 lg:px-8 flex flex-column lg:flex-row justify-content-between align-items-center">
+        <div class="col-fixed flex flex-wrap flex-order-1 lg:flex-order-0 text-center lg:text-left">
+            <span class="text-500">© 2022, Peak. Propulsé par PrimeBlocks.</span>
+        </div>
+        <div class="col-fixed flex align-items-center flex-order-0 lg:flex-order-1">
+            <i class="pi pi-twitter p-1 text-sm text-900 cursor-pointer mr-3"></i>
+            <i class="pi pi-facebook p-1 text-sm text-900 cursor-pointer mr-3"></i>
+            <i class="pi pi-youtube p-1 text-sm text-900 cursor-pointer mr-3"></i>
+            <i class="pi pi-google p-1 text-sm text-900 cursor-pointer mr-3"></i>
+        </div>
+    </div>

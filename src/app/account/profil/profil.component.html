@@ -2,30 +2,63 @@
     <div class="flex gap-5 flex-column md:flex-row">
         <div class="col-12 md:col-4">
             <div class="card border-round-lg center justify-content-center p-0" style="width: 100%;">
-                <div class="align-content-center justify-content-center flex">
-                    <img src="../../../assets/layout/images/ban.jpg" width="100%" height="150px" alt="">
+
+                <div class="h-16rem bg-cover" style="background: url('assets/layout/images/cover-2.jpg');"></div>
+                <div class="flex flex-column gap-3 md:flex-row justify-content-center px-4 py-4 md:px-6 lg:px-8">
+                    <div class="flex flex-column align-items-center gap-4 md:-mt-8">
+                        <img src="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" alt="Profile Image"
+                            class="w-10rem border-3 border-circle border-0">
+                        <div class="flex flex-column align-items-center justify-content-center">
+                            <h1 class="m-0 font-semibold text-900 text-2xl line-height-3">
+                                {{ account.fullName }} <i class="pi pi-verified text-xl text-primary-500"></i>
+                            </h1>
+                            <span class="text-700 text-base">{{ account.email }}</span>
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                            <button pbutton="" pripple="" label="Modifier"
+                                class="p-element p-ripple p-button-rounded p-button p-component"
+                                (click)="editProfile()">
+                                <span class="p-button-label">Modifier</span><span class="p-ink"></span>
+                            </button>
+                            <button pbutton="" pripple="" label="Notification"
+                                class="p-element p-ripple p-button-outlined p-button-rounded p-button p-component"
+                                (click)="goToNotifications()">
+                                <span class="p-button-label">Notification</span><span class="p-ink"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <p-avatar image="{{ account?.imageUrl || 'assets/layout/images/avatar.png' }}" style="position: relative; top: -20px; left: 40%;" styleClass="mr-2" size="xlarge" shape="circle"></p-avatar>
-                <p-button icon="pi pi-cog" style="position: relative; top: -20px; left: 70%;" styleClass="p-button-rounded mr-2 mb-2" size="xlarge" (click)="goToSettings()"></p-button>
 
                 <div class="w-[10%]">
                     <div class="w-full">
                         <ul class="list-none p-0 m-0 w-full">
-                            <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
+                            <li
+                                class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Nom complet : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.fullName}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span
+                                        class="text-500 w-full font-bold text-black-alpha-80">{{account?.fullName}}</span>
+                                </div>
                             </li>
-                            <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
+                            <li
+                                class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Email : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.email}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span
+                                        class="text-500 w-full font-bold text-black-alpha-80">{{account?.email}}</span>
+                                </div>
                             </li>
-                            <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
+                            <li
+                                class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Langue : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{account?.langKey}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span
+                                        class="text-500 w-full font-bold text-black-alpha-80">{{account?.langKey}}</span>
+                                </div>
                             </li>
-                            <li class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
+                            <li
+                                class="flex w-full align-items-center py-3 px-2 border-top-1 surface-border flex justify-content-between">
                                 <div class="text-500 w-[40%] font-medium">Role : </div>
-                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span class="text-500 w-full font-bold text-black-alpha-80">{{getAuthorityLabel(account?.authority)}}</span></div>
+                                <div class="text-center flex justify-content-center align-content-center w-[60%]"><span
+                                        class="text-500 w-full font-bold text-black-alpha-80">{{getAuthorityLabel(account?.authority)}}</span>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -64,15 +97,18 @@
                 </p-tabPanel>
 
                 <!-- Ajouter des onglets pour registrant, dossiers, et souscriptions -->
-                <p-tabPanel header="Registrant" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.registrant">
+                <p-tabPanel header="Registrant"
+                    *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.registrant">
                     <div class="p-3">
-                        <label class="block font-normal text-900 mb-2">Registrant No: {{ data.registrant.numeroRegistrant }}</label>
+                        <label class="block font-normal text-900 mb-2">Registrant No: {{
+                            data.registrant.numeroRegistrant }}</label>
                         <p>Branche: {{ data.registrant.branche.ville }}</p>
                         <p>Partenaire: {{ data.registrant.partenaire.nom }}</p>
                     </div>
                 </p-tabPanel>
 
-                <p-tabPanel header="Dossiers" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.dossiers?.length">
+                <p-tabPanel header="Dossiers"
+                    *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.dossiers?.length">
                     <p-table [value]="data.dossiers" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>
@@ -89,7 +125,8 @@
                     </p-table>
                 </p-tabPanel>
 
-                <p-tabPanel header="Souscriptions" *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.souscriptions?.length">
+                <p-tabPanel header="Souscriptions"
+                    *ngIf="accountService.hasAnyAuthority(['ROLE_CLIENT']) && data?.souscriptions?.length">
                     <p-table [value]="data.souscriptions" [tableStyle]="{'min-width': '50rem'}">
                         <ng-template pTemplate="header">
                             <tr>

@@ -35,9 +35,9 @@ export class GarantieService extends GenericCrudService<Garantie> {
     // Vérifier si le plafond assuré est atteint
     checkIfPlafondAssureAtteint(souscriptionId: number): Observable<boolean> {
     return this.http.get<RessourceResponse<boolean>>(`${this.resourceUrl}/check/if/plafond/atteint/${souscriptionId}`).pipe(
-        map(response => this.handleResponse(response, 'Vérifier si le plafond assuré est atteint')),
-        catchError(() => of(false))
-    );
+            map(response => this.handleResponse(response, 'Vérifier si le plafond assuré est atteint')),
+            catchError(() => of(false))
+        );
     }
 
     // Calculer le montant assuré pour un sinistre
@@ -45,8 +45,32 @@ export class GarantieService extends GenericCrudService<Garantie> {
     return this.http.get<RessourceResponse<number>>(`${this.resourceUrl}/calculate/montant/assure/${garantieId}`, {
         params: { montantSinistre: montantSinistre.toString() }
     }).pipe(
-        map(response => this.handleResponse(response, 'Calculer le montant assuré pour un sinistre')),
-        catchError(() => of(0))
-    );
+            map(response => this.handleResponse(response, 'Calculer le montant assuré pour un sinistre')),
+            catchError(() => of(0))
+        );
+    }
+
+    // Récupérer toutes les polices d'assurance liées à une assurance donnée
+    getAll(): Observable<Garantie[]> {
+        return this.http.get<RessourceResponse<Garantie[]>>(`${this.baseUrl}/api/public/garantie`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer toutes les polices d\'assurance')),
+            catchError(() => of([]))
+        );
+    }
+
+    // Récupérer toutes les polices d'assurance liées à une assurance donnée
+    getById(id: number): Observable<Garantie> {
+        return this.http.get<RessourceResponse<Garantie>>(`${this.baseUrl}/api/public/garantie/by/${id}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer toutes les polices d\'assurance')),
+            catchError(() => of(null))
+        );
+    }
+
+    // Récupérer les garanties avec une police donnée
+    getGarantieByPoliceId(policeId: number): Observable<Garantie[]> {
+        return this.http.get<RessourceResponse<Garantie[]>>(`${this.baseUrl}/api/public/assurance/by/police/${policeId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les garanties avec une police donnée')),
+            catchError(() => of([]))
+        );
     }
 }

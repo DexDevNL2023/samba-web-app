@@ -51,8 +51,13 @@ export class ProfilComponent implements OnInit{
     }
 
     // Méthode pour rediriger vers les paramètres
-    goToSettings(): void {
+    editProfile(): void {
       this.router.navigate(['/admin/setting']);
+    }
+
+    // Méthode pour rediriger vers les paramètres
+    goToNotifications(): void {
+      this.router.navigate(['/admin/notifications']);
     }
 
     /**

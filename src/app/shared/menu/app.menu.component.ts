@@ -16,6 +16,7 @@ export class AppMenuComponent implements OnInit {
     constructor(private accountService: AccountService, private notificationService: NotificationService, public app: AppMainComponent) { }
 
     ngOnInit() {
+        this.updateMenu();
 
         // S'abonne à l'état des notifications non lues
         this.notificationService.getUnreadNotificationState().subscribe(notifications => {
