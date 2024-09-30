@@ -1,33 +1,39 @@
 <div class="surface-section px-4 md:px-6 lg:px-8">
     <div class="grid my-4">
         <div class="col-12 lg:col-12">
-            <h2 class="text-xl font-medium text-900 mb-4">{{ souscription?.numeroSouscription }}</h2>
+            <h2 class="text-900 font-bold text-3xl bloc mb-4">{{ souscription?.numeroSouscription }}</h2>
             <div class="mb-5">
-                <span class="text-900 font-medium text-3xl block">Date de souscription : {{ souscription?.dateSouscription | date }}</span>
-                <span class="text-900 font-medium text-3xl block">Date d'expiration : {{ souscription?.dateExpiration | date }}</span>
-                <span class="text-900 font-medium text-3xl block">Periode de paiement des primes : <p-tag [value]="getFrequenceEnumLabel(souscription?.frequencePaiement)"
+                <span class="text-900 font-medium text-xl block">Date de souscription : {{ souscription?.dateSouscription | date }}</span>
+                <span class="text-900 font-medium text-xl block">Date d'expiration : {{ souscription?.dateExpiration | date }}</span>
+                <span class="text-900 font-medium text-xl block">Periode de paiement des primes : <p-tag [value]="getFrequenceEnumLabel(souscription?.frequencePaiement)"
                     [severity]="getFrequenceSeverity(souscription?.frequencePaiement)" [rounded]="true"></p-tag></span>
-                <span class="text-900 font-medium text-3xl block">Montant des cotisation : {{ souscription?.montantCotisation }} XAF</span>
-                <span class="text-900 font-medium text-3xl block">Status de l'police : <p-tag [value]="getStatutEnumLabel(souscription?.status)"
+                <span class="text-900 font-medium text-xl block">Montant des cotisation : {{ souscription?.montantCotisation }} XAF</span>
+                <span class="text-900 font-medium text-xl block">Status de la souscription : <p-tag [value]="getStatutEnumLabel(souscription?.status)"
                     [severity]="getStatutSeverity(souscription?.status)" [rounded]="true"></p-tag></span>
             </div>
             <div class="flex flex-wrap sm:align-items-center sm:justify-content-between">
                 <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
-                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
-                        (click)="declarerSinistre(souscription?.id)">
-                        <span class="p-button-label">Déclarer un sinistre</span>
+                    <button type="button" pButton pRipple (click)="declarerSinistre(souscription?.id)"
+                        class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                        style="border-radius: 30px; padding: 15px;">
+                        <span class="p-button-label bold font-bold">Déclarer un sinistre</span>
+                        <span class="p-ink"></span>
                     </button>
                 </div>
                 <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
-                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
-                        (click)="demanderRemboursement(souscription?.id)">
-                        <span class="p-button-label">Demander un remboursement</span>
+                    <button type="button" pButton pRipple (click)="demanderRemboursement(souscription?.id)"
+                        class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                        style="border-radius: 30px; padding: 15px;">
+                        <span class="p-button-label bold font-bold">Demander un remboursement</span>
+                        <span class="p-ink"></span>
                     </button>
                 </div>
                 <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
-                    <button pButton pripple class="p-element p-ripple flex-1 mr-5 p-button"
-                        (click)="payerPrime(souscription?.id)">
-                        <span class="p-button-label">Payer une prime</span>
+                    <button type="button" pButton pRipple (click)="payerPrime(souscription?.id)"
+                        class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                        style="border-radius: 30px; padding: 15px;">
+                        <span class="p-button-label bold font-bold">Payer une prime</span>
+                        <span class="p-ink"></span>
                     </button>
                 </div>
             </div>
@@ -70,13 +76,17 @@
                         <td>{{ contrat?.numeroContrat }}</td>
                         <td><p-tag [value]="getContratEnumLabel(contrat?.typeContrat)"
                                 [severity]="getContratSeverity(contrat?.typeContrat)" [rounded]="true"></p-tag></td>
-                        <td>{{ contrat?.montantAssure | currency: 'XAF' }}</td>
-                        <td>{{ contrat?.franchise | currency: 'XAF' }}</td>
+                        <td>{{ contrat?.montantAssure }} XAF</td>
+                        <td>{{ contrat?.franchise }} XAF</td>
                         <td>{{ contrat?.dateDebut | date: 'dd/MM/yyyy' }}</td>
                         <td>{{ contrat?.dateFin | date: 'dd/MM/yyyy' }}</td>
                         <td>
-                            <p-button icon="pi pi-info" (click)="openDialog(contrat)" label="Détails"
-                                class="p-button-text"></p-button>
+                            <button type="button" pButton pRipple icon="pi pi-info" (click)="openDialog(contrat)"
+                                class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                                style="border-radius: 30px; padding: 15px;">
+                                <span class="p-button-label bold font-bold">Détails</span>
+                                <span class="p-ink"></span>
+                            </button>
                         </td>
                     </tr>
                 </ng-template>
@@ -85,7 +95,7 @@
     </p-tabview>
 </div>
 
-<p-dialog [(visible)]="selectedContrat" header="Détails du Contrat d'Assurance" [modal]="true"
+<p-dialog [(visible)]="displayDialog" header="Details du contrat" [modal]="true"
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true" style="width: 40vw">
     <div class="p-dialog-content">
         <div class="flex flex-wrap border-top-1 surface-border pt-4">

@@ -444,9 +444,6 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
             this.formGroup.get(field)?.setValue(base64String);
           };
           reader.readAsDataURL(file);
-
-          // Optionnel : Log ou traitement selon le type de fichier
-          console.log('Fichier sélectionné:', file);
       }
   }
 

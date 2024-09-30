@@ -43,6 +43,7 @@ export class SouscriptionListComponent implements OnInit {
                 this.loadSouscriptions(account.id);
             }
         });
+        console.info('Chargement des souscriptions reussi');
     }
 
     // Charger les souscriptions à partir du service

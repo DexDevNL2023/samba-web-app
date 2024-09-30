@@ -6,6 +6,7 @@ import { SouscriptionService } from './../../service/souscription.service';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; // Pour accéder aux paramètres de route
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-souscription-detail',
@@ -46,8 +47,8 @@ export class SouscriptionDetailComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         try {
-            // Récupérer l'ID et l'action des paramètres de la route
-            const params = await this.route.params.toPromise();
+            // Récupérer les paramètres de la route
+            const params = await firstValueFrom(this.route.params);
             this.souscriptionId = +params['id']; // 'id' correspond au paramètre de route
 
             // Charger les données associées à l'ID de la police d'police
@@ -71,7 +72,7 @@ export class SouscriptionDetailComponent implements OnInit {
     }
 
 
-    showDialog(contrats: ContratAssurance) {
+    openDialog(contrats: ContratAssurance) {
         this.selectedContrat = contrats;
         this.displayDialog = true;
     }
@@ -82,15 +83,15 @@ export class SouscriptionDetailComponent implements OnInit {
     }
 
     declarerSinistre(id: number): void {
-        this.router.navigate(['/declarer/sinistre', id]);
+        this.router.navigate(['/site/declarer/sinistre', id]);
     }
 
     demanderRemboursement(id: number): void {
-        this.router.navigate(['/demander/remboursement', id]);
+        this.router.navigate(['/site/demander/remboursement', id]);
     }
 
     payerPrime(id: number): void {
-        this.router.navigate(['/payer/prime', id]);
+        this.router.navigate(['/site/payer/prime', id]);
     }
 
     protected getStatutEnumLabel(value: string) {

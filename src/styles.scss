@@ -110,3 +110,18 @@
     font-weight: bold;
 }
 
+/* Masquer le texte sur les écrans de moins de 768 pixels (mobile) */
+@media (max-width: 768px) {
+    .responsive-text {
+        display: none; /* Cache l'élément */
+    }
+}
+
+/* Afficher le texte sur les écrans de 768 pixels et plus (tablette et bureau) */
+@media (min-width: 769px) {
+    .responsive-text {
+        display: inline; /* Affiche l'élément */
+    }
+}
+
+

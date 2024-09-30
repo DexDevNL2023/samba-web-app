@@ -1,11 +1,8 @@
-<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+<div class="surface-section px-4 py- md:px-6 lg:px-8">
     <div class="flex justify-content-between flex-wrap">
         <div class="flex align-items-center mb-4 md:mb-0">
             <div class="text-900 font-bold text-3xl mr-2">Produits et distributions </div>
-            <p-badge class="bg-gray-200 text-gray-900 border-circle" class="p-element">
-                <span class="bg-gray-200 text-gray-900 border-circle p-badge p-component ng-star-inserted">
-                    {{ produits.length }}
-                </span>
+            <p-badge [value]="produits.length" class="bg-gray-200 text-gray-900 border-circle p-element">
             </p-badge>
         </div>
         <p-divider styleclass="w-full border-gray-200" class="p-element">
@@ -20,36 +17,49 @@
     <div class="flex align-items-center flex-auto">
         <div class="p-input-icon-left w-full p-input-filled">
             <i class="pi pi-search"></i>
-            <input type="text" placeholder="Product search" class="p-inputtext p-component p-element w-full"
-                [(ngModel)]="searchQuery" (input)="onGlobalFilter()">
+            <input type="text" placeholder="Rechercher des produits d'assurance"
+                class="p-inputtext p-component p-element w-full p-border-round"
+                style="height: 50px; font-size: 16px;; border-radius: 15px;" [(ngModel)]="searchQuery"
+                (input)="onGlobalFilter()">
         </div>
     </div>
 
     <!-- Affichage des produits filtrés -->
-    <div class="col-12">
-        <div class="grid mt-4">
-            <ng-container *ngIf="filteredProduits.length > 0; else noProductsTemplate">
-                <div *ngFor="let produit of filteredProduits" class="col-12 md:col-6 lg:col-3 mb-5 lg:mb-0">
-                    <div class="mb-3 relative">
-                        <img [src]="produit?.imageUrl || 'assets/layout/images/default-image-2.jpg'" class="w-full">
-                        <button type="button" pripple="" (click)="onSelectProduct(produit?.id)"
-                            class="p-ripple p-element border-1 border-white-alpha-20 border-round py-2 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold"
-                            style="bottom: 1rem; left: 1rem; width: calc(100% - 2rem); backdrop-filter: blur(4px);">
-                            <i class="pi pi-shopping-cart mr-3 text-base"></i>
-                            <span class="text-base">En savoir plus</span>
+    <div class="grid nogutter">
+        <ng-container *ngIf="filteredProduits.length > 0; else noProductsTemplate">
+            <div *ngFor="let produit of filteredProduits" class="col-12 lg:col-4 p-3">
+                <p-card [header]="produit?.label"
+                    [style]="{ 'border-radius': '20px', 'box-shadow': '0px 4px 12px rgba(0, 0, 0, 0.1)' }">
+                    <ng-template pTemplate="header">
+                        <img [src]="produit?.imageUrl || 'assets/layout/images/default-image-2.jpg'" alt="Image"
+                            class="block w-full border-round-top"
+                            [style]="{ 'border-radius': '20px 20px 0 0', 'height': '450px', 'object-fit': 'contain' }">
+                    </ng-template>
+
+                    <div class="p-4 flex flex-column">
+                        <span class="text-xl text-900 font-medium mb-3 line-height-3">Durée de couverture : {{
+                            produit?.dureeCouverture }}</span>
+                        <span class="text-xl text-900 font-medium mb-3 line-height-3">Montant de souscription : {{
+                            produit?.montantSouscription }} XAF</span>
+                        <div class="line-height-3 mb-3 text-700"
+                            [innerHTML]="formatConditions(produit?.conditions) || 'Conditions non disponibles.'"></div>
+                    </div>
+
+                    <ng-template pTemplate="footer">
+                        <button type="button" pButton pRipple (click)="onSelectProduct(produit?.id)"
+                            class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                            style="border-radius: 30px; padding: 15px;">
+                            <span class="p-button-label bold font-bold">Souscrire</span>
+                            <span class="p-ink"></span>
                         </button>
-                    </div>
-                    <div class="flex flex-column align-items-center">
-                        <span class="text-xl text-900 font-medium mb-3">{{ produit?.label }}</span>
-                        <span class="text-xl text-900 mb-3">{{ produit?.montantSouscription }} XAF</span>
-                    </div>
-                </div>
-            </ng-container>
-            <ng-template #noProductsTemplate>
-                <div class="col-12 text-center mt-5">
-                    <p class="text-4xl text-600">Aucun produit d'assurance disponible pour le moment.</p>
-                </div>
-            </ng-template>
-        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </ng-container>
+        <ng-template #noProductsTemplate>
+            <div class="col-12 text-center mt-5">
+                <p class="text-4xl text-600">Aucun produit d'assurance disponible pour le moment.</p>
+            </div>
+        </ng-template>
     </div>
 </div>

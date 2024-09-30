@@ -16,12 +16,17 @@ import { PoliceAssuranceService } from '../../service/police-assurance.service';
   templateUrl: './../generic.crud.component.html'
 })
 export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
-  // Liste pour Enum
+  // Liste des types d'assurance pour l'interface utilisateur
   insuranceTypes = [
     { label: 'Personne', value: InsuranceType.PERSONNE },
     { label: 'Bien', value: InsuranceType.BIEN },
     { label: 'Agricole', value: InsuranceType.AGRICOLE },
-    { label: 'Agricole', value: InsuranceType.SANTE }
+    { label: 'Automobile', value: InsuranceType.AUTOMOBILE },
+    { label: 'Habitation', value: InsuranceType.HABITATION },
+    { label: 'Vie', value: InsuranceType.VIE },
+    { label: 'Accident', value: InsuranceType.ACCIDENT },
+    { label: 'Voyage', value: InsuranceType.VOYAGE },
+    { label: 'Santé', value: InsuranceType.SANTE }
   ];
 
   constructor(

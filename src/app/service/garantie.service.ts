@@ -68,7 +68,7 @@ export class GarantieService extends GenericCrudService<Garantie> {
 
     // Récupérer les garanties avec une police donnée
     getGarantieByPoliceId(policeId: number): Observable<Garantie[]> {
-        return this.http.get<RessourceResponse<Garantie[]>>(`${this.baseUrl}/api/public/assurance/by/police/${policeId}`).pipe(
+        return this.http.get<RessourceResponse<Garantie[]>>(`${this.baseUrl}/api/public/garantie/by/police/${policeId}`).pipe(
             map(response => this.handleResponse(response, 'Récupérer les garanties avec une police donnée')),
             catchError(() => of([]))
         );

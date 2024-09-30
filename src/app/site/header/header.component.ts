@@ -17,6 +17,7 @@ export class HeaderComponent {
     myNotifs: Notification[] | null = []; // Stocke les notifications de l'utilisateur
     isAccountMenuVisible = false; // Gère la visibilité du menu "Mon compte"
     isNotificationsMenuVisible = false; // Gère la visibilité du menu des notifications
+    private intervalId: any; // To hold the interval ID
 
     constructor(
         private accountService: AccountService,
@@ -29,18 +30,39 @@ export class HeaderComponent {
         const account: Account = this.accountService.getCurrentAccount();
         if (account) {
             this.isLoggedIn = true;
-            this.notificationService.getUnreadNotificationsByUserId(account.id);
+            this.loadUnreadNotifications(account.id);
         }
 
         this.accountService.getUserState().subscribe(account => {
-            this.account = account;
             if (account) {
-                this.notificationService.getUnreadNotificationsByUserId(account.id);
+                this.account = account;
+                this.isLoggedIn = true;
+            this.loadUnreadNotifications(account.id);
             }
         });
 
         this.notificationService.getUnreadNotificationState().subscribe(notifications => {
             this.myNotifs = notifications;
+        });
+
+        // Start checking for new notifications every 30 seconds
+        this.intervalId = setInterval(() => {
+            if (this.account) {
+            this.loadUnreadNotifications(this.account.id);
+            }
+        }, 30000);
+    }
+
+    ngOnDestroy(): void {
+        // Clear the interval when the component is destroyed
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    }
+
+    loadUnreadNotifications(userId: number): void {
+        this.notificationService.getUnreadNotificationsByUserId(userId).subscribe(notifications => {
+            this.myNotifs = notifications; // Update notifications
         });
     }
 

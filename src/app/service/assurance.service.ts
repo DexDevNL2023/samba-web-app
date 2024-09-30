@@ -24,10 +24,10 @@ export class AssuranceService extends GenericCrudService<Assurance> {
   }
 
   // Récupérer les assurances par type
-  getAssurancesByType(type: InsuranceType): Observable<Assurance[]> {
-    return this.http.get<RessourceResponse<Assurance[]>>(`${this.resourceUrl}/find/by/type/${type}`).pipe(
+  getAssurancesByType(type: InsuranceType): Observable<Assurance> {
+    return this.http.get<RessourceResponse<Assurance>>(`${this.resourceUrl}/find/by/type/${type}`).pipe(
       map((response) => this.handleResponse(response, 'Récupérer les assurances par type')),
-      catchError(() => of([]))
+      catchError(() => of(null))
     );
   }
 

@@ -6,6 +6,7 @@ import { PoliceAssurance } from './../../models/police-assurance.model';
 import { PoliceAssuranceService } from './../../service/police-assurance.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; // Pour accéder aux paramètres de route
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-produit-detail',
@@ -18,16 +19,31 @@ export class ProduitDetailComponent implements OnInit {
     displayDialog: boolean = false;
     selectedGarantie: Garantie | null = {} as Garantie;
     assurance: Assurance | null = {} as Assurance;
+    // Liste des types d'assurance pour l'interface utilisateur
     insuranceTypes = [
         { label: 'Personne', value: InsuranceType.PERSONNE },
         { label: 'Bien', value: InsuranceType.BIEN },
         { label: 'Agricole', value: InsuranceType.AGRICOLE },
-        { label: 'Agricole', value: InsuranceType.SANTE }
+        { label: 'Automobile', value: InsuranceType.AUTOMOBILE },
+        { label: 'Habitation', value: InsuranceType.HABITATION },
+        { label: 'Vie', value: InsuranceType.VIE },
+        { label: 'Accident', value: InsuranceType.ACCIDENT },
+        { label: 'Voyage', value: InsuranceType.VOYAGE },
+        { label: 'Santé', value: InsuranceType.SANTE }
     ];
     garantieStatus = [
         { label: 'Activée', value: GarantieStatus.ACTIVEE },
         { label: 'Expirée', value: GarantieStatus.EXPIREE },
         { label: 'Suspendue', value: GarantieStatus.SUSPENDUE }
+    ];
+
+    columns = [
+        { field: 'label', header: 'Label' },
+        { field: 'percentage', header: 'Pourcentage' },
+        { field: 'plafondAssure', header: 'Plafond Assuré' },
+        { field: 'dateDebut', header: 'Date de Début' },
+        { field: 'dateFin', header: 'Date de Fin' },
+        { field: 'status', header: 'Status' }
     ];
 
     constructor(
@@ -40,12 +56,12 @@ export class ProduitDetailComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         try {
-            // Récupérer l'ID et l'action des paramètres de la route
-            const params = await this.route.params.toPromise();
+            // Récupérer les paramètres de la route
+            const params = await firstValueFrom(this.route.params);
             this.produitId = +params['id']; // 'id' correspond au paramètre de route
 
             // Charger les données associées à l'ID de la police d'assurance
-            this.produit = await this.productService.find(this.produitId).toPromise();
+            this.produit = await this.productService.getById(this.produitId).toPromise();
 
             // Charger les informations d'assurance
             this.assurance = await this.assuranceService.getAssuranceByPoliceId(this.produitId).toPromise();
@@ -65,7 +81,7 @@ export class ProduitDetailComponent implements OnInit {
     }
 
 
-    showDialog(garantie: Garantie) {
+    openDialog(garantie: Garantie) {
         this.selectedGarantie = garantie;
         this.displayDialog = true;
     }
@@ -114,6 +130,10 @@ export class ProduitDetailComponent implements OnInit {
     }
 
     souscrire(id: number): void {
-        this.router.navigate(['/souscrire/assurance', id]);
+        this.router.navigate(['/site/souscrire/assurance', id]);
+    }
+
+    formatConditions(conditions: string): string {
+        return conditions ? conditions.replace(/\n/g, '<br><br>') : '';
     }
 }

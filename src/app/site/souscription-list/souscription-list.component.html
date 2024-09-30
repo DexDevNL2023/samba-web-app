@@ -1,11 +1,8 @@
 <div class="surface-section px-4 py-8 md:px-6 lg:px-8">
     <div class="flex justify-content-between flex-wrap">
         <div class="flex align-items-center mb-4 md:mb-0">
-            <div class="text-900 font-bold text-3xl">Vos souscriptions </div>
-            <p-badge styleclass="ml-3 bg-gray-200 text-gray-900 p-0 border-circle" class="p-element">
-                <span class="ml-3 bg-gray-200 text-gray-900 p-0 border-circle p-badge p-component ng-star-inserted">
-                    {{ souscriptions.length }}
-                </span>
+            <div class="text-900 font-bold text-3xl mr-2">Vos souscriptions </div>
+            <p-badge [value]="souscriptions.length" class="bg-gray-200 text-gray-900 border-circle p-element">
             </p-badge>
         </div>
         <p-divider styleclass="w-full border-gray-200" class="p-element">
@@ -20,31 +17,46 @@
     <div class="flex align-items-center flex-auto">
         <div class="p-input-icon-left w-full p-input-filled">
             <i class="pi pi-search"></i>
-            <input type="text" placeholder="Product search" class="p-inputtext p-component p-element w-full"
-                [(ngModel)]="searchQuery" (input)="onGlobalFilter()">
+            <input type="text" placeholder="Rechercher des souscriptions"
+                class="p-inputtext p-component p-element w-full p-border-round"
+                style="height: 50px; font-size: 16px;; border-radius: 15px;" [(ngModel)]="searchQuery"
+                (input)="onGlobalFilter()">
         </div>
     </div>
 
     <!-- Affichage des souscriptions filtrés -->
-    <div class="col-12">
-        <div class="grid mt-4">
+    <div class="grid nogutter">
+        <ng-container *ngIf="filteredSouscriptions.length > 0; else noSouscriptionsTemplate">
             <div *ngFor="let souscription of filteredSouscriptions" class="col-12 md:col-6 lg:col-3 mb-5 lg:mb-0">
-                <div class="mb-3 relative">
-                    <p-tag [value]="getEnumLabel(souscription?.status)"
-                        [severity]="getSeverity(souscription?.status)" [rounded]="true"></p-tag>
-                    <button type="button" pripple="" (click)="onSelectSouscription(souscription?.id)"
-                        class="p-ripple p-element border-1 border-white-alpha-20 border-round py-2 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer font-semibold"
-                        style="bottom: 1rem; left: 1rem; width: calc(100% - 2rem); backdrop-filter: blur(4px);">
-                        <i class="pi pi-shopping-cart mr-3 text-base"></i>
-                        <span class="text-base">Details</span>
-                    </button>
-                </div>
-                <div class="flex flex-column align-items-center">
-                    <span class="text-xl text-900 font-medium mb-3">Numero de souscription : {{ souscription?.numeroSouscription }}</span>
-                    <span class="text-xl text-900 mb-3">Montant des cotisation : {{ souscription?.montantCotisation }} XAF</span>
-                    <span class="text-xl text-900 mb-3">Date d'expiration : {{ souscription?.dateExpiration | date }}</span>
-                </div>
+                <p-card [header]="'Souscription #' + souscription?.numeroSouscription"
+                    [style]="{ 'border-radius': '20px', 'box-shadow': '0px 4px 12px rgba(0, 0, 0, 0.1)' }">
+                    <ng-template pTemplate="header">
+                        <p-tag [value]="getEnumLabel(souscription?.status)"
+                            [severity]="getSeverity(souscription?.status)" [rounded]="true"></p-tag>
+                    </ng-template>
+
+                    <div class="p-4 flex flex-column">
+                        <span class="text-xl text-900 font-medium mb-3">Montant des cotisations : {{
+                            souscription?.montantCotisation }} XAF</span>
+                        <span class="text-xl text-900 mb-3">Date d'expiration : {{ souscription?.dateExpiration | date
+                            }}</span>
+                    </div>
+
+                    <ng-template pTemplate="footer">
+                        <button type="button" pButton pRipple (click)="onSelectSouscription(souscription?.id)"
+                            class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                            style="border-radius: 30px; padding: 15px;">
+                            <span class="p-button-label bold font-bold">Détails</span>
+                            <span class="p-ink"></span>
+                        </button>
+                    </ng-template>
+                </p-card>
             </div>
-        </div>
+        </ng-container>
+        <ng-template #noSouscriptionsTemplate>
+            <div class="col-12 text-center mt-5">
+                <p class="text-4xl text-600">Aucune souscription disponible pour le moment.</p>
+            </div>
+        </ng-template>
     </div>
 </div>

@@ -22,12 +22,18 @@ import { GenericCrudComponent } from '../generic.crud.component';
 export class PoliceAssuranceCrudComponent extends GenericCrudComponent<PoliceAssurance> {
 
   // Liste pour InsuranceType
-  insuranceTypes = [
-    { label: 'Personne', value: InsuranceType.PERSONNE },
-    { label: 'Bien', value: InsuranceType.BIEN },
-    { label: 'Agricole', value: InsuranceType.AGRICOLE },
-    { label: 'Agricole', value: InsuranceType.SANTE }
-  ];
+// Liste des types d'assurance pour l'interface utilisateur
+insuranceTypes = [
+  { label: 'Personne', value: InsuranceType.PERSONNE },
+  { label: 'Bien', value: InsuranceType.BIEN },
+  { label: 'Agricole', value: InsuranceType.AGRICOLE },
+  { label: 'Automobile', value: InsuranceType.AUTOMOBILE },
+  { label: 'Habitation', value: InsuranceType.HABITATION },
+  { label: 'Vie', value: InsuranceType.VIE },
+  { label: 'Accident', value: InsuranceType.ACCIDENT },
+  { label: 'Voyage', value: InsuranceType.VOYAGE },
+  { label: 'Santé', value: InsuranceType.SANTE }
+];
   garantieStatus = [
     { label: 'Activée', value: GarantieStatus.ACTIVEE },
     { label: 'Expirée', value: GarantieStatus.EXPIREE },

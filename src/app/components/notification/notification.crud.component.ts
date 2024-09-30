@@ -32,7 +32,7 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
     baseService: BaseService,
     accountService: AccountService,
     fb: FormBuilder,
-    notificationService: NotificationService,
+    private notificationService: NotificationService,
     private accountCrudService: AccountCrudService
   ) {
     super(messageService, baseService, accountService, fb, notificationService, appMain);
@@ -70,33 +70,36 @@ export class NotificationCrudComponent extends GenericCrudComponent<Notification
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
-    // Check if the authenticated user has the ROLE_CLIENT authority
-    if (this. hasAuthority([Authority.CLIENT])) {
-      // If the user is a client, find and select the dropdown fields for emitter and recipient
-      const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
-      const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
+    // On recupere l'utilisateur actuel
+    const account: Account = this.accountService.getCurrentAccount();
+    if (account) {
+      // Marquer les notifications comme lue
+      this.notificationService.markAsReadNotificationsByUserId(account.id);
+    }
 
-      // Set the emitter dropdown to the current user's account
-      if (emitterDropdown) {
-        this.selectDropdownValue(emitterDropdown, this.accountService.getIdForCurrentAccount());
+    // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
+    this.accountService.getUserState().subscribe(account => {
+      if (account) {
+        // Marquer les notifications comme lue
+        this.notificationService.markAsReadNotificationsByUserId(account.id);
       }
+    });
 
-      // Set the recipient dropdown to the system account (SYSTEM_ACCOUNT_ID)
-      if (recipientDropdown) {
-        this.selectDropdownValue(recipientDropdown, 1);
-      }
+    // S'abonne à l'état des notifications non lu
+    this.notificationService.getUnreadNotificationState().subscribe(notifications => {
+      // Marquer les notifications comme lue
+      this.notificationService.markAsReadNotificationsByUserId(account.id);
+    });
+
+    // Vérifier si l'utilisateur authentifié a l'autorité ROLE_CLIENT
+    if (this.hasAuthority([Authority.CLIENT])) {
+        // Si l'utilisateur est un client, sélectionner l'ID du compte client pour l'émetteur et le système pour le destinataire
+        this.formGroup.get('emetteur')?.setValue(this.accountService.getIdForCurrentAccount());
+        this.formGroup.get('destinataire')?.setValue(1); // 1 étant l'ID du compte système
     } else {
-      // If the user is not a client, set both emitter and recipient to the system account
-      const emitterDropdown = document.getElementById('emetteur') as HTMLSelectElement;
-      const recipientDropdown = document.getElementById('destinataire') as HTMLSelectElement;
-
-      // Set both dropdown fields to SYSTEM_ACCOUNT_ID
-      if (emitterDropdown) {
-        this.selectDropdownValue(emitterDropdown, 1);
-      }
-      if (recipientDropdown) {
-        this.selectDropdownValue(recipientDropdown, 1);
-      }
+        // Si l'utilisateur n'est pas un client, sélectionner l'ID du système pour les deux champs
+        this.formGroup.get('emetteur')?.setValue(1);
+        this.formGroup.get('destinataire')?.setValue(1);
     }
   }
 

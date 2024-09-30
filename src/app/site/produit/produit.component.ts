@@ -48,6 +48,10 @@ export class ProduitComponent implements OnInit {
 
     // Méthode pour gérer la sélection du produit et rediriger vers le détail
     onSelectProduct(id: number): void {
-        this.router.navigate(['/produit/detail', id]);
+        this.router.navigate(['/site/produit/detail', id]);
+    }
+
+    formatConditions(conditions: string): string {
+        return conditions ? conditions.replace(/\n/g, '<br><br>') : '';
     }
 }

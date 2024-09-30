@@ -43,7 +43,7 @@ import { CompanyComponent } from './company/company.component';
         RouterModule.forRoot([
             // Route par défaut redirigeant vers /site
             { path: '', redirectTo: '/site', pathMatch: 'full' },
-
+ 
             { path: 'site', component: SiteComponent, children: [
                 // Route par défaut de /site, redirige vers ProduitComponent
                 { path: '', component: ProduitComponent },

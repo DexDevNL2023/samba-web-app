@@ -15,6 +15,7 @@ export class AppTopBarComponent implements OnInit {
   account: Account | null = null; // Variable pour stocker le compte utilisateur
   // Variable pour stocker les notifications de l'utilisateur
   myNotifs: Notification[] | null = [];
+  private intervalId: any; // To hold the interval ID
 
   constructor(
     private accountService: AccountService,
@@ -25,25 +26,40 @@ export class AppTopBarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // On recupere l'utilisateur actuel
     const account: Account = this.accountService.getCurrentAccount();
     if (account) {
-      // Récupère les notifications non lu de l'utilisateur une fois qu'il est authentifié
-      this.notificationService.getUnreadNotificationsByUserId(account.id);
+      this.loadUnreadNotifications(account.id);
     }
 
-    // S'abonne à l'état d'authentification pour obtenir le compte utilisateur
     this.accountService.getUserState().subscribe(account => {
-      this.account = account;
       if (account) {
-        // Récupère les notifications non lu de l'utilisateur une fois qu'il est authentifié
-        this.notificationService.getUnreadNotificationsByUserId(account.id);
+        this.account = account;
+        this.loadUnreadNotifications(account.id);
       }
     });
 
-    // S'abonne à l'état des notifications non lu
     this.notificationService.getUnreadNotificationState().subscribe(notifications => {
       this.myNotifs = notifications;
+    });
+
+    // Start checking for new notifications every 30 seconds
+    this.intervalId = setInterval(() => {
+      if (this.account) {
+        this.loadUnreadNotifications(this.account.id);
+      }
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    // Clear the interval when the component is destroyed
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  loadUnreadNotifications(userId: number): void {
+    this.notificationService.getUnreadNotificationsByUserId(userId).subscribe(notifications => {
+      this.myNotifs = notifications; // Update notifications
     });
   }
 

@@ -1,9 +1,15 @@
 import { BaseEntity } from "./base-entity.model";
 
+// Enum TypeScript
 export enum InsuranceType {
   PERSONNE = 'PERSONNE',
   BIEN = 'BIEN',
   AGRICOLE = 'AGRICOLE',
+  AUTOMOBILE = 'AUTOMOBILE',
+  HABITATION = 'HABITATION',
+  VIE = 'VIE',
+  ACCIDENT = 'ACCIDENT',
+  VOYAGE = 'VOYAGE',
   SANTE = 'SANTE'
 }
 
