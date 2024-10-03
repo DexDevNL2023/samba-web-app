@@ -12,16 +12,16 @@
             <div class="mb-5">
                 <span class="text-900 font-bold text-3xl block">{{ produit?.label }}</span>
                 <span class="text-900 font-medium text-xl block">Duree de couverture : {{ produit?.dureeCouverture
-                    }}</span>
+                    }} mois</span>
                 <span class="text-900 font-medium text-xl block">Montant de souscription : {{
                     produit?.montantSouscription }} XAF</span>
             </div>
             <div class="flex flex-wrap sm:align-items-center sm:justify-content-between">
                 <div class="flex align-items-center flex-1 mt-3 sm:mt-0">
-                    <button type="button" pButton pRipple (click)="souscrire(produit?.id)"
+                    <button type="button" pButton pRipple (click)="souscrire(produit)"
                         class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
                         style="border-radius: 30px; padding: 15px;">
-                        <span class="p-button-label bold font-bold">Souscrire à cette police d\'assurance</span>
+                        <span class="p-button-label bold font-bold">Souscrire à cette police d'assurance</span>
                         <span class="p-ink"></span>
                     </button>
                 </div>
@@ -32,7 +32,7 @@
     <p-tabView>
         <p-tabPanel header="Détails">
             <div class="grid mt-4" *ngIf="assurance">
-                <div class="col-12 lg:col-4">
+                <div class="col-12 lg:col-12">
                     <div class="font-medium text-xl text-900 mb-3">{{ assurance?.nom }}</div>
                     <div class="mb-4">
                         <label class="block font-normal text-900 mb-2">Description</label>

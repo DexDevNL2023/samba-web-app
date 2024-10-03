@@ -1,3 +1,8 @@
+import { ConfirmationSouscription } from './site/effectuer-souscription/steps/confirmation.souscription';
+import { ModePaiementSouscription } from './site/effectuer-souscription/steps/paiement.souscription';
+import { FrequencePaiementSouscription } from './site/effectuer-souscription/steps/frequence.souscription';
+import { EffectuerSouscription } from './site/effectuer-souscription/effectuer-souscription';
+import { EffectuerSouscriptionService } from './service/effectuer.souscription.service';
 import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
 import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
 import { ProduitDetailComponent } from './site/detail/produit-detail.component';
@@ -306,6 +311,10 @@ import { CompanyComponent } from './company/company.component';
         ProduitDetailComponent,
         SouscriptionListComponent,
         SouscriptionDetailComponent,
+        EffectuerSouscription,
+        FrequencePaiementSouscription,
+        ModePaiementSouscription,
+        ConfirmationSouscription,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
@@ -315,8 +324,8 @@ import { CompanyComponent } from './company/company.component';
         NotificationService, PaiementService, PoliceAssuranceService, PrestationService, AccountCrudService,
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         RoleService, PermissionService, AuthorizationService, CompanyService, MessageService, AuthentificationService,
-        AccountService, StateStorageService, CompanyService, DashboardService,
-        ContratAssuranceService, RecuPaiementService,
+        AccountService, StateStorageService, CompanyService, DashboardService, ContratAssuranceService, RecuPaiementService,
+        EffectuerSouscriptionService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,

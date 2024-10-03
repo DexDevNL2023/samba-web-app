@@ -100,7 +100,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
           { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value' }
         ]
       },
-      { field: 'recuPaiement', header: 'Reçu du paiement', type: 'objet', values: [], method: () => this.loadRecuPaiements(), label: 'numeroRecu', key: 'id', access: [Authority.SYSTEM], subfield: [
+      { field: 'recuPaiements', header: 'Reçu du paiement', type: 'list', values: [], method: () => this.loadRecuPaiements(), label: 'numeroRecu', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroRecu', header: 'Num Reçu', type: 'text' },
           { field: 'dateEmission', header: 'Date d\'émission', type: 'date' },
@@ -134,11 +134,11 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
   }
 
   // Chargement des reçu de paiement associés à une assure
-  async loadRecuPaiements(): Promise<RecuPaiement> {
+  async loadRecuPaiements(): Promise<RecuPaiement[]> {
       try {
           return await this.recuPaiementService.getByPaiementId(this.selectedItem.id).toPromise();
       } catch (error) {
-          return {};
+          return [];
       }
   }
 

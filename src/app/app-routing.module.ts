@@ -1,3 +1,7 @@
+import { EffectuerSouscription } from './site/effectuer-souscription/effectuer-souscription';
+import { ConfirmationSouscription } from './site/effectuer-souscription/steps/confirmation.souscription';
+import { ModePaiementSouscription } from './site/effectuer-souscription/steps/paiement.souscription';
+import { FrequencePaiementSouscription } from './site/effectuer-souscription/steps/frequence.souscription';
 import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
 import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
 import { ProduitDetailComponent } from './site/detail/produit-detail.component';
@@ -43,13 +47,18 @@ import { CompanyComponent } from './company/company.component';
         RouterModule.forRoot([
             // Route par défaut redirigeant vers /site
             { path: '', redirectTo: '/site', pathMatch: 'full' },
- 
+
             { path: 'site', component: SiteComponent, children: [
                 // Route par défaut de /site, redirige vers ProduitComponent
                 { path: '', component: ProduitComponent },
                 { path: 'produit/detail/:id', component: ProduitDetailComponent },
                 { path: 'souscription/list', component: SouscriptionListComponent },
                 { path: 'souscription/detail/:id', component: SouscriptionDetailComponent },
+                { path: 'effectuer/souscription', component: EffectuerSouscription, children: [
+                        { path: 'steps/frequence', component: FrequencePaiementSouscription },
+                        { path: 'steps/paiement', component: ModePaiementSouscription },
+                        { path: 'steps/confirmation', component: ConfirmationSouscription },
+                ]},
             ]},
 
             // Routes pour la section admin

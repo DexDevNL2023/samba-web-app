@@ -59,7 +59,6 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
       { field: 'dateContrat', header: 'Date du contrat', type: 'date', access: [Authority.ADMIN] },
       { field: 'typeContrat', header: 'Type', type: 'enum', values: this.contratTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'couverture', header: 'Couverture', type: 'textarea', access: [Authority.ADMIN] },
-      { field: 'montantAssure', header: 'Montant assuré', type: 'currency', access: [Authority.ADMIN] },
       { field: 'franchise', header: 'franchise', type: 'currency', access: [Authority.ADMIN] },
       { field: 'conditions', header: 'Conditions', type: 'textarea', access: [Authority.ADMIN] },
       { field: 'exclusions', header: 'Exclusions', type: 'textarea', access: [Authority.ADMIN] },

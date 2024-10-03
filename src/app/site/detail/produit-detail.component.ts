@@ -1,3 +1,6 @@
+import { Account } from './../../models/account.model';
+import { AccountService } from './../../core/auth/account.service';
+import { EffectuerSouscriptionService } from './../../service/effectuer.souscription.service';
 import { AssuranceService } from './../../service/assurance.service';
 import { GarantieService } from './../../service/garantie.service';
 import { Garantie, GarantieStatus } from './../../models/garantie.model';
@@ -36,22 +39,24 @@ export class ProduitDetailComponent implements OnInit {
         { label: 'Expirée', value: GarantieStatus.EXPIREE },
         { label: 'Suspendue', value: GarantieStatus.SUSPENDUE }
     ];
-
     columns = [
         { field: 'label', header: 'Label' },
         { field: 'percentage', header: 'Pourcentage' },
         { field: 'plafondAssure', header: 'Plafond Assuré' },
         { field: 'dateDebut', header: 'Date de Début' },
         { field: 'dateFin', header: 'Date de Fin' },
-        { field: 'status', header: 'Status' }
+        { field: 'status', header: 'Status' },
+        { field: 'termes', header: 'Termes' }
     ];
 
     constructor(
+        private accountService: AccountService,
         private productService: PoliceAssuranceService,
         private assuranceService: AssuranceService,
         private garantieService: GarantieService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private effectuerSouscriptionService: EffectuerSouscriptionService
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -60,14 +65,20 @@ export class ProduitDetailComponent implements OnInit {
             const params = await firstValueFrom(this.route.params);
             this.produitId = +params['id']; // 'id' correspond au paramètre de route
 
-            // Charger les données associées à l'ID de la police d'assurance
-            this.produit = await this.productService.getById(this.produitId).toPromise();
+            // On recupere l'utilisateur actuel
+            const account: Account = this.accountService.getCurrentAccount();
+            if (account) {
+                // Charger les données associées à l'ID de la police d'assurance
+                this.produit = await this.productService.getById(this.produitId).toPromise();
 
-            // Charger les informations d'assurance
-            this.assurance = await this.assuranceService.getAssuranceByPoliceId(this.produitId).toPromise();
+                // Charger les informations d'assurance
+                this.assurance = await this.assuranceService.getAssuranceByPoliceId(this.produitId).toPromise();
 
-            // Charger les garanties associées
-            this.garanties = await this.garantieService.getGarantieByPoliceId(this.produitId).toPromise();
+                // Charger les garanties associées
+                this.garanties = await this.garantieService.getGarantieByPoliceId(this.produitId).toPromise();
+            } else {
+                this.router.navigate(['/login']);
+            }
         } catch (error) {
             console.error('Erreur lors du chargement des données:', error);
             // Gérer l'erreur selon vos besoins (par exemple, afficher un message d'erreur)
@@ -129,8 +140,11 @@ export class ProduitDetailComponent implements OnInit {
         }
     }
 
-    souscrire(id: number): void {
-        this.router.navigate(['/site/souscrire/assurance', id]);
+    souscrire(payload: PoliceAssurance): void {
+        console.log("A : "+payload.montantSouscription);
+        this.effectuerSouscriptionService.setProduct(payload);
+        console.log("B : "+this.effectuerSouscriptionService.getProduct());
+        this.router.navigate(['/site/effectuer/souscription/steps/frequence']);
     }
 
     formatConditions(conditions: string): string {

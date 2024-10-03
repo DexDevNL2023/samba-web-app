@@ -41,10 +41,10 @@ export class RecuPaiementService extends GenericCrudService<RecuPaiement> {
     }
 
     // Get receipt by paiement ID
-    getByPaiementId(paiementId: number): Observable<RecuPaiement> {
-        return this.http.get<RessourceResponse<RecuPaiement>>(`${this.resourceUrl}/find/by/paiement/${paiementId}`).pipe(
+    getByPaiementId(paiementId: number): Observable<RecuPaiement[]> {
+        return this.http.get<RessourceResponse<RecuPaiement[]>>(`${this.resourceUrl}/find/by/paiement/${paiementId}`).pipe(
             map(response => this.handleResponse(response, 'Reçu de paiement retrouvé avec succès!')),
-            catchError(() => of(null))
+            catchError(() => of([]))
         );
     }
 }

@@ -1,0 +1,27 @@
+<div class="lg:px-8 md:px-6 px-3 py-8 surface-section">
+    <ul class="list-none p-0 m-0 flex flex-column md:flex-row">
+        <li class="relative mr-0 md:mr-8 flex-auto" *ngFor="let step of items">
+            <div
+                [ngClass]="{
+                    'border-2 border-blue-500': currentStepId === step.id,
+                    'border-1 border-300': currentStepId !== step.id,
+                    'border-round p-3 surface-card flex flex-column md:flex-row align-items-center z-1': true
+                }">
+                <i [ngClass]="getStepIcon(step.id)"
+                class="text-2xl md:text-4xl mb-2 md:mb-0 mr-0 md:mr-3"></i>
+                <div>
+                    <div [ngClass]="{'text-blue-600': currentStepId === step.id, 'text-900': currentStepId !== step.id}"
+                        class="font-medium mb-1">{{ step.label }}</div>
+                    <span class="text-600 text-sm hidden md:block">{{ step.description }}</span>
+                </div>
+            </div>
+            <div *ngIf="step !== items[items.length - 1]" class="w-full absolute top-50 left-100 surface-300 hidden md:block"
+                style="transform: translateY(-50%); height: 2px;"></div>
+        </li>
+    </ul>
+</div>
+
+<div class="card">
+    <p-toast></p-toast>
+    <router-outlet></router-outlet>
+</div>

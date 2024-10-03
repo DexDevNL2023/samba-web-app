@@ -47,7 +47,7 @@ export class AppTopBarComponent implements OnInit {
       if (this.account) {
         this.loadUnreadNotifications(this.account.id);
       }
-    }, 30000);
+    }, 90000);
   }
 
   ngOnDestroy(): void {

@@ -77,7 +77,7 @@ export class SouscriptionListComponent implements OnInit {
 
     // Méthode pour gérer la sélection du souscription et rediriger vers le détail
     onSelectSouscription(id: number): void {
-        this.router.navigate(['/souscription/detail', id]);
+        this.router.navigate(['/site/souscription/detail', id]);
     }
 
     protected getEnumLabel(value: string) {

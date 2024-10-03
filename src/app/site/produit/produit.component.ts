@@ -52,6 +52,16 @@ export class ProduitComponent implements OnInit {
     }
 
     formatConditions(conditions: string): string {
-        return conditions ? conditions.replace(/\n/g, '<br><br>') : '';
+        return conditions ? conditions.replace(/\n/g, '<br>') : '';
+    }
+
+    // Méthode pour tronquer le texte si la longueur dépasse 200 caractères
+    eclipseConditions(conditions: string): string {
+        const maxLength = 200; // Limite à 200 caractères
+        if (!conditions) {
+            return 'Conditions non disponibles.';
+        }
+        // Si le texte est plus long que la limite, tronquer et ajouter "..."
+        return conditions.length > maxLength ? conditions.slice(0, maxLength) + '...' : conditions;
     }
 }

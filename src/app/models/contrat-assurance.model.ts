@@ -12,7 +12,6 @@ export interface ContratAssurance extends BaseEntity {
   dateContrat?: Date | null;             // Date à laquelle le contrat a été émis
   typeContrat?: keyof typeof ContratType | null;      // Type d'assurance (Bien, Personne, Sante, Agricole)
   couverture?: string | null;            // Description de la couverture offerte par le contrat
-  montantAssure?: number | null;         // Montant assuré en cas de sinistre
   franchise?: number | null;             // Franchise applicable sur le contrat
   conditions?: string | null;            // Conditions spécifiques du contrat
   exclusions?: string | null;            // Exclusions spécifiques de la couverture

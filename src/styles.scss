@@ -49,11 +49,10 @@
     display: flex;
     justify-content: flex-end;
 }
+
 .button-wrapper {
     margin-left: 0.5rem; /* Espace entre les boutons */
 }
-
-
 
 .entete {
     text-align: center;
@@ -122,6 +121,17 @@
     .responsive-text {
         display: inline; /* Affiche l'élément */
     }
+}
+
+.card-equal-height {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Pour forcer une hauteur de 100% de la colonne */
+}
+
+.card-equal-height .p-card-footer {
+    margin-top: auto; /* Assure que le footer est aligné en bas */
 }
 
 

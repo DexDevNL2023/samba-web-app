@@ -36,6 +36,15 @@ export class SouscriptionDetailComponent implements OnInit {
         { label: 'Personne', value: ContratType.PERSONNE },
         { label: 'Santé', value: ContratType.SANTE }
     ];
+    columns = [
+        { field: 'numeroContrat', header: 'Numéro de Contrat' },
+        { field: 'typeContrat', header: 'Type de Contrat' },
+        { field: 'montantAssure', header: 'Montant Assuré' },
+        { field: 'franchise', header: 'Franchise' },
+        { field: 'dateDebut', header: 'Date de Début' },
+        { field: 'dateFin', header: 'Date de Fin' },
+        { field: 'actions', header: 'Actions' }  // Colonne pour les actions, si nécessaire
+    ];
 
     constructor(
         private souscriptionService: SouscriptionService,
@@ -70,7 +79,6 @@ export class SouscriptionDetailComponent implements OnInit {
             this.contrats = data;
         });
     }
-
 
     openDialog(contrats: ContratAssurance) {
         this.selectedContrat = contrats;

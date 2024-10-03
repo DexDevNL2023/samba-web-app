@@ -23,5 +23,5 @@ export interface Paiement extends BaseEntity {
   type?: keyof typeof PaymentType | null;
   souscription?: number | null;
   reclamation?: number | null;
-  recuPaiement?: number | null;
+  recuPaiements?: number[] | null;
 }
