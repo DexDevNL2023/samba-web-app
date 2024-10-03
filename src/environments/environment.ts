@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:9000', // Remplacez par votre URL de base
+  apiUrl: 'http://localhost:9000',  // URL de l'API pour l'environnement de développement
+  logging: true,  // Activation du logging pour le débogage en développement
   secretExcel: "2+2Font4",
 };
 
