@@ -83,8 +83,8 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
     accountService: AccountService,
     fb: FormBuilder,
     reclamationService: ReclamationService,
-    private prestationService: PrestationService,
     private souscriptionService: SouscriptionService,
+    private prestationService: PrestationService,
     private sinistreService: SinistreService,
     private paiementService: PaiementService
   ) {
@@ -127,7 +127,7 @@ export class ReclamationCrudComponent extends GenericCrudComponent<Reclamation> 
         { field: 'status', header: 'Status', type: 'enum', values: this.sinistreStatuses, label: 'label', key: 'value' }
       ]
       },
-      { field: 'prestation', header: 'Prestation', type: 'object', values: [], method: () => this.loadPrestations(), label: 'typePrestation', key: 'id', subfield: [
+      { field: 'prestation', header: 'Prestation', type: 'object', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', subfield: [
         { field: 'id', header: 'ID', type: 'id' },
         { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },

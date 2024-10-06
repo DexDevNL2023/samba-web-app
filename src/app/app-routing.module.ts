@@ -1,3 +1,13 @@
+import { ConfirmationPaiement } from './site/payer-prime/steps/confirmation.paiement';
+import { InformationPaiement } from './site/payer-prime/steps/information.paiement';
+import { PayerPrime } from './site/payer-prime/payer-prime';
+import { ConfirmationReclamation } from './site/demande-remboursement/steps/confirmation.reclamation';
+import { InformationReclamation } from './site/demande-remboursement/steps/information.reclamation';
+import { DemandeRemboursement } from './site/demande-remboursement/demande-remboursement';
+import { ConfirmationSinistre } from './site/declaration-sinistre/steps/confirmation.sinistre';
+import { DocumentsSinistre } from './site/declaration-sinistre/steps/documents.sinistre';
+import { InformationSinistre } from './site/declaration-sinistre/steps/information.sinistre';
+import { DeclarationSinistre } from './site/declaration-sinistre/declaration-sinistre';
 import { EffectuerSouscription } from './site/effectuer-souscription/effectuer-souscription';
 import { ConfirmationSouscription } from './site/effectuer-souscription/steps/confirmation.souscription';
 import { ModePaiementSouscription } from './site/effectuer-souscription/steps/paiement.souscription';
@@ -58,6 +68,19 @@ import { CompanyComponent } from './company/company.component';
                         { path: 'steps/frequence', component: FrequencePaiementSouscription },
                         { path: 'steps/paiement', component: ModePaiementSouscription },
                         { path: 'steps/confirmation', component: ConfirmationSouscription },
+                ]},
+                { path: 'declarer/sinistre', component: DeclarationSinistre, children: [
+                        { path: 'steps/information', component: InformationSinistre },
+                        { path: 'steps/documents', component: DocumentsSinistre },
+                        { path: 'steps/confirmation', component: ConfirmationSinistre },
+                ]},
+                { path: 'demander/remboursement', component: DemandeRemboursement, children: [
+                        { path: 'steps/information', component: InformationReclamation },
+                        { path: 'steps/confirmation', component: ConfirmationReclamation },
+                ]},
+                { path: 'payer/prime', component: PayerPrime, children: [
+                        { path: 'steps/information', component: InformationPaiement },
+                        { path: 'steps/confirmation', component: ConfirmationPaiement },
                 ]},
             ]},
 

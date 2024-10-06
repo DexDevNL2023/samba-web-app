@@ -1,3 +1,6 @@
+import { PayerPrimeService } from './../../service/payer.prime.service';
+import { DemandeRemboursementService } from './../../service/demande-remboursement.service';
+import { DeclareSinistreService } from './../../service/declare-sinistre.service';
 import { ContratAssuranceService } from './../../service/contrat-assurance.service';
 import { PoliceAssuranceService } from './../../service/police-assurance.service';
 import { PoliceAssurance } from './../../models/police-assurance.model';
@@ -47,6 +50,9 @@ export class SouscriptionDetailComponent implements OnInit {
     ];
 
     constructor(
+        public declareSinistreService: DeclareSinistreService,
+        public demandeRemboursementService: DemandeRemboursementService,
+        public payerPrimeService: PayerPrimeService,
         private souscriptionService: SouscriptionService,
         private policeService: PoliceAssuranceService,
         private contratsService: ContratAssuranceService,
@@ -90,16 +96,19 @@ export class SouscriptionDetailComponent implements OnInit {
         this.selectedContrat = null;
     }
 
-    declarerSinistre(id: number): void {
-        this.router.navigate(['/site/declarer/sinistre', id]);
+    declarerSinistre(payload: Souscription): void {
+        this.declareSinistreService.setProduct(payload);
+        this.router.navigate(['/site/declarer/sinistre/steps/information']);
     }
 
-    demanderRemboursement(id: number): void {
-        this.router.navigate(['/site/demander/remboursement', id]);
+    demanderRemboursement(payload: Souscription): void {
+        this.demandeRemboursementService.setProduct(payload);
+        this.router.navigate(['/site/demander/remboursement/steps/information']);
     }
 
-    payerPrime(id: number): void {
-        this.router.navigate(['/site/payer/prime', id]);
+    payerPrime(payload: Souscription): void {
+        this.payerPrimeService.setProduct(payload);
+        this.router.navigate(['/site/payer/prime/steps/information']);
     }
 
     protected getStatutEnumLabel(value: string) {

@@ -18,32 +18,32 @@ import { EffectuerSouscription } from '../effectuer-souscription';
             <ng-template pTemplate="subtitle">Vérifiez les informations de votre souscription</ng-template>
             <ng-template pTemplate="content">
                 <div class="field col-12">
-                    <label for="montant">Police d'assurance : </label>
+                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Police d'assurance : </label>
                     <b> {{ product?.numeroPolice }} - {{ product?.label }}</b>
                 </div>
                 <div class="field col-12">
-                    <label for="montant">Duree de couverture : </label>
+                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Duree de couverture : </label>
                     <b> {{ product?.dureeCouverture ? product?.dureeCouverture : '-' }} mois</b>
                 </div>
                 <div class="field col-12">
-                    <label for="frequence">Fréquence de paiement : </label>
+                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Fréquence de paiement : </label>
                     <b><p-tag [value]="getPaymentFrequencyLabel(souscriptionInformation?.frequencePaiement)"
                                 [severity]="getPaymentFrequencySeverity(souscriptionInformation?.frequencePaiement)"></p-tag></b>
                 </div>
                 <div class="field col-12">
-                    <label for="mode">Mode de paiement : </label>
+                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Mode de paiement : </label>
                     <b><p-tag [value]="getPaymentModeLabel(souscriptionInformation?.mode)"
                                 [severity]="getPaymentModeSeverity(souscriptionInformation?.mode)"></p-tag></b>
                 </div>
                 <div class="field col-12">
-                    <label for="montant">Montant : </label>
-                    <b> {{ souscriptionInformation?.montant ? souscriptionInformation?.montant : '-' }}</b>
+                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant des cotisation : </label>
+                    <b> {{ souscriptionInformation?.montant ? souscriptionInformation?.montant : '-' }} XAF</b>
                 </div>
             </ng-template>
             <ng-template pTemplate="footer">
                 <div class="grid grid-nogutter justify-content-between">
                     <p-button label="Retour" (onClick)="prevPage()" icon="pi pi-angle-left" [raised]="true" [rounded]="true" styleClass="p-button-info" />
-                    <p-button label="Confirmer" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
+                    <p-button label="Souscrire" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
                 </div>
             </ng-template>
         </p-card>
@@ -72,7 +72,7 @@ export class ConfirmationSouscription implements OnInit {
         { label: 'Airtel Money', value: PaymentMode.AIRTEL }
     ];
 
-    constructor(public appMain: EffectuerSouscription, private accountService: AccountService, public effectuerSouscriptionService: EffectuerSouscriptionService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
+    constructor(public appMain: EffectuerSouscription, public effectuerSouscriptionService: EffectuerSouscriptionService, private accountService: AccountService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
 
     ngOnInit() {
         this.product = this.effectuerSouscriptionService.getProduct();
@@ -81,8 +81,6 @@ export class ConfirmationSouscription implements OnInit {
             this.accountInformation = this.account.id;
             this.policeInformation = this.product.id;
             this.montantInformation = this.product.montantSouscription;
-            console.log("1 : "+this.montantInformation);
-            console.log("2 : "+this.product.montantSouscription);
         }
         this.effectuerSouscriptionService.setAccount(this.accountInformation);
         this.effectuerSouscriptionService.setPolice(this.policeInformation);

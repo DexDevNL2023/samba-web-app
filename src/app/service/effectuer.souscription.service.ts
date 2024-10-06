@@ -34,7 +34,7 @@ export class EffectuerSouscriptionService {
         this.product = payload;
     }
 
-    getProduct() {
+    getProduct(): PoliceAssurance | null {
         return this.product;
     }
 

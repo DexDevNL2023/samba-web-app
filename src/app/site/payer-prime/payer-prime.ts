@@ -1,43 +1,36 @@
-import { EffectuerSouscriptionService } from './../../service/effectuer.souscription.service';
+import { PayerPrimeService } from './../../service/payer.prime.service';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-effectuer-souscription',
+    selector: 'app-payer-prime',
     templateUrl: '../generic/generic-routing-steps.html'
 })
-export class EffectuerSouscription implements OnInit {
+export class PayerPrime implements OnInit {
     steps: any[];
     currentStepId: string; // Identifiant de l'étape actuelle
 
     subscription: Subscription;
 
-    constructor(public messageService: MessageService, public effectuerSouscriptionService: EffectuerSouscriptionService, private router: Router) {}
+    constructor(public messageService: MessageService, public payerPrimeService: PayerPrimeService, private router: Router) {}
 
     ngOnInit() {
         // Définir les étapes avec des identifiants uniques
         this.steps = [
             {
-                id: 'frequence',
-                label: 'Fréquence',
-                routerLink: 'steps/frequence',
-                description: 'Choisir la fréquence de paiement des primes',
-                icon: 'pi pi-calendar'
-            },
-            {
-                id: 'paiement',
-                label: 'Paiement',
-                routerLink: 'steps/paiement',
-                description: 'Choisir le mode de paiement des primes',
-                icon: 'pi pi-wallet'
+                id: 'information',
+                label: 'Paiement de la prime',
+                routerLink: 'steps/information',
+                description: 'Renseigner les informations de paiement',
+                icon: 'pi pi-id-card'
             },
             {
                 id: 'confirmation',
                 label: 'Confirmation',
                 routerLink: 'steps/confirmation',
-                description: 'Confirmer les informations de souscription',
+                description: 'Confirmer les informations et effectuer le paiement',
                 icon: 'pi pi-check'
             }
         ];
@@ -52,30 +45,30 @@ export class EffectuerSouscription implements OnInit {
         // Initialiser currentStep
         this.updateCurrentStep();
 
-        this.subscription = this.effectuerSouscriptionService.souscriptionComplete$.subscribe((souscriptionInformation) => {
+        this.subscription = this.payerPrimeService.paiementComplete$.subscribe((paiementInformation) => {
             // Submit to API with product ID
-            this.submitSouscription();
+            this.submitPaiement();
         });
     }
 
-    // Submit the souscription to API using async/await
-    async submitSouscription() {
-        const souscriptionData = this.effectuerSouscriptionService.getSouscriptionInformation();
+    // Submit the paiement to API using async/await
+    async submitPaiement() {
+        const paiementData = this.payerPrimeService.getPaiementInformation();
 
         try {
             // Await the API response
-            const response = await this.effectuerSouscriptionService.submitSouscriptionAsync(souscriptionData);
+            const response = await this.payerPrimeService.submitPaiementAsync(paiementData);
             this.messageService.add({
                 severity: 'success',
-                summary: 'Souscription',
-                detail: 'Souscription soumise avec succès !!'
+                summary: 'Paiement',
+                detail: 'Paiement soumis avec succès !'
             });
             this.router.navigate(['/site']);
         } catch (error) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Une erreur est survenue lors de la soumission de la souscription.'
+                detail: 'Une erreur est survenue lors de la soumission du paiement.'
             });
         }
     }

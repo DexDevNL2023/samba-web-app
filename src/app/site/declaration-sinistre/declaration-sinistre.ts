@@ -1,43 +1,46 @@
-import { EffectuerSouscriptionService } from './../../service/effectuer.souscription.service';
+import { DeclareSinistreService } from './../../service/declare-sinistre.service';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
-    selector: 'app-effectuer-souscription',
+    selector: 'app-declaration-sinistre',
     templateUrl: '../generic/generic-routing-steps.html'
 })
-export class EffectuerSouscription implements OnInit {
+export class DeclarationSinistre implements OnInit {
     steps: any[];
-    currentStepId: string; // Identifiant de l'étape actuelle
-
+    currentStepId: string;
     subscription: Subscription;
 
-    constructor(public messageService: MessageService, public effectuerSouscriptionService: EffectuerSouscriptionService, private router: Router) {}
+    constructor(
+    public declareSinistreService: DeclareSinistreService,
+    private router: Router,
+    private messageService: MessageService
+    ) {}
 
     ngOnInit() {
-        // Définir les étapes avec des identifiants uniques
+        // Définition des étapes du processus
         this.steps = [
             {
-                id: 'frequence',
-                label: 'Fréquence',
-                routerLink: 'steps/frequence',
-                description: 'Choisir la fréquence de paiement des primes',
-                icon: 'pi pi-calendar'
+                id: 'information',
+                label: 'Information du Sinistre',
+                routerLink: 'steps/information',
+                description: 'Renseigner les informations du sinistre',
+                icon: 'pi pi-exclamation-triangle'
             },
             {
-                id: 'paiement',
-                label: 'Paiement',
-                routerLink: 'steps/paiement',
-                description: 'Choisir le mode de paiement des primes',
-                icon: 'pi pi-wallet'
+                id: 'documents',
+                label: 'Choisir les documents',
+                routerLink: 'steps/documents',
+                description: 'Sélectionnez les documents de preuve pour le sinistre',
+                icon: 'pi pi-file'
             },
             {
                 id: 'confirmation',
                 label: 'Confirmation',
                 routerLink: 'steps/confirmation',
-                description: 'Confirmer les informations de souscription',
+                description: 'Confirmer les informations et soumettre votre declaration de sinistre',
                 icon: 'pi pi-check'
             }
         ];
@@ -52,30 +55,28 @@ export class EffectuerSouscription implements OnInit {
         // Initialiser currentStep
         this.updateCurrentStep();
 
-        this.subscription = this.effectuerSouscriptionService.souscriptionComplete$.subscribe((souscriptionInformation) => {
+        this.subscription = this.declareSinistreService.sinistreComplete$.subscribe((sinistreInformation) => {
             // Submit to API with product ID
-            this.submitSouscription();
+            this.submitSinistre();
         });
     }
 
-    // Submit the souscription to API using async/await
-    async submitSouscription() {
-        const souscriptionData = this.effectuerSouscriptionService.getSouscriptionInformation();
-
+    // Soumission finale du sinistre
+    async submitSinistre() {
+        const sinistreData = this.declareSinistreService.getSinistreInformation();
         try {
-            // Await the API response
-            const response = await this.effectuerSouscriptionService.submitSouscriptionAsync(souscriptionData);
+            await this.declareSinistreService.submitDeclarationSinitreAsync(sinistreData);
             this.messageService.add({
                 severity: 'success',
-                summary: 'Souscription',
-                detail: 'Souscription soumise avec succès !!'
+                summary: 'Déclaration réussie',
+                detail: 'Votre sinistre a été déclaré avec succès !'
             });
-            this.router.navigate(['/site']);
+            this.router.navigate(['/home']);
         } catch (error) {
-            this.messageService.add({
+                this.messageService.add({
                 severity: 'error',
-                summary: 'Error',
-                detail: 'Une erreur est survenue lors de la soumission de la souscription.'
+                summary: 'Erreur',
+                detail: 'Erreur lors de la soumission du sinistre.'
             });
         }
     }

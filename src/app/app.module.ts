@@ -1,3 +1,16 @@
+import { PayerPrimeService } from './service/payer.prime.service';
+import { ConfirmationPaiement } from './site/payer-prime/steps/confirmation.paiement';
+import { InformationPaiement } from './site/payer-prime/steps/information.paiement';
+import { PayerPrime } from './site/payer-prime/payer-prime';
+import { DemandeRemboursementService } from './service/demande-remboursement.service';
+import { ConfirmationReclamation } from './site/demande-remboursement/steps/confirmation.reclamation';
+import { InformationReclamation } from './site/demande-remboursement/steps/information.reclamation';
+import { DemandeRemboursement } from './site/demande-remboursement/demande-remboursement';
+import { InformationSinistre } from './site/declaration-sinistre/steps/information.sinistre';
+import { DocumentsSinistre } from './site/declaration-sinistre/steps/documents.sinistre';
+import { ConfirmationSinistre } from './site/declaration-sinistre/steps/confirmation.sinistre';
+import { DeclarationSinistre } from './site/declaration-sinistre/declaration-sinistre';
+import { DeclareSinistreService } from './service/declare-sinistre.service';
 import { ConfirmationSouscription } from './site/effectuer-souscription/steps/confirmation.souscription';
 import { ModePaiementSouscription } from './site/effectuer-souscription/steps/paiement.souscription';
 import { FrequencePaiementSouscription } from './site/effectuer-souscription/steps/frequence.souscription';
@@ -20,7 +33,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {DatePipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -315,17 +328,27 @@ import { CompanyComponent } from './company/company.component';
         FrequencePaiementSouscription,
         ModePaiementSouscription,
         ConfirmationSouscription,
+        DeclarationSinistre,
+        InformationSinistre,
+        DocumentsSinistre,
+        ConfirmationSinistre,
+        DemandeRemboursement,
+        InformationReclamation,
+        ConfirmationReclamation,
+        PayerPrime,
+        InformationPaiement,
+        ConfirmationPaiement,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        {provide: LocationStrategy, useClass: HashLocationStrategy}, DatePipe,
         BreadcrumbService, EventService, MenuService, AssuranceService, DocumentService, UserRouteAccessService,
         FinanceurService, FournisseurService, GarantieService, DossierMedicalService, BaseService, BrancheService,
         NotificationService, PaiementService, PoliceAssuranceService, PrestationService, AccountCrudService,
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         RoleService, PermissionService, AuthorizationService, CompanyService, MessageService, AuthentificationService,
         AccountService, StateStorageService, CompanyService, DashboardService, ContratAssuranceService, RecuPaiementService,
-        EffectuerSouscriptionService,
+        EffectuerSouscriptionService, DeclareSinistreService, DemandeRemboursementService, PayerPrimeService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,

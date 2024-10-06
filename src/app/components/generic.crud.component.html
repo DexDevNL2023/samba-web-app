@@ -221,8 +221,7 @@
                                         (onChange)="col?.control ? col?.control(selectedItem, $event) : null" />
                                     <textarea *ngSwitchCase="'textarea'" class="p-inputtextarea p-component p-element"
                                         pInputTextarea name="{{ col?.field }}" id="{{ col?.field }}"
-                                        placeholder="{{ col?.header }}" formControlName="{{ col?.field }}" rows="5"
-                                        cols="30"
+                                        placeholder="{{ col?.header }}" formControlName="{{ col?.field }}" rows="5" cols="30"
                                         (onChange)="col?.control ? col?.control(selectedItem, $event) : null"></textarea>
                                     <p-calendar *ngSwitchCase="'date'" name="{{ col?.field }}" id="{{ col?.field }}"
                                         formControlName="{{ col?.field }}" [showIcon]="true" inputId="icon"

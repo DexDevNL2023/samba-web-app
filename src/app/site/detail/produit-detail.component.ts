@@ -141,9 +141,7 @@ export class ProduitDetailComponent implements OnInit {
     }
 
     souscrire(payload: PoliceAssurance): void {
-        console.log("A : "+payload.montantSouscription);
         this.effectuerSouscriptionService.setProduct(payload);
-        console.log("B : "+this.effectuerSouscriptionService.getProduct());
         this.router.navigate(['/site/effectuer/souscription/steps/frequence']);
     }
 
