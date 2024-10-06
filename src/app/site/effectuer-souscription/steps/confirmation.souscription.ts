@@ -19,31 +19,31 @@ import { EffectuerSouscription } from '../effectuer-souscription';
             <ng-template pTemplate="content">
                 <div class="field col-12">
                     <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Police d'assurance : </label>
-                    <b> {{ product?.numeroPolice }} - {{ product?.label }}</b>
+                    <span> {{ product?.numeroPolice }} - {{ product?.label }}</span>
                 </div>
                 <div class="field col-12">
                     <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Duree de couverture : </label>
-                    <b> {{ product?.dureeCouverture ? product?.dureeCouverture : '-' }} mois</b>
+                    <span> {{ product?.dureeCouverture ? product?.dureeCouverture : '-' }} mois</span>
                 </div>
                 <div class="field col-12">
                     <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Fréquence de paiement : </label>
-                    <b><p-tag [value]="getPaymentFrequencyLabel(souscriptionInformation?.frequencePaiement)"
-                                [severity]="getPaymentFrequencySeverity(souscriptionInformation?.frequencePaiement)"></p-tag></b>
+                    <p-tag [value]="getPaymentFrequencyLabel(souscriptionInformation?.frequencePaiement)"
+                                [severity]="getPaymentFrequencySeverity(souscriptionInformation?.frequencePaiement)"></p-tag>
                 </div>
                 <div class="field col-12">
                     <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Mode de paiement : </label>
-                    <b><p-tag [value]="getPaymentModeLabel(souscriptionInformation?.mode)"
-                                [severity]="getPaymentModeSeverity(souscriptionInformation?.mode)"></p-tag></b>
+                    <p-tag [value]="getPaymentModeLabel(souscriptionInformation?.mode)"
+                                [severity]="getPaymentModeSeverity(souscriptionInformation?.mode)"></p-tag>
                 </div>
                 <div class="field col-12">
                     <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant des cotisation : </label>
-                    <b> {{ souscriptionInformation?.montant ? souscriptionInformation?.montant : '-' }} XAF</b>
+                    <span> {{ souscriptionInformation?.montant ? souscriptionInformation?.montant : '-' }} XAF</span>
                 </div>
             </ng-template>
             <ng-template pTemplate="footer">
                 <div class="grid grid-nogutter justify-content-between">
                     <p-button label="Retour" (onClick)="prevPage()" icon="pi pi-angle-left" [raised]="true" [rounded]="true" styleClass="p-button-info" />
-                    <p-button label="Souscrire" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
+                    <p-button label="Effectuer votre souscription" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
                 </div>
             </ng-template>
         </p-card>
@@ -81,11 +81,13 @@ export class ConfirmationSouscription implements OnInit {
             this.accountInformation = this.account.id;
             this.policeInformation = this.product.id;
             this.montantInformation = this.product.montantSouscription;
+
+            // Mettre a jour souscriptionInformation
+            this.effectuerSouscriptionService.setAccount(this.accountInformation);
+            this.effectuerSouscriptionService.setPolice(this.policeInformation);
+            this.effectuerSouscriptionService.setMontant(this.montantInformation);
+            this.souscriptionInformation = this.effectuerSouscriptionService.getSouscriptionInformation();
         }
-        this.effectuerSouscriptionService.setAccount(this.accountInformation);
-        this.effectuerSouscriptionService.setPolice(this.policeInformation);
-        this.effectuerSouscriptionService.setMontant(this.montantInformation);
-        this.souscriptionInformation = this.effectuerSouscriptionService.getSouscriptionInformation();
     }
 
     complete() {

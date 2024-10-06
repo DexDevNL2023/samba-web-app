@@ -29,12 +29,17 @@ import { Prestation } from '../../../models/prestation.model';
                         </div>
                         <div class="field">
                             <label for="dateReclamation">Date de Réclamation</label>
-                            <p-calendar [(ngModel)]="dateReclamationInformation" dateFormat="yy-mm-dd"></p-calendar>
+                            <p-calendar id="dateReclamation" [(ngModel)]="dateReclamationInformation" [showIcon]="true" inputId="icon"
+                                dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
+                                placeholder="Saisir la date de reclamation"></p-calendar>
                         </div>
                         <div class="field">
                             <label for="montantReclame">Montant Réclamé</label>
-                            <inputNumber id="montantReclame" [(ngModel)]="montantReclameInformation" mode="currency" currency="XAF"
-                                currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0" [min]="0" [max]="100000000000000000" [showButtons]="true" />
+                            <p-inputNumber
+                                    id="montant" placeholder="Saisir le montant reclamé"
+                                    [(ngModel)]="montantReclameInformation" mode="currency" currency="XAF"
+                                    currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0"
+                                    [min]="0" [max]="100000000000000000" [showButtons]="true" />
                         </div>
                         <div class="field" *ngIf="showSinistreDropdown">
                             <label for="sinistre">Sinistre</label>

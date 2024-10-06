@@ -22,12 +22,17 @@ import { ActivatedRoute, Router } from '@angular/router';
                         </div>
                         <div class="field">
                             <label for="dateSurvenance">Date de survenance</label>
-                            <p-calendar [(ngModel)]="dateSurvenanceInformation" dateFormat="yy-mm-dd"></p-calendar>
+                            <p-calendar id="dateSurvenance" [(ngModel)]="dateSurvenanceInformation" [showIcon]="true" inputId="icon"
+                                dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
+                                placeholder="Saisir la date de survenance du sinistre"></p-calendar>
                         </div>
                         <div class="field">
                             <label for="montant">Montant du sinistre</label>
-                            <inputNumber id="montant" [(ngModel)]="montantSinistreInformation" mode="currency" currency="XAF"
-                                currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0" [min]="0" [max]="100000000000000000" [showButtons]="true" />
+                            <p-inputNumber
+                                    id="montant" placeholder="Saisir le montant du sinistre"
+                                    [(ngModel)]="montantSinistreInformation" mode="currency" currency="XAF"
+                                    currencyDisplay="symbol" [minFractionDigits]="0" [maxFractionDigits]="0"
+                                    [min]="0" [max]="100000000000000000" [showButtons]="true" />
                         </div>
                     </div>
                 </ng-template>

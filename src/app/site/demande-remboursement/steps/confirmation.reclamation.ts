@@ -23,38 +23,38 @@ import { DatePipe } from '@angular/common';
                 <ng-template pTemplate="content">
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Souscription : </label>
-                        <b> {{ product?.numeroSouscription }} du {{ product?.dateSouscription | date:'shortDate' }}</b>
+                        <span> {{ product?.numeroSouscription }} du {{ (product?.dateSouscription | date:'dd/MM/yyyy') }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Type de reclamation : </label>
-                        <b> <p-tag [value]="getTypeReclamationLabel(reclamationInformation?.type)"
-                            [severity]="getTypeReclamationSeverity(reclamationInformation?.type)"></p-tag></b>
+                        <span> <p-tag [value]="getTypeReclamationLabel(reclamationInformation?.type)"
+                            [severity]="getTypeReclamationSeverity(reclamationInformation?.type)"></p-tag></span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Description : </label>
-                        <b> {{ reclamationInformation?.description ? reclamationInformation?.description : '-' }}</b>
+                        <span> {{ reclamationInformation?.description ? reclamationInformation?.description : '-' }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Date de réclamation : </label>
-                        <b> {{ reclamationInformation?.dateReclamation ? (reclamationInformation?.dateReclamation | date:'shortDate') : '-' }}</b>
+                        <span> {{ reclamationInformation?.dateReclamation ? (reclamationInformation?.dateReclamation | date:'dd/MM/yyyy') : '-' }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant réclamé : </label>
-                        <b> {{ reclamationInformation?.montantReclamation ? reclamationInformation?.montantReclamation : '-' }} XAF</b>
+                        <span> {{ reclamationInformation?.montantReclame ? reclamationInformation?.montantReclame : '-' }} XAF</span>
                     </div>
                     <div class="field col-12" *ngIf="reclamationInformation?.type === 'SINISTRE'">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Sinistre : </label>
-                        <b> {{ buildSinistre() }}</b>
+                        <span> {{ buildSinistre() }}</span>
                     </div>
                     <div class="field col-12" *ngIf="reclamationInformation?.type === 'PRESTATION'">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Prestation : </label>
-                        <b> {{ buildPrestation() }}</b>
+                        <span> {{ buildPrestation() }}</span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="footer">
                     <div class="grid grid-nogutter justify-content-between">
                         <p-button label="Retour" (onClick)="prevPage()" icon="pi pi-angle-left" [raised]="true" [rounded]="true" styleClass="p-button-info" />
-                        <p-button label="Soumettre votre declaration" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
+                        <p-button label="Soumettre votre reclamation" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
                     </div>
                 </ng-template>
             </p-card>
@@ -82,14 +82,16 @@ export class ConfirmationReclamation implements OnInit {
         if (this.account && this.product) {
             this.accountInformation = this.account.id;
             this.souscriptionInformation = this.product.id;
-        }
-        this.demandeRemboursementService.setAccount(this.accountInformation);
-        this.demandeRemboursementService.setSouscription(this.souscriptionInformation);
-        this.reclamationInformation = this.demandeRemboursementService.getReclamationInformation();
-        if (this.reclamationInformation?.type === TypeReclamation.SINISTRE) {
-            this.sinistre = await this.sinistreService.find(this.reclamationInformation?.sinistre).toPromise();
-        } else {
-            this.prestation = await this.prestationService.find(this.reclamationInformation?.prestation).toPromise();
+
+            // Mettre a jour reclamationInformation
+            this.demandeRemboursementService.setAccount(this.accountInformation);
+            this.demandeRemboursementService.setSouscription(this.souscriptionInformation);
+            this.reclamationInformation = this.demandeRemboursementService.getReclamationInformation();
+            if (this.reclamationInformation?.type === TypeReclamation.SINISTRE) {
+                this.sinistre = await this.sinistreService.find(this.reclamationInformation?.sinistre).toPromise();
+            } else {
+                this.prestation = await this.prestationService.find(this.reclamationInformation?.prestation).toPromise();
+            }
         }
     }
 

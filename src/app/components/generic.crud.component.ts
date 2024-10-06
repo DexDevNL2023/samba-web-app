@@ -433,18 +433,19 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     return this.cols.map(col => col.field);
   }
 
-  protected onFileSelected(field: string, event: any): void {
-      const file = event.files[0];
-      if (file) {
-          // Lecture du fichier pour une prévisualisation
-          const reader = new FileReader();
-          reader.onload = (e) => {
+  protected onSelectedFiles(field: string, event: any): void {
+    const files = event.files; // Assurez-vous de lire `event.files`
+    if (files && files.length > 0) {
+        const file = files[0]; // Prendre le premier fichier
+        // Lecture du fichier pour une prévisualisation
+        const reader = new FileReader();
+        reader.onload = (e) => {
             const base64String = (reader.result as string);
             // Mise à jour de la valeur du champ dans le formGroup
             this.formGroup.get(field)?.setValue(base64String);
-          };
-          reader.readAsDataURL(file);
-      }
+        };
+        reader.readAsDataURL(file);
+    }
   }
 
   // Improved error handling in onFileChange()

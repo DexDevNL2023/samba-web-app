@@ -17,29 +17,36 @@ import { Souscription } from '../../../models/souscription.model';
                 <ng-template pTemplate="content">
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Souscription : </label>
-                        <b> {{ product?.numeroSouscription }} du {{ product?.dateSouscription | date:'shortDate' }}</b>
+                        <span> {{ product?.numeroSouscription }} du {{ (product?.dateSouscription | date:'dd/MM/yyyy') }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Libellé : </label>
-                        <b> {{ sinistreInformation?.label ? sinistreInformation?.label : '-' }}</b>
+                        <span> {{ sinistreInformation?.label ? sinistreInformation?.label : '-' }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Raison : </label>
-                        <p> {{ sinistreInformation?.raison ? sinistreInformation?.raison : '-' }}</p>
+                        <span> {{ sinistreInformation?.raison ? sinistreInformation?.raison : '-' }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Date de survenance : </label>
-                        <b> {{ sinistreInformation?.dateSurvenance ? sinistreInformation?.dateSurvenance : '-' | date:'shortDate' }}</b>
+                        <span> {{ sinistreInformation?.dateSurvenance ? (sinistreInformation?.dateSurvenance | date:'dd/MM/yyyy') : '-' }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant du sinistre : </label>
-                        <b> {{ sinistreInformation?.montantSinistre ? sinistreInformation?.montantSinistre : '-' }} XAF</b>
+                        <span> {{ sinistreInformation?.montantSinistre ? sinistreInformation?.montantSinistre : '-' }} XAF</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Documents de sinistre : </label>
-                        <ul *ngFor="let file of sinistreInformation?.documents">
-                            <li>{{ file.nom }}</li>
-                        </ul>
+                        <div *ngIf="sinistreInformation?.documents?.length > 0">
+                            <div class="flex flex-wrap p-0 sm:p-5 gap-5">
+                                <div *ngFor="let file of sinistreInformation?.documents" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
+                                    <div>
+                                        <img role="presentation" [alt]="file.name" [src]="file.imageUrl" width="100" height="50" />
+                                    </div>
+                                    <span class="font-semibold">{{ file.nom }}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="footer">
@@ -67,10 +74,12 @@ export class ConfirmationSinistre implements OnInit {
         if (this.account && this.product) {
             this.accountInformation = this.account.id;
             this.souscriptionInformation = this.product.id;
+
+            // Mettre a jour sinistreInformation
+            this.declareSinistreService.setAccount(this.accountInformation);
+            this.declareSinistreService.setSouscription(this.souscriptionInformation);
+            this.sinistreInformation = this.declareSinistreService.getSinistreInformation();
         }
-        this.declareSinistreService.setAccount(this.accountInformation);
-        this.declareSinistreService.setSouscription(this.souscriptionInformation);
-        this.sinistreInformation = this.declareSinistreService.getSinistreInformation();
     }
 
     complete() {

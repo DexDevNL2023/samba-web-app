@@ -7,5 +7,5 @@ export interface PublicSinistreRequest {
   montantSinistre?: number | null;
   account?: number | null;
   souscription?: number | null;
-  documents: DocumentSinistre[];
+  documents?: DocumentSinistre[];
 }

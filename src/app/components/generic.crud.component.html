@@ -267,14 +267,14 @@
                                             alt="Preview" style="max-width: 200px; max-height: 200px;" size="xlarge" />
                                         <p-fileUpload mode="basic" for="{{ col?.field }}"
                                             chooseLabel="Upload a {{ col?.header }}" accept="image/*"
-                                            (onSelect)="onFileSelected(selectedItem[col?.field], $event)"
+                                            (onSelect)="onSelectedFiles(selectedItem[col?.field], $event)"
                                             [showUploadButton]="false" [showCancelButton]="true" [auto]="true"
                                             (onChange)="col?.control ? col?.control(selectedItem, $event) : null"
                                             [files]="selectedItem[col?.field] ? [selectedItem[col?.field]] : []"></p-fileUpload>
                                     </div>
                                     <p-fileUpload *ngSwitchCase="'file'" mode="basic" for="{{ col?.field }}"
-                                        chooseLabel="Upload a {{ col?.header }}" accept="*"
-                                        (onSelect)="onFileSelected(selectedItem[col?.field], $event)"
+                                        chooseLabel="Upload a {{ col?.header }}" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.xls,.xlsx"
+                                        (onSelect)="onSelectedFiles(selectedItem[col?.field], $event)"
                                         [showUploadButton]="false" [showCancelButton]="true" [auto]="true"
                                         (onChange)="col?.control ? col?.control(selectedItem, $event) : null"
                                         [files]="selectedItem[col?.field] ? [selectedItem[col?.field]] : []"></p-fileUpload>

@@ -63,11 +63,6 @@ export class DeclareSinistreService {
         return this.sinistreInformation.montantSinistre;
     }
 
-    // Method to add a document in DocumentSinistre format
-    addDocument(document: DocumentSinistre) {
-        this.sinistreInformation.documents.push(document);
-    }
-
     setDocument(documents: DocumentSinistre[]) {
         this.sinistreInformation.documents = documents;
     }

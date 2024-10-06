@@ -12,31 +12,31 @@ import { MessageService } from 'primeng/api';
 @Component({
     template: `
         <div class="stepsdemo-content">
-        <p-card>
-            <ng-template pTemplate="title">Confirmation</ng-template>
-            <ng-template pTemplate="subtitle">Vérifiez les informations de votre paiement</ng-template>
-            <ng-template pTemplate="content">
-                <div class="field col-12">
-                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Souscription : </label>
-                    <b> {{ product?.numeroSouscription }} - {{ product?.label }}</b>
-                </div>
-                <div class="field col-12">
-                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Mode de paiement : </label>
-                    <b><p-tag [value]="getPaymentModeLabel(paiementInformation?.mode)"
-                                [severity]="getPaymentModeSeverity(paiementInformation?.mode)"></p-tag></b>
-                </div>
-                <div class="field col-12">
-                    <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant de la prime : </label>
-                    <b> {{ paiementInformation?.montant ? paiementInformation?.montant : '-' }} XAF</b>
-                </div>
-            </ng-template>
-            <ng-template pTemplate="footer">
-                <div class="grid grid-nogutter justify-content-between">
-                    <p-button label="Retour" (onClick)="prevPage()" icon="pi pi-angle-left" [raised]="true" [rounded]="true" styleClass="p-button-info" />
-                    <p-button label="Souscrire" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
-                </div>
-            </ng-template>
-        </p-card>
+            <p-card>
+                <ng-template pTemplate="title">Confirmation</ng-template>
+                <ng-template pTemplate="subtitle">Vérifiez les informations de votre paiement</ng-template>
+                <ng-template pTemplate="content">
+                    <div class="field col-12">
+                        <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Souscription : </label>
+                        <span> {{ product?.numeroSouscription }} du {{ (product?.dateSouscription | date:'dd/MM/yyyy') }}</span>
+                    </div>
+                    <div class="field col-12">
+                        <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Mode de paiement : </label>
+                        <p-tag [value]="getPaymentModeLabel(paiementInformation?.mode)"
+                                    [severity]="getPaymentModeSeverity(paiementInformation?.mode)"></p-tag>
+                    </div>
+                    <div class="field col-12">
+                        <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Montant de la prime : </label>
+                        <span> {{ paiementInformation?.montant ? paiementInformation?.montant : '-' }} XAF</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <div class="grid grid-nogutter justify-content-between">
+                        <p-button label="Retour" (onClick)="prevPage()" icon="pi pi-angle-left" [raised]="true" [rounded]="true" styleClass="p-button-info" />
+                        <p-button label="Effectuer votre paiement" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" [raised]="true" [rounded]="true" styleClass="p-button-success" />
+                    </div>
+                </ng-template>
+            </p-card>
         </div>
     `
 })
@@ -65,11 +65,13 @@ export class ConfirmationPaiement implements OnInit {
             this.accountInformation = this.account.id;
             this.souscriptionInformation = this.product.id;
             this.montantInformation = this.product.montantCotisation;
+
+            // Mettre a jour paiementInformation
+            this.payerPrimeService.setAccount(this.accountInformation);
+            this.payerPrimeService.setSouscription(this.souscriptionInformation);
+            this.payerPrimeService.setMontant(this.montantInformation);
+            this.paiementInformation = this.payerPrimeService.getPaiementInformation();
         }
-        this.payerPrimeService.setAccount(this.accountInformation);
-        this.payerPrimeService.setSouscription(this.souscriptionInformation);
-        this.payerPrimeService.setMontant(this.montantInformation);
-        this.paiementInformation = this.payerPrimeService.getPaiementInformation();
     }
 
     complete() {
