@@ -1,3 +1,5 @@
+import { AssureDetailComponent } from './site/assure-detail/assure-detail.component';
+import { AssureListComponent } from './site/assure-list/assure-list.component';
 import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
 import { ConfirmationPrestation } from './site/reclamation-prestation/steps/confirmation.prestation';
 import { InformationPrestation } from './site/reclamation-prestation/steps/information.prestation';
@@ -19,7 +21,6 @@ import { ModePaiementSouscription } from './site/effectuer-souscription/steps/pa
 import { FrequencePaiementSouscription } from './site/effectuer-souscription/steps/frequence.souscription';
 import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
 import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
-import { ProduitDetailComponent } from './site/detail/produit-detail.component';
 import { ProduitComponent } from './site/produit/produit.component';
 import { SiteComponent } from './site/main/site.component';
 import { ScanCniComponent } from './account/scan-cni/scan-cni.component';
@@ -56,6 +57,7 @@ import { SinistreCrudComponent } from './components/sinistre/sinistre.crud.compo
 import { SouscriptionCrudComponent } from './components/souscription/souscription.crud.component';
 import { ContratAssuranceCrudComponent } from './components/contrat-assurance/contrat-assurance.crud.component';
 import { CompanyComponent } from './company/company.component';
+import { ProduitDetailComponent } from './site/produit-detail/produit-detail.component';
 
 @NgModule({
     imports: [
@@ -93,6 +95,8 @@ import { CompanyComponent } from './company/company.component';
                         { path: 'steps/information', component: InformationReclamation },
                         { path: 'steps/confirmation', component: ConfirmationReclamation },
                 ]},
+                { path: 'assure/list', component: AssureListComponent },
+                { path: 'assure/detail/:id', component: AssureDetailComponent },
             ]},
 
             // Routes pour la section admin

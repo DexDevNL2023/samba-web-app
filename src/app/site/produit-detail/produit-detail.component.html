@@ -60,13 +60,9 @@
                 dataKey="id">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Label</th>
-                        <th>Pourcentage</th>
-                        <th>Plafond Assuré</th>
-                        <th>Date de Début</th>
-                        <th>Date de Fin</th>
-                        <th>Status</th>
-                        <th>Termes</th>
+                        <th *ngFor="let col of columns">
+                            {{ col.header }}
+                        </th>
                     </tr>
                 </ng-template>
 

@@ -38,8 +38,15 @@ export class SinistreService extends GenericCrudService<Sinistre> {
         );
     }
 
-    getByAssureId(assureId: number) {
+    getByUserId(assureId: number) {
         return this.http.get<RessourceResponse<Sinistre[]>>(`${this.resourceUrl}/find/by/user/${assureId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les sinistres par souscription')),
+            catchError(() => of([]))
+        );
+    }
+
+    getByAssureId(assureId: number) {
+        return this.http.get<RessourceResponse<Sinistre[]>>(`${this.resourceUrl}/find/by/assure/${assureId}`).pipe(
             map(response => this.handleResponse(response, 'Récupérer les sinistres par souscription')),
             catchError(() => of([]))
         );

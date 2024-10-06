@@ -1,0 +1,83 @@
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+    <div class="flex justify-content-between flex-wrap">
+        <div class="flex align-items-center mb-4 md:mb-0">
+            <div class="text-900 font-bold text-3xl mr-2">Vos assures </div>
+            <p-badge [value]="assures.length" class="bg-gray-200 text-gray-900 border-circle p-element">
+            </p-badge>
+        </div>
+        <p-divider styleclass="w-full border-gray-200" class="p-element">
+            <div role="separator"
+                class="w-full border-gray-200 p-divider p-component p-divider-horizontal p-divider-solid p-divider-left">
+                <div class="p-divider-content"></div>
+            </div>
+        </p-divider>
+    </div>
+
+    <!-- Input de recherche globale -->
+    <div class="flex align-items-center flex-auto">
+        <div class="p-input-icon-left w-full p-input-filled">
+            <i class="pi pi-search"></i>
+            <input type="text" placeholder="Rechercher des assures"
+                class="p-inputtext p-component p-element w-full p-border-round"
+                style="height: 50px; font-size: 16px;; border-radius: 15px;" [(ngModel)]="searchQuery"
+                (input)="onGlobalFilter()">
+        </div>
+    </div>
+
+    <!-- Affichage des assures filtrés -->
+    <div class="grid nogutter">
+        <ng-container *ngIf="filteredAssures.length > 0; else noAssuresTemplate">
+            <div *ngFor="let assure of filteredAssures" class="col-12 lg:col-4 p-3">
+                <p-card [header]="'Assure #' + assure?.numeroAssure"
+                    [style]="{ 'border-radius': '20px', 'box-shadow': '0px 4px 12px rgba(0, 0, 0, 0.1)', 'height': '100%' }"
+                    class="card-equal-height">
+                    <ng-template pTemplate="header">
+                        <p-tag [value]="getEnumLabel(assure?.sexe)"
+                            [severity]="getSeverity(assure?.sexe)" [rounded]="true"></p-tag>
+                    </ng-template>
+
+                    <div class="p-4 flex flex-column">
+                        <span class="text-xl text-900 font-medium mb-3">Nom : {{
+                            assure?.montantCotisation }} XAF</span>
+                        <span class="text-xl text-900 font-medium mb-3">Nom : {{
+                            assure?.montantCotisation }} XAF</span>
+                        <span class="text-xl text-900 mb-3">Date d'expiration : {{ assure?.dateExpiration | date
+                            }}</span>
+                    </div>
+
+                    <div class="p-4 flex flex-column">
+                        <span class="text-xl text-900 font-medium mb-3">Nom complet :
+                            {{ assure?.lastName }} {{ assure?.firstName }}
+                        </span>
+                        <span class="text-xl text-900 font-medium mb-3">Numéro CNI :
+                            {{ assure?.numCni }}
+                        </span>
+                        <span class="text-xl text-900 font-medium mb-3">Date de naissance :
+                            {{ assure?.dateNaissance | date }}
+                        </span>
+                        <span class="text-xl text-900 font-medium mb-3">Email :
+                            {{ assure?.email }}
+                        </span>
+                        <span class="text-xl text-900 mb-3">Téléphone :
+                            {{ assure?.telephone }}
+                        </span>
+                    </div>
+
+                    <ng-template pTemplate="footer">
+                        <button type="button" pButton pRipple (click)="onSelectAssure(assure?.id)"
+                            class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                            style="border-radius: 30px; padding: 15px;">
+                            <span class="p-button-label bold font-bold">Détails</span>
+                            <span class="p-ink"></span>
+                        </button>
+                    </ng-template>
+                </p-card>
+            </div>
+        </ng-container>
+        <ng-template #noAssuresTemplate>
+            <div class="col-12 text-center mt-5">
+                <p class="text-4xl text-600">Aucune assure disponible pour le moment.</p>
+            </div>
+        </ng-template>
+    </div>
+</div>

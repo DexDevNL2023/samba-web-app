@@ -6,7 +6,7 @@ export enum SinistreStatus {
   CLOTURE = 'CLOTURE',
   REJETE = 'REJETE'
 }
-
+ 
 export interface Sinistre extends BaseEntity {
   numeroSinistre?: string | null;
   label?: string | null;

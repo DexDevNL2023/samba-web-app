@@ -1,3 +1,5 @@
+import { AssureDetailComponent } from './site/assure-detail/assure-detail.component';
+import { AssureListComponent } from './site/assure-list/assure-list.component';
 import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
 import { InformationPrestation } from './site/reclamation-prestation/steps/information.prestation';
 import { ConfirmationPrestation } from './site/reclamation-prestation/steps/confirmation.prestation';
@@ -23,7 +25,6 @@ import { EffectuerSouscription } from './site/effectuer-souscription/effectuer-s
 import { EffectuerSouscriptionService } from './service/effectuer.souscription.service';
 import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
 import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
-import { ProduitDetailComponent } from './site/detail/produit-detail.component';
 import { ProduitComponent } from './site/produit/produit.component';
 import { HeaderComponent } from './site/header/header.component';
 import { FooterComponent } from './site/footer/footer.component';
@@ -193,6 +194,7 @@ import { ContratAssuranceService } from './service/contrat-assurance.service';
 import { ContratAssuranceCrudComponent } from './components/contrat-assurance/contrat-assurance.crud.component';
 import { AuthentificationService } from './service/authentification.service';
 import { CompanyComponent } from './company/company.component';
+import { ProduitDetailComponent } from './site/produit-detail/produit-detail.component';
 
 @NgModule({
     imports: [
@@ -348,6 +350,8 @@ import { CompanyComponent } from './company/company.component';
         ConfirmationPrestation,
         InformationPrestation,
         SinistreListComponent,
+        AssureListComponent,
+        AssureDetailComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

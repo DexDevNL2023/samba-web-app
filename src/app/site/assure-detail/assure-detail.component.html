@@ -1,0 +1,170 @@
+<div class="surface-section px-4 md:px-6 lg:px-8">
+    <div class="grid my-4">
+        <div class="col-12 lg:col-12">
+            <h2 class="text-900 font-bold text-3xl bloc mb-4">{{ assure?.numNiu }}</h2>
+            <div class="mb-5">
+                <span class="text-900 font-medium text-xl block">Nom : {{ assure?.lastName }} {{ assure?.firstName }}</span>
+                <span class="text-900 font-medium text-xl block">Date de naissance : {{ assure?.dateNaissance | date }}</span>
+                <span class="text-900 font-medium text-xl block">Numéro CNI : {{ assure?.numCni }}</span>
+                <span class="text-900 font-medium text-xl block">Sexe : <p-tag [value]="getGenderLabel(assure?.sexe)"
+                    [severity]="getGenderSeverity(assure?.sexe)" [rounded]="true"></p-tag></span>
+                <span class="text-900 font-medium text-xl block">Email : {{ assure?.email }}</span>
+                <span class="text-900 font-medium text-xl block">Téléphone : {{ assure?.telephone }}</span>
+                <span class="text-900 font-medium text-xl block">Adresse : {{ assure?.addresse }}</span>
+            </div>
+        </div>
+    </div>
+
+    <p-tabView>
+        <p-tabPanel header="Dossiers medicaux">
+            <p-table [value]="dossiers" [columns]="dossierColumns" styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true"
+                dataKey="id">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngFor="let col of dossierColumns">
+                            {{ col.header }}
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-dossier>
+                    <tr>
+                        <td>{{ dossier?.numDossierMedical }}</td>
+                        <td>{{ dossier?.dateUpdated | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                            <button type="button" pButton pRipple icon="pi pi-info" (click)="openDialog(dossier)"
+                                class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                                style="border-radius: 30px; padding: 10px;">
+                                <span class="p-button-label bold font-bold">Détails</span>
+                                <span class="p-ink"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Sinistres declarés">
+            <p-table [value]="sinistres" [columns]="sinistreColumns"
+                styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true"
+                dataKey="id">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngFor="let col of sinistreColumns">
+                            {{ col.header }}
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-sinistre>
+                    <tr>
+                        <td>{{ sinistre?.numeroSinistre }}</td>
+                        <td>{{ sinistre?.label }}</td>
+                        <td>{{ sinistre?.raison }}</td>
+                        <td>{{ sinistre?.montantSinistre | currency:'XAF' }}</td>
+                        <td>{{ sinistre?.montantAssure | currency:'XAF' }}</td>
+                        <td>{{ sinistre?.dateSurvenance | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ sinistre?.dateDeclaration | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ sinistre?.dateCloture | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                            <p-tag [value]="getStatusEnumLabel(sinistre?.status)"
+                                [severity]="getStatusSeverity(sinistre?.status)"
+                                [rounded]="true">
+                            </p-tag>
+                        </td>
+                        <td>
+                            <button type="button" pButton pRipple icon="pi pi-info" (click)="onSelectSinistre(sinistre)"
+                                class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
+                                style="border-radius: 30px; padding: 10px;" [disabled]="!isPrestationAllowed(sinistre?.status)">
+                                <span class="p-button-label bold font-bold">Effectuer une prestation</span>
+                                <span class="p-ink"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-dialog [(visible)]="displayDialog" header="Details du contrat" [modal]="true"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true" style="width: 40vw">
+    <div class="p-dialog-content">
+        <div class="flex flex-wrap border-top-1 surface-border pt-4">
+            <div class="bg-blue-50 flex align-items-center justify-content-center py-3 px-0 w-full md:w-4 border-round">
+                <img src="assets/layout/images/security.svg" alt="Image de sécurité" class="w-9" />
+            </div>
+            <div class="text-700 line-height-3 m-0 p-5 w-full md:w-8">
+                <!-- Panel pour les maladies chroniques -->
+                <p-panel header="Maladies Chroniques" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.maladiesChroniques }}</p>
+                </p-panel>
+                <!-- Panel pour les maladies héréditaires -->
+                <p-panel header="Maladies Héréditaires" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.maladiesHereditaires }}</p>
+                </p-panel>
+                <!-- Panel pour les interventions chirurgicales -->
+                <p-panel header="Interventions Chirurgicales" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.interventionsChirurgicales }}</p>
+                </p-panel>
+                <!-- Panel pour les hospitalisations -->
+                <p-panel header="Hospitalisations" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.hospitalisations }}</p>
+                </p-panel>
+                <!-- Panel pour les allergies -->
+                <p-panel header="Allergies" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.allergies }}</p>
+                </p-panel>
+                <!-- Panel pour les vaccins -->
+                <p-panel header="Vaccins" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.vaccins }}</p>
+                </p-panel>
+                <!-- Panel pour les habitudes alimentaires -->
+                <p-panel header="Habitudes Alimentaires" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.habitudesAlimentaires }}</p>
+                </p-panel>
+                <!-- Panel pour la consommation d'alcool -->
+                <p-panel header="Consommation d'Alcool" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.consommationAlcool }}</p>
+                </p-panel>
+                <!-- Panel pour la consommation de tabac -->
+                <p-panel header="Consommation de Tabac" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.consommationTabac }}</p>
+                </p-panel>
+                <!-- Panel pour l'activité physique -->
+                <p-panel header="Niveau d'Activité Physique" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.niveauActivitePhysique }}</p>
+                </p-panel>
+                <!-- Panel pour les revenus annuels -->
+                <p-panel header="Revenus Annuels" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.revenusAnnuels | currency: 'XAF' }}</p>
+                </p-panel>
+                <!-- Panel pour les charges financières -->
+                <p-panel header="Charges Financières" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.chargesFinancieres | currency: 'XAF' }}</p>
+                </p-panel>
+                <!-- Panel pour la déclaration de bonne santé -->
+                <p-panel header="Déclaration de Bonne Santé" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.declarationBonneSante ? 'Oui' : 'Non' }}</p>
+                </p-panel>
+                <!-- Panel pour le consentement à la collecte de données -->
+                <p-panel header="Consentement Collecte Données" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.consentementCollecteDonnees ? 'Oui' : 'Non' }}</p>
+                </p-panel>
+                <!-- Panel pour la déclaration de non-fraude -->
+                <p-panel header="Déclaration de Non-Fraude" [toggleable]="true">
+                    <p>{{ selectedDossierMedical?.declarationNonFraude ? 'Oui' : 'Non' }}</p>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+    <div class="p-dialog-footer">
+        <button pButton icon="pi pi-times" label="Retour" class="p-button-text" (click)="hideDialog()"></button>
+    </div>
+</p-dialog>

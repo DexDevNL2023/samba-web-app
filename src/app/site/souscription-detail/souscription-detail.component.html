@@ -61,12 +61,9 @@
                 dataKey="id">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Numéro de Contrat</th>
-                        <th>Type de Contrat</th>
-                        <th>Franchise</th>
-                        <th>Date de Début</th>
-                        <th>Date de Fin</th>
-                        <th>Actions</th>
+                        <th *ngFor="let col of columns">
+                            {{ col.header }}
+                        </th>
                     </tr>
                 </ng-template>
 
