@@ -1,3 +1,5 @@
+import { Prestation } from './../models/prestation.model';
+import { Sinistre } from './../models/sinistre.model';
 import { TypeReclamation } from './../models/reclamation.model';
 import { PublicReclamationRequest } from './../models/public-reclamation.request';
 import { ToastService } from './toast.service';
@@ -19,14 +21,14 @@ export class DemandeRemboursementService {
         description: null,
         montantReclame: null,
         account: null,
-        souscription: null,
         sinistre: null,
         prestation: null
     };
 
     private reclamationComplete = new Subject<any>();
     reclamationComplete$ = this.reclamationComplete.asObservable();
-    souscription: Souscription = {} as Souscription;
+    prestation: Prestation = {} as Prestation;
+    sinistre: Sinistre = {} as Sinistre;
     protected baseUrl = environment.apiUrl;
 
     constructor(private http: HttpClient, private toastService: ToastService) {}
@@ -88,14 +90,6 @@ export class DemandeRemboursementService {
         this.reclamationInformation.account = value;
     }
 
-    getSouscription(): number | null {
-        return this.reclamationInformation.souscription;
-    }
-
-    setSouscription(value: number | null) {
-        this.reclamationInformation.souscription = value;
-    }
-
     // Méthodes pour gérer la souscription
     getReclamationInformation(): PublicReclamationRequest | null {
         return this.reclamationInformation;
@@ -106,12 +100,20 @@ export class DemandeRemboursementService {
     }
 
     // Méthodes pour gérer le product (souscription)
-    setProduct(payload: Souscription) {
-        this.souscription = payload;
+    setProductSinistre(payload: Sinistre) {
+        this.sinistre = payload;
     }
 
-    getProduct(): Souscription | null {
-        return this.souscription;
+    getProductSinistre(): Sinistre | null {
+        return this.sinistre;
+    }
+
+    setProductPrestation(payload: Prestation) {
+        this.prestation = payload;
+    }
+
+    getProductPrestation(): Prestation | null {
+        return this.prestation;
     }
 
     // Méthode pour créer une nouvelle reclamation

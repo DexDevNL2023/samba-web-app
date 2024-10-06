@@ -1,3 +1,8 @@
+import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
+import { InformationPrestation } from './site/reclamation-prestation/steps/information.prestation';
+import { ConfirmationPrestation } from './site/reclamation-prestation/steps/confirmation.prestation';
+import { ReclamationPrestation } from './site/reclamation-prestation/reclamation-prestation';
+import { PrestationListComponent } from './site/prestation-list/prestation-list.component';
 import { PayerPrimeService } from './service/payer.prime.service';
 import { ConfirmationPaiement } from './site/payer-prime/steps/confirmation.paiement';
 import { InformationPaiement } from './site/payer-prime/steps/information.paiement';
@@ -338,6 +343,11 @@ import { CompanyComponent } from './company/company.component';
         PayerPrime,
         InformationPaiement,
         ConfirmationPaiement,
+        PrestationListComponent,
+        ReclamationPrestation,
+        ConfirmationPrestation,
+        InformationPrestation,
+        SinistreListComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

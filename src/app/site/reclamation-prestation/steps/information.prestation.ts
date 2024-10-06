@@ -1,10 +1,10 @@
-import { Sinistre } from './../../../models/sinistre.model';
-import { TypeReclamation } from './../../../models/reclamation.model';
 import { DemandeRemboursementService } from './../../../service/demande-remboursement.service';
-import { DemandeRemboursement } from '../demande-remboursement';
+import { ReclamationPrestation } from './../reclamation-prestation';
+import { TypeReclamation } from '../../../models/reclamation.model';
 import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Prestation } from '../../../models/prestation.model';
 
 @Component({
     template: `
@@ -13,13 +13,13 @@ import { ActivatedRoute, Router } from '@angular/router';
                 <ng-template pTemplate="title">Information de la reclamation</ng-template>
                 <ng-template pTemplate="subtitle">Renseignez les détails de la reclamation</ng-template>
                 <ng-template pTemplate="content">
+                    <div class="field">
+                        <label for="dateReclamation">Date de Réclamation</label>
+                        <p-calendar id="dateReclamation" [(ngModel)]="dateReclamationInformation" [showIcon]="true" inputId="icon"
+                            dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
+                            placeholder="Saisir la date de reclamation"></p-calendar>
+                    </div>
                     <div class="p-fluid">
-                        <div class="field">
-                            <label for="dateReclamation">Date de Réclamation</label>
-                            <p-calendar id="dateReclamation" [(ngModel)]="dateReclamationInformation" [showIcon]="true" inputId="icon"
-                                dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true" yearRange="1900:{{ currentYear }}"
-                                placeholder="Saisir la date de reclamation"></p-calendar>
-                        </div>
                         <div class="field">
                             <label for="description">Description</label>
                             <textarea id="description" [(ngModel)]="descriptionInformation" pInputTextarea placeholder="Description" rows="5" cols="30"></textarea>
@@ -35,27 +35,27 @@ import { ActivatedRoute, Router } from '@angular/router';
         </div>
     `
 })
-export class InformationReclamation implements OnInit {
-    product: Sinistre = {} as Sinistre;
+export class InformationPrestation implements OnInit {
+    product: Prestation = {} as Prestation;
     typeInformation: TypeReclamation;
     descriptionInformation: string;
     dateReclamationInformation: Date;
     montantReclameInformation: number;
-    sinistreInformation: number;
+    prestationInformation: number;
 
-    constructor(public appMain: DemandeRemboursement, public demandeRemboursementService: DemandeRemboursementService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
+    constructor(public appMain: ReclamationPrestation, public demandeRemboursementService: DemandeRemboursementService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.product = this.demandeRemboursementService.getProductSinistre();
-        this.demandeRemboursementService.setType(TypeReclamation.SINISTRE);
-        this.demandeRemboursementService.setMontantReclame(this.product.montantAssure);
-        this.demandeRemboursementService.setSinistre(this.product.id);
+    async ngOnInit() {
+        this.product = this.demandeRemboursementService.getProductPrestation();
+        this.demandeRemboursementService.setType(TypeReclamation.PRESTATION);
+        this.demandeRemboursementService.setMontantReclame(this.product.montant);
+        this.demandeRemboursementService.setPrestation(this.product.id);
         if (this.product) {
             this.typeInformation = this.demandeRemboursementService.getType();
             this.descriptionInformation = this.demandeRemboursementService.getDescription();
             this.dateReclamationInformation = this.demandeRemboursementService.getDateReclamation();
             this.montantReclameInformation = this.demandeRemboursementService.getMontantReclame();
-            this.sinistreInformation = this.demandeRemboursementService.getSinistre();
+            this.prestationInformation = this.demandeRemboursementService.getPrestation();
         }
     }
 
@@ -65,7 +65,7 @@ export class InformationReclamation implements OnInit {
             this.demandeRemboursementService.setDescription(this.descriptionInformation);
             this.demandeRemboursementService.setDateReclamation(this.dateReclamationInformation);
             this.demandeRemboursementService.setMontantReclame(this.montantReclameInformation);
-            this.demandeRemboursementService.setSinistre(this.sinistreInformation);
+            this.demandeRemboursementService.setPrestation(this.prestationInformation);
             // Utilisation de la navigation relative
             this.router.navigate(['../confirmation'], { relativeTo: this.route }).then(() => {
                 this.appMain.updateCurrentStep();

@@ -51,7 +51,6 @@ export class SouscriptionDetailComponent implements OnInit {
 
     constructor(
         public declareSinistreService: DeclareSinistreService,
-        public demandeRemboursementService: DemandeRemboursementService,
         public payerPrimeService: PayerPrimeService,
         private souscriptionService: SouscriptionService,
         private policeService: PoliceAssuranceService,
@@ -99,11 +98,6 @@ export class SouscriptionDetailComponent implements OnInit {
     declarerSinistre(payload: Souscription): void {
         this.declareSinistreService.setProduct(payload);
         this.router.navigate(['/site/declarer/sinistre/steps/information']);
-    }
-
-    demanderRemboursement(payload: Souscription): void {
-        this.demandeRemboursementService.setProduct(payload);
-        this.router.navigate(['/site/demander/remboursement/steps/information']);
     }
 
     payerPrime(payload: Souscription): void {

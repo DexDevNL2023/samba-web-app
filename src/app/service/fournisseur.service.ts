@@ -37,4 +37,12 @@ export class FournisseurService extends GenericCrudService<Fournisseur> {
             catchError(() => of(null))
         );
     }
+
+    // Fetch provider by dossier ID
+    getFournisseurByUserId(userId: number): Observable<Fournisseur> {
+    return this.http.get<RessourceResponse<Fournisseur>>(`${this.resourceUrl}/find/by/user/${userId}`).pipe(
+            map(response => this.handleResponse(response, 'Fournisseur trouvés avec succès')),
+            catchError(() => of(null))
+        );
+    }
 }

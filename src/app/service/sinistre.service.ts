@@ -37,4 +37,11 @@ export class SinistreService extends GenericCrudService<Sinistre> {
             catchError(() => of(null))
         );
     }
+
+    getByAssureId(assureId: number) {
+        return this.http.get<RessourceResponse<Sinistre[]>>(`${this.resourceUrl}/find/by/user/${assureId}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer les sinistres par souscription')),
+            catchError(() => of([]))
+        );
+    }
 }

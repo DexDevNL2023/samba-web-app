@@ -1,3 +1,8 @@
+import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
+import { ConfirmationPrestation } from './site/reclamation-prestation/steps/confirmation.prestation';
+import { InformationPrestation } from './site/reclamation-prestation/steps/information.prestation';
+import { ReclamationPrestation } from './site/reclamation-prestation/reclamation-prestation';
+import { PrestationListComponent } from './site/prestation-list/prestation-list.component';
 import { ConfirmationPaiement } from './site/payer-prime/steps/confirmation.paiement';
 import { InformationPaiement } from './site/payer-prime/steps/information.paiement';
 import { PayerPrime } from './site/payer-prime/payer-prime';
@@ -74,13 +79,19 @@ import { CompanyComponent } from './company/company.component';
                         { path: 'steps/documents', component: DocumentsSinistre },
                         { path: 'steps/confirmation', component: ConfirmationSinistre },
                 ]},
-                { path: 'demander/remboursement', component: DemandeRemboursement, children: [
-                        { path: 'steps/information', component: InformationReclamation },
-                        { path: 'steps/confirmation', component: ConfirmationReclamation },
-                ]},
                 { path: 'payer/prime', component: PayerPrime, children: [
                         { path: 'steps/information', component: InformationPaiement },
                         { path: 'steps/confirmation', component: ConfirmationPaiement },
+                ]},
+                { path: 'prestation/list', component: PrestationListComponent },
+                { path: 'reclamation/prestation', component: ReclamationPrestation, children: [
+                        { path: 'steps/information', component: InformationPrestation },
+                        { path: 'steps/confirmation', component: ConfirmationPrestation },
+                ]},
+                { path: 'sinistre/list', component: SinistreListComponent },
+                { path: 'demander/remboursement', component: DemandeRemboursement, children: [
+                        { path: 'steps/information', component: InformationReclamation },
+                        { path: 'steps/confirmation', component: ConfirmationReclamation },
                 ]},
             ]},
 
@@ -130,6 +141,7 @@ import { CompanyComponent } from './company/company.component';
             { path: 'reset/finish', component: PasswordResetFinishComponent },
             { path: 'register', component: RegisterComponent },
             { path: 'scan/cni', component: ScanCniComponent },
+            { path: '**', redirectTo: '/site' },
         ], {scrollPositionRestoration: 'enabled'})
     ],
     exports: [RouterModule]

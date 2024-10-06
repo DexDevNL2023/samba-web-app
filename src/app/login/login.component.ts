@@ -78,6 +78,8 @@ export default class LoginComponent implements OnInit, AfterViewInit {
           const account: Account = this.accountService.getCurrentAccount();
           if (account.authority === Authority.CLIENT) {
             this.router.navigate(['/site']);
+          } else if (account.authority === Authority.PROVIDER) {
+            this.router.navigate(['/site/assure/list']);
           } else {
             this.router.navigate(['/admin']);
           }

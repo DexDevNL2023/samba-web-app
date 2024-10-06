@@ -6,7 +6,6 @@ export interface PublicReclamationRequest {
   description?: string | null;
   montantReclame?: number | null;
   account?: number | null;
-  souscription?: number | null;
   sinistre?: number | null;
   prestation?: number | null;
 }

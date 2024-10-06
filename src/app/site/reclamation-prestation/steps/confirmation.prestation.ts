@@ -1,7 +1,7 @@
-import { Sinistre } from './../../../models/sinistre.model';
-import { TypeReclamation } from './../../../models/reclamation.model';
-import { DemandeRemboursement } from './../demande-remboursement';
 import { DemandeRemboursementService } from './../../../service/demande-remboursement.service';
+import { ReclamationPrestation } from './../reclamation-prestation';
+import { Prestation } from '../../../models/prestation.model';
+import { TypeReclamation } from '../../../models/reclamation.model';
 import { PublicReclamationRequest } from '../../../models/public-reclamation.request';
 import { Account } from '../../../models/account.model';
 import { AccountService } from '../../../core/auth/account.service';
@@ -18,8 +18,8 @@ import { DatePipe } from '@angular/common';
                 <ng-template pTemplate="subtitle">Vérifiez les informations de votre reclamation</ng-template>
                 <ng-template pTemplate="content">
                     <div class="field col-12">
-                        <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Sinistre : </label>
-                        <span> {{ buildSinistre() }}</span>
+                        <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Prestation : </label>
+                        <span> {{ buildPrestation() }}</span>
                     </div>
                     <div class="field col-12">
                         <label [ngClass]="{'p-text-bold': true, 'block': true, 'text-900': true, 'mb-2': true}">Date de réclamation : </label>
@@ -49,22 +49,22 @@ import { DatePipe } from '@angular/common';
         </div>
     `
 })
-export class ConfirmationReclamation implements OnInit {
+export class ConfirmationPrestation implements OnInit {
     accountInformation: number;
     account: Account = {} as Account;
     reclamationInformation: PublicReclamationRequest = {} as PublicReclamationRequest;
     typeReclamations = [
         { label: 'Sinistre', value: TypeReclamation.SINISTRE },
-        { label: 'Sinistre', value: TypeReclamation.PRESTATION }
+        { label: 'Prestation', value: TypeReclamation.PRESTATION }
     ];
-    sinistre: Sinistre = {} as Sinistre;
+    prestation: Prestation = {} as Prestation;
 
-    constructor(public appMain: DemandeRemboursement, public demandeRemboursementService: DemandeRemboursementService, private accountService: AccountService, public messageService: MessageService, private router: Router, private route: ActivatedRoute, private datePipe: DatePipe) {}
+    constructor(public appMain: ReclamationPrestation, public demandeRemboursementService: DemandeRemboursementService, private accountService: AccountService, public messageService: MessageService, private router: Router, private route: ActivatedRoute, private datePipe: DatePipe) {}
 
     ngOnInit() {
         this.account = this.accountService.getCurrentAccount();
-        this.sinistre = this.demandeRemboursementService.getProductSinistre();
-        if (this.account && this.sinistre) {
+        this.prestation = this.demandeRemboursementService.getProductPrestation();
+        if (this.account && this.prestation) {
             this.accountInformation = this.account.id;
 
             // Mettre a jour reclamationInformation
@@ -108,10 +108,10 @@ export class ConfirmationReclamation implements OnInit {
         }
     }
 
-    // Méthode pour formater et construire l'affichage du sinistre
-    buildSinistre() {
-        return this.sinistre && this.sinistre.numeroSinistre && this.sinistre.dateSurvenance
-            ? `${this.sinistre.numeroSinistre} du ${this.formatDate(this.sinistre.dateSurvenance)}`
+    // Méthode pour formater et construire l'affichage de la prestation
+    buildPrestation() {
+        return this.prestation && this.prestation.numeroPrestation && this.prestation.datePrestation
+            ? `${this.prestation.numeroPrestation} du ${this.formatDate(this.prestation.datePrestation)}`
             : '-';
     }
 
