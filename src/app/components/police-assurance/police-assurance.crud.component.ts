@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { SouscriptionService } from './../../service/souscription.service';
 import { GarantieService } from './../../service/garantie.service';
 import { AssuranceService } from './../../service/assurance.service';
@@ -73,7 +74,7 @@ insuranceTypes = [
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+      { field: 'numeroPolice', header: 'Reference Police', type: 'text' },
       { field: 'imageUrl', header: 'Image', type: 'image' },
       { field: 'label', header: 'Libellé', type: 'text' },
       { field: 'dureeCouverture', header: 'Durée de couverture', type: 'number, access: [Authority.ADMIN]' },
@@ -87,7 +88,7 @@ insuranceTypes = [
       },
       { field: 'garanties', header: 'Garanties', type: 'list', values: [], method: () => this.loadGaranties(), label: 'numeroGarantie', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
+          { field: 'numeroGarantie', header: 'Reference Garantie', type: 'text' },
           { field: 'label', header: 'Label', type: 'text' },
           { field: 'percentage', header: 'Pourcentage', type: 'currency' },
           { field: 'plafondAssure', header: 'Plafond assuré', type: 'currency' },
@@ -96,7 +97,7 @@ insuranceTypes = [
       },
       { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+          { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.frequencies, label: 'label', key: 'value' },
@@ -108,6 +109,7 @@ insuranceTypes = [
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroPolice')?.setValue(GenericUtils.GenerateNumero("CODE CIMA"));
   }
 
   // Chargement des assurances associés à une police-assurance

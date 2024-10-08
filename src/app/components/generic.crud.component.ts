@@ -51,6 +51,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.loading = true;
+
     // Récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
     this.getRequiredFields();
 
@@ -77,6 +79,9 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
       // Mise a jour des permissions sur les traitements
       this.updatePermissions();
     });
+
+    // Marque le chargement comme terminé une fois que les données sont récupérées
+    this.loading = false;
   }
 
   // Méthode abstraite à implémenter pour initialiser les colonnes de la table
@@ -92,10 +97,8 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     // Au chargement du composant, récupère tous les éléments via le service
       try {
         this.items = await this.service.query().toPromise();
-        this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
     } catch (error) {
       this.items = [];
-      this.loading = false; // Marque le chargement comme terminé une fois que les données sont récupérées
     }
   }
 
@@ -124,24 +127,52 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
   /**
    * Met à jour les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
    */
+  protected async updateColumnFieldValues(): Promise<void> {
+    for (const column of this.cols) {
+        // Vérifie si le champ est de type objet ou enum
+        if (this.isObjectOrEnum(column.type) && column.method) {
+            await this.updateColumnValues(column.field);
+        }
+    }
+  }
+
+  /**
+  * Met à jour les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
+  */
   protected async updateColumnAndSubFieldValues(): Promise<void> {
     for (const column of this.cols) {
-      // Mettre à jour les valeurs de la colonne
-      if (column.method) {
-        // Met à jour les valeurs de la colonne
-        await this.updateColumnValues(column.field);
-      }
-
-      // Mettre à jour les valeurs des sous-champs si disponibles
-      if (column.subfield) {
-        for (const subColumn of column.subfield) {
-          if (subColumn.method) {
-            // Met à jour les valeurs du sous-champ
-            await this.updateSubFieldValues(column.field, subColumn.field);
-          }
+        // Vérifie si le champ est de type objet ou enum
+        if (this.isListOrObjectOrEnum(column.type) && column.method) {
+            await this.updateColumnValues(column.field);
         }
-      }
+
+        // Met à jour les valeurs des sous-champs si disponibles et si le type de colonne est objet ou enum
+        if (column.subfield) {
+            for (const subColumn of column.subfield) {
+                if (this.isListOrObjectOrEnum(subColumn.type) && subColumn.method) {
+                    await this.updateSubFieldValues(column.field, subColumn.field);
+                }
+            }
+        }
     }
+  }
+
+  /**
+  * Vérifie si le type est 'objet' ou 'enum'.
+  * @param type Le type de données à vérifier.
+  * @returns true si le type est 'objet' ou 'enum', sinon false.
+  */
+  private isObjectOrEnum(type: string): boolean {
+    return type === 'objet' || type === 'enum';
+  }
+
+  /**
+  * Vérifie si le type est 'objet' ou 'enum'.
+  * @param type Le type de données à vérifier.
+  * @returns true si le type est 'objet' ou 'enum', sinon false.
+  */
+  private isListOrObjectOrEnum(type: string): boolean {
+    return type === 'list' || type === 'objet' || type === 'enum';
   }
 
   /**
@@ -553,7 +584,7 @@ export abstract class GenericCrudComponent<Entity extends BaseEntity> implements
     this.initializeOthers();
     this.selectedItem = {} as Entity; // Initialise un nouvel élément
     // Initialiser les valeurs des colonnes et de leurs sous-champs en exécutant les méthodes associées.
-    await this.updateColumnAndSubFieldValues();
+    await this.updateColumnFieldValues();
     this.updateFieldAccessibility(); // Mettre a jour les acces sur les champs
     this.submitted = false; // Réinitialise le soumission du formulaire
     this.displayDialog = true; // Affiche le dialogue d'ajout/modification

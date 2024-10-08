@@ -1,6 +1,6 @@
 import { Account } from './../../models/account.model';
 import { AccountService } from './../../core/auth/account.service';
-import { EffectuerSouscriptionService } from './../../service/effectuer.souscription.service';
+import { EffectuerSouscriptionService } from '../../service/effectuer-souscription.service';
 import { AssuranceService } from './../../service/assurance.service';
 import { GarantieService } from './../../service/garantie.service';
 import { Garantie, GarantieStatus } from './../../models/garantie.model';

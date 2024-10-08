@@ -51,31 +51,47 @@ import { DatePipe } from '@angular/common';
 })
 export class ConfirmationReclamation implements OnInit {
     accountInformation: number;
+    sinistreformation: number;
     account: Account = {} as Account;
+    sinistre: Sinistre = {} as Sinistre;
     reclamationInformation: PublicReclamationRequest = {} as PublicReclamationRequest;
     typeReclamations = [
         { label: 'Sinistre', value: TypeReclamation.SINISTRE },
         { label: 'Sinistre', value: TypeReclamation.PRESTATION }
     ];
-    sinistre: Sinistre = {} as Sinistre;
 
     constructor(public appMain: DemandeRemboursement, public demandeRemboursementService: DemandeRemboursementService, private accountService: AccountService, public messageService: MessageService, private router: Router, private route: ActivatedRoute, private datePipe: DatePipe) {}
 
     ngOnInit() {
+        // Récupérer le compte actuel
         this.account = this.accountService.getCurrentAccount();
-        this.sinistre = this.demandeRemboursementService.getProductSinistre();
-        if (this.account && this.sinistre) {
-            this.accountInformation = this.account.id;
+        console.log('Compte actuel:', this.account);
 
-            // Mettre a jour reclamationInformation
+        // Récupérer les informations de sinistre
+        this.sinistre = this.demandeRemboursementService.getProductSinistre();
+        console.log('Sinistre récupéré:', this.sinistre);
+
+        if (this.account && this.sinistre) {
+            // Mettre à jour les informations de compte et de sinistre
+            this.accountInformation = this.account.id;
+            this.sinistreformation = this.sinistre.id;
+            console.log('ID du compte:', this.accountInformation);
+            console.log('ID du sinistre:', this.sinistreformation);
+
+            // Mettre à jour reclamationInformation
             this.demandeRemboursementService.setAccount(this.accountInformation);
+            this.demandeRemboursementService.setSinistre(this.sinistreformation);
             this.reclamationInformation = this.demandeRemboursementService.getReclamationInformation();
+            console.log('Reclamation Information mise à jour:', this.reclamationInformation);
+        } else {
+            console.warn('Aucune information de compte ou de sinistre trouvée.');
         }
     }
 
     complete() {
-        if (this.accountInformation) {
+        if (this.accountInformation && this.sinistreformation) {
             this.demandeRemboursementService.setAccount(this.accountInformation);
+            this.demandeRemboursementService.setSinistre(this.sinistreformation);
             this.demandeRemboursementService.complete();
         } else {
             this.messageService.add({

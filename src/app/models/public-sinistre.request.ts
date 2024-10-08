@@ -1,4 +1,4 @@
-import { DocumentSinistre } from './document-sinistre.model';
+import { DocumentRequest } from './document-request.model';
 
 export interface PublicSinistreRequest {
   label?: string | null;
@@ -7,5 +7,5 @@ export interface PublicSinistreRequest {
   montantSinistre?: number | null;
   account?: number | null;
   souscription?: number | null;
-  documents?: DocumentSinistre[];
+  documents?: DocumentRequest[];
 }

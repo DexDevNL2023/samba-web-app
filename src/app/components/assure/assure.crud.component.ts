@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { AccountCrudService } from './../../service/account.crud.service';
 import { Account, Authority } from './../../models/account.model';
 import { Fournisseur } from './../../models/fournisseur.model';
@@ -81,7 +82,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
       { field: 'signature', header: 'Signature', type: 'image' },
       { field: 'registrant', header: 'Registrant', type: 'objet', values: [], method: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
+          { field: 'numeroRegistrant', header: 'Reference Registrant', type: 'text' },
           { field: 'branche', header: 'Branche', type: 'objet', values: [], method: () => this.loadBranches(), label: 'ville', key: 'id' },
           { field: 'partenaire', header: 'Partenaire', type: 'objet', values: [], method: () => this.loadPartenaires(), label: 'nom', key: 'id' }
         ]
@@ -95,13 +96,13 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
       },
       { field: 'dossiers', header: 'Dossiers médicaux', type: 'list', values:[], method:  () => this.loadDossiers(), label: 'numDossierMedical', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numDossierMedical', header: 'Num Dossier medical', type: 'text' },
+          { field: 'numDossierMedical', header: 'Reference Dossier medical', type: 'text' },
           { field: 'dateUpdated', header: 'Dernière mise à jour', type: 'date' },
         ]
       },
       { field: 'souscriptions', header: 'Souscriptions', type: 'list', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+          { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.souscriptiontatus, label: 'label', key: 'value' },
@@ -113,6 +114,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numNiu')?.setValue(GenericUtils.GenerateNumero("NIU"));
   }
 
   // Chargement aux registrants associés à une assure

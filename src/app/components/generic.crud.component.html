@@ -48,7 +48,7 @@
                         </th>
                         <ng-container *ngFor="let col of cols">
                             <th style="min-width:15rem"
-                                *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
+                                *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'percentage' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
                                 [pSortableColumn]="col?.field">
                                 {{ col?.header }}
                                 <p-sortIcon [field]="col?.field"></p-sortIcon>
@@ -226,7 +226,6 @@
                                     <p-calendar *ngSwitchCase="'date'" name="{{ col?.field }}" id="{{ col?.field }}"
                                         formControlName="{{ col?.field }}" [showIcon]="true" inputId="icon"
                                         dateFormat="dd/mm/yy" [monthNavigator]="true" [yearNavigator]="true"
-                                        yearRange="1900:{{ currentYear }}"
                                         placeholder="Sélectionnez une {{ col?.header }}"
                                         (onChange)="col?.control ? col?.control(selectedItem, $event) : null"></p-calendar>
                                     <p-inputNumber *ngSwitchCase="'percentage'" name="{{ col?.field }}"
@@ -373,7 +372,7 @@
                             <tr>
                                 <ng-container *ngFor="let col of selectedItemListView?.cols">
                                     <th style="min-width:15rem"
-                                        *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
+                                        *ngIf="col?.type !== 'image' && col?.type !== 'textarea' && col?.type !== 'percentage' && col?.type !== 'currency' && col?.type !== 'id' && col?.type !== 'boolean' && col?.type !== 'date' && col?.type !== 'enum' && col?.type !== 'objet' && col?.type !== 'list'"
                                         [pSortableColumn]="col?.field">
                                         {{ col?.header }}
                                         <p-sortIcon [field]="col?.field"></p-sortIcon>

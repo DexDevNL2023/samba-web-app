@@ -1,3 +1,7 @@
+import { ConfirmationEffectuerPrestation } from './site/effectuer-prestation/steps/confirmation.prestation';
+import { DocumentsEffectuerPrestation } from './site/effectuer-prestation/steps/documents.prestation';
+import { InformationEffectuerPrestation } from './site/effectuer-prestation/steps/information.prestation';
+import { EffectuerPrestation } from './site/effectuer-prestation/effectuer-prestation';
 import { AssureDetailComponent } from './site/assure-detail/assure-detail.component';
 import { AssureListComponent } from './site/assure-list/assure-list.component';
 import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
@@ -97,6 +101,11 @@ import { ProduitDetailComponent } from './site/produit-detail/produit-detail.com
                 ]},
                 { path: 'assure/list', component: AssureListComponent },
                 { path: 'assure/detail/:id', component: AssureDetailComponent },
+                { path: 'effectuer/prestation', component: EffectuerPrestation, children: [
+                        { path: 'steps/information', component: InformationEffectuerPrestation },
+                        { path: 'steps/documents', component: DocumentsEffectuerPrestation },
+                        { path: 'steps/confirmation', component: ConfirmationEffectuerPrestation },
+                ]},
             ]},
 
             // Routes pour la section admin

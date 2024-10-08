@@ -1,4 +1,4 @@
-import { DocumentSinistre } from './../models/document-sinistre.model';
+import { DocumentRequest } from '../models/document-request.model';
 import { PublicSinistreRequest } from './../models/public-sinistre.request';
 import { ToastService } from './toast.service';
 import { HttpClient } from '@angular/common/http';
@@ -63,12 +63,12 @@ export class DeclareSinistreService {
         return this.sinistreInformation.montantSinistre;
     }
 
-    setDocument(documents: DocumentSinistre[]) {
+    setDocuments(documents: DocumentRequest[]) {
         this.sinistreInformation.documents = documents;
     }
 
     // Optionally, you may want to provide a method to get the documents
-    getDocuments(): DocumentSinistre[] {
+    getDocuments(): DocumentRequest[] {
         return this.sinistreInformation.documents;
     }
 

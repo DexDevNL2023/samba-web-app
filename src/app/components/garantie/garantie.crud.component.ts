@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { PoliceAssuranceService } from './../../service/police-assurance.service';
 import { Authority } from './../../models/account.model';
 import { Component } from '@angular/core';
@@ -44,7 +45,7 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroGarantie', header: 'Num Garantie', type: 'text' },
+      { field: 'numeroGarantie', header: 'Reference Garantie', type: 'text' },
       { field: 'label', header: 'Label', type: 'text' },
       { field: 'percentage', header: 'Pourcentage', type: 'percentage', access: [Authority.ADMIN] },
       { field: 'termes', header: 'Termes', type: 'textarea', access: [Authority.ADMIN] },
@@ -54,7 +55,7 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
       { field: 'status', header: 'Status', type: 'enum', values: this.garantieStatus, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], method: () => this.loadPolices(), label: 'numeroPolice', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+        { field: 'numeroPolice', header: 'Reference Police', type: 'text' },
         { field: 'label', header: 'Libelle', type: 'text' },
         { field: 'montantSouscription', header: 'Coût', type: 'currency' }
         ]
@@ -64,6 +65,7 @@ export class GarantieCrudComponent extends GenericCrudComponent<Garantie> {
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroGarantie')?.setValue(GenericUtils.GenerateNumero("GAR"));
   }
 
   // Chargement des polices associés à une assurance

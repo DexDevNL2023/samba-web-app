@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { RecuPaiementService } from './../../service/recu-paiement.service';
 import { RecuPaiement, RecuPaymentType } from './../../models/Recu-paiement.model';
 import { Authority } from '../../models/account.model';
@@ -56,13 +57,13 @@ export class RecuPaiementCrudComponent extends GenericCrudComponent<RecuPaiement
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroRecu', header: 'Num Recu', type: 'text' },
+      { field: 'numeroRecu', header: 'Reference Recu', type: 'text' },
       { field: 'dateEmission', header: 'Date d\'emission', type: 'date' },
       { field: 'montant', header: 'Montant', type: 'currency' },
       { field: 'type', header: 'Type', type: 'enum', values: this.recuPaymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN, Authority.AGENT] },
       { field: 'paiement', header: 'Paiement', type: 'objet', values: [], method: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.ADMIN, Authority.AGENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
+          { field: 'numeroPaiement', header: 'Reference Paiement', type: 'text' },
           { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' },
           { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value' },
@@ -74,6 +75,7 @@ export class RecuPaiementCrudComponent extends GenericCrudComponent<RecuPaiement
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroRecu')?.setValue(GenericUtils.GenerateNumero("REC"));
   }
 
   // Chargement des reçu de paiement associés à une assure

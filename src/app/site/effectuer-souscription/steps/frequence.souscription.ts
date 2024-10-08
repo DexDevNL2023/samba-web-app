@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { PaymentFrequency } from '../../../models/souscription.model';
-import { EffectuerSouscriptionService } from '../../../service/effectuer.souscription.service';
+import { EffectuerSouscriptionService } from '../../../service/effectuer-souscription.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EffectuerSouscription } from '../effectuer-souscription';
@@ -15,9 +15,8 @@ import { EffectuerSouscription } from '../effectuer-souscription';
                     <div class="p-fluid">
                         <div class="field">
                             <label for="frequence">Fréquence de Paiement</label>
-                            <p-dropdown
-                                [options]="frequences"
-                                [(ngModel)]="frequenceInformation"
+                            <p-dropdown id="frequence" [options]="frequences" [(ngModel)]="frequenceInformation"
+                                optionLabel="label" optionValue="value" [showClear]="true" appendTo="body"
                                 placeholder="Sélectionnez une fréquence"
                             ></p-dropdown>
                         </div>

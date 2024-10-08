@@ -54,7 +54,7 @@ export class AssuranceCrudComponent extends GenericCrudComponent<Assurance> {
       { field: 'description', header: 'Description', type: 'textarea' },
       { field: 'polices', header: 'Polices d\'assurance', type: 'list', values: [], method: () => this.loadPolices(), label: 'numeroPolice', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+          { field: 'numeroPolice', header: 'Reference Police', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'montantSouscription', header: 'Coût', type: 'currency' }
         ]

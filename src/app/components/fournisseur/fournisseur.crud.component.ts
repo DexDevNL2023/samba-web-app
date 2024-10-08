@@ -79,7 +79,7 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
       },
       { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+          { field: 'numeroPrestation', header: 'Reference Prestation', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
           { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
@@ -89,7 +89,7 @@ export class FournisseurCrudComponent extends GenericCrudComponent<Fournisseur> 
       },
       { field: 'registrant', header: 'Registrants', type: 'list', values: [], method: () => this.loadRegistrants(), label: 'numeroRegistrant', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroRegistrant', header: 'Num Registrant', type: 'text' },
+          { field: 'numeroRegistrant', header: 'Reference Registrant', type: 'text' },
           { field: 'branche', header: 'Branche', type: 'objet', values: [], method: () => this.loadBranches(), label: 'ville', key: 'id' }
         ]
       }

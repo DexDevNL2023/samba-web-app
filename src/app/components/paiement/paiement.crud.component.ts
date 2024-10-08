@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { RecuPaiement } from './../../models/Recu-paiement.model';
 import { RecuPaiementService } from './../../service/recu-paiement.service';
 import { ReclamationService } from './../../service/reclamation.service';
@@ -78,14 +79,14 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
+      { field: 'numeroPaiement', header: 'Reference Paiement', type: 'text' },
       { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
       { field: 'montant', header: 'Montant', type: 'currency' },
       { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'mode', header: 'Mode de Paiement', type: 'enum', values: this.paymentModes, label: 'label', key: 'value' },
       { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+          { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.souscriptionStatus, label: 'label', key: 'value' },
@@ -94,7 +95,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
       },
       { field: 'reclamation', header: 'Reclamation', type: 'objet', values: [], method: () => this.loadRecuReclamations(), label: 'numeroReclamation', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
+          { field: 'numeroReclamation', header: 'Reference Reclamation', type: 'text' },
           { field: 'type', header: 'Type', type: 'enum', values: this.typeReclamations, label: 'label', key: 'value' },
           { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value' }
@@ -102,7 +103,7 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
       },
       { field: 'recuPaiements', header: 'Reçu du paiement', type: 'list', values: [], method: () => this.loadRecuPaiements(), label: 'numeroRecu', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroRecu', header: 'Num Reçu', type: 'text' },
+          { field: 'numeroRecu', header: 'Reference Reçu', type: 'text' },
           { field: 'dateEmission', header: 'Date d\'émission', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' },
           { field: 'details', header: 'Détails', type: 'textarea' }
@@ -113,6 +114,11 @@ export class PaiementCrudComponent extends GenericCrudComponent<Paiement> {
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroPaiement')?.setValue(GenericUtils.GenerateNumero("PAY"));
+    // Vérifier si l'utilisateur authentifié a l'autorité ROLE_CLIENT
+    if (this.hasAuthority([Authority.CLIENT])) {
+      this.formGroup.get('type')?.setValue(PaymentType.PRIME);
+    }
   }
 
   // Chargement des souscriptions associés à une assure

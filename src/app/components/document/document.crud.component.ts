@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { Prestation } from './../../models/prestation.model';
 import { Sinistre } from './../../models/sinistre.model';
 import { PrestationService } from './../../service/prestation.service';
@@ -45,21 +46,21 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroDocument', header: 'Num Document', type: 'text' },
+      { field: 'numeroDocument', header: 'Reference Document', type: 'text' },
       { field: 'nom', header: 'Nom', type: 'text' },
       { field: 'type', header: 'Type', type: 'enum', values: this.typeDocuments, label: 'label', key: 'value', control: (item: any, event: any) => this.onTypeChange(item, event) },
       { field: 'description', header: 'description', type: 'textarea' },
       { field: 'url', header: 'Telecharger', type: 'file', action: (item: any) => this.downloadFile(item) }, // Action pour le téléchargement
       { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+          { field: 'numeroSinistre', header: 'Reference Sinistre', type: 'text' },
           { field: 'dateSurvenance', header: 'Date de survenance', type: 'date' },
           { field: 'montantSinistre', header: 'Montant', type: 'currency' }
         ]
       },
       { field: 'prestation', header: 'Prestation', type: 'objet', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+          { field: 'numeroPrestation', header: 'Reference Prestation', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' }
         ]
@@ -69,6 +70,7 @@ export class DocumentCrudComponent extends GenericCrudComponent<Document> {
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroDocument')?.setValue(GenericUtils.GenerateNumero("DOC"));
     this.toggleVisibility('prestation', false);  // Masquer prestation
     this.toggleVisibility('sinistre', false);  // Masquer sinistre
   }

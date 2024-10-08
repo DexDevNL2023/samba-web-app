@@ -46,16 +46,40 @@ export class InformationReclamation implements OnInit {
     constructor(public appMain: DemandeRemboursement, public demandeRemboursementService: DemandeRemboursementService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
 
     ngOnInit() {
+        // Récupérer le produit sinistre
         this.product = this.demandeRemboursementService.getProductSinistre();
+        console.log('Produit sinistre récupéré:', this.product);
+
+        // Définir le type de réclamation
         this.demandeRemboursementService.setType(TypeReclamation.SINISTRE);
-        this.demandeRemboursementService.setMontantReclame(this.product.montantAssure);
+        console.log('Type de réclamation défini:', TypeReclamation.SINISTRE);
+
+        // Définir le montant réclamé
+        this.demandeRemboursementService.setMontantReclame(this.product.montantSinistre);
+        console.log('Montant réclamé défini:', this.product.montantSinistre);
+
+        // Définir le sinistre
         this.demandeRemboursementService.setSinistre(this.product.id);
+        console.log('Sinistre défini:', this.product.id);
+
         if (this.product) {
+            // Récupérer les informations
             this.typeInformation = this.demandeRemboursementService.getType();
+            console.log('Type d\'information:', this.typeInformation);
+
             this.descriptionInformation = this.demandeRemboursementService.getDescription();
+            console.log('Description d\'information:', this.descriptionInformation);
+
             this.dateReclamationInformation = this.demandeRemboursementService.getDateReclamation();
+            console.log('Date de réclamation:', this.dateReclamationInformation);
+
             this.montantReclameInformation = this.demandeRemboursementService.getMontantReclame();
+            console.log('Montant réclamé:', this.montantReclameInformation);
+
             this.sinistreInformation = this.demandeRemboursementService.getSinistre();
+            console.log('Information sur le sinistre:', this.sinistreInformation);
+        } else {
+            console.warn('Aucun produit sinistre trouvé.');
         }
     }
 

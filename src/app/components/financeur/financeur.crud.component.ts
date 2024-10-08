@@ -65,7 +65,7 @@ export class FinanceurCrudComponent extends GenericCrudComponent<Financeur> {
       { field: 'email', header: 'Email', type: 'text' },
       { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadPrestations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
         { field: 'id', header: 'ID', type: 'id' },
-        { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+        { field: 'numeroPrestation', header: 'Reference Prestation', type: 'text' },
         { field: 'label', header: 'Libellé', type: 'text' },
         { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
         { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },

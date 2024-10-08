@@ -1,5 +1,5 @@
 import { PaymentMode } from '../../../models/paiement.model';
-import { EffectuerSouscriptionService } from '../../../service/effectuer.souscription.service';
+import { EffectuerSouscriptionService } from '../../../service/effectuer-souscription.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -15,10 +15,9 @@ import { EffectuerSouscription } from '../effectuer-souscription';
                     <div class="p-fluid">
                         <div class="field">
                             <label for="mode">Mode de Paiement</label>
-                            <p-dropdown
-                                [options]="modes"
-                                [(ngModel)]="modeInformation"
-                                placeholder="Sélectionnez un mode"
+                            <p-dropdown id="mode" [options]="modes" [(ngModel)]="modeInformation"
+                                optionLabel="label" optionValue="value" [showClear]="true" appendTo="body"
+                                placeholder="Sélectionnez un mode de paiement"
                             ></p-dropdown>
                         </div>
                     </div>

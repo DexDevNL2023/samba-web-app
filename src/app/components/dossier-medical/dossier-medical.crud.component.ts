@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { Assure } from './../../models/assure.model';
 import { AssureService } from './../../service/assure.service';
 import { Authority } from './../../models/account.model';
@@ -37,7 +38,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numDossierMedical', header: 'Num Dossier médical', type: 'text' },
+      { field: 'numDossierMedical', header: 'Reference Dossier médical', type: 'text' },
       { field: 'patient', header: 'Patient', type: 'objet', values: [], method: () => this.loadPatients(), label: 'numNiu', key: 'id', access: [Authority.ADMIN, Authority.AGENT, Authority.CLIENT], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numNiu', header: 'Niu', type: 'text' },
@@ -67,6 +68,7 @@ export class DossierMedicalCrudComponent extends GenericCrudComponent<DossierMed
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numDossierMedical')?.setValue(GenericUtils.GenerateNumero("DOSS"));
   }
 
   // Chargement des polices associés à une medical-record

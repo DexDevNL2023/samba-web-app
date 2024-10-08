@@ -1,5 +1,5 @@
-import { DeclarationSinistre } from './../declaration-sinistre';
-import { DeclareSinistreService } from './../../../service/declare-sinistre.service';
+import { EffectuerPrestation } from './../effectuer-prestation';
+import { EffectuerPrestationService } from './../../../service/effectuer-prestation.service';
 import { DocumentRequest } from '../../../models/document-request.model';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,12 +9,12 @@ import { MessageService } from 'primeng/api';
     template: `
         <div class="stepsdemo-content">
             <p-card>
-                <ng-template pTemplate="title"> Documents de sinistre </ng-template>
-                <ng-template pTemplate="subtitle"> Ajoutez les documents de preuves de votre sinistre </ng-template>
+                <ng-template pTemplate="title"> Documents de prestation </ng-template>
+                <ng-template pTemplate="subtitle"> Ajoutez les documents de preuves de votre prestation </ng-template>
                 <ng-template pTemplate="content">
                     <div class="p-fluid">
                         <div class="field">
-                            <label for="documents">Documents de sinistre : </label>
+                            <label for="documents">Documents de la prestation : </label>
                             <p-fileUpload id="documents" [multiple]="true" chooseLabel="Choisir un document de preuve" accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.xls,.xlsx"
                                 (onSelect)="onSelectedFiles($event)" [showUploadButton]="false" [showCancelButton]="true" [auto]="true"></p-fileUpload>
                             <div *ngIf="documentsInformation?.length > 0">
@@ -41,18 +41,18 @@ import { MessageService } from 'primeng/api';
         </div>
     `
 })
-export class DocumentsSinistre implements OnInit {
+export class DocumentsEffectuerPrestation implements OnInit {
     documentsInformation: DocumentRequest[] = [];
 
-    constructor(public appMain: DeclarationSinistre, public declareSinistreService: DeclareSinistreService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
+    constructor(public appMain: EffectuerPrestation, public effectuerPrestationService: EffectuerPrestationService, public messageService: MessageService, private router: Router, private route: ActivatedRoute) {}
 
     ngOnInit() {
-        this.documentsInformation = this.declareSinistreService.getDocuments();
+        this.documentsInformation = this.effectuerPrestationService.getDocuments();
     }
 
     nextPage() {
         if (this.documentsInformation) {
-            this.declareSinistreService.setDocuments(this.documentsInformation);
+            this.effectuerPrestationService.setDocuments(this.documentsInformation);
             this.router.navigate(['../confirmation'], { relativeTo: this.route }).then(() => {
                 this.appMain.updateCurrentStep();
             });

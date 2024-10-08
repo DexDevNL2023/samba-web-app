@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { AssureService } from './../../service/assure.service';
 import { PoliceAssuranceService } from './../../service/police-assurance.service';
 import { ContratAssuranceService } from './../../service/contrat-assurance.service';
@@ -111,7 +112,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+      { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
       { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
       { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date', access: [Authority.ADMIN] },
       { field: 'montantCotisation', header: 'Montant des cotisations', type: 'currency', access: [Authority.ADMIN] },
@@ -127,14 +128,14 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       },
       { field: 'police', header: 'Polices d\'assurance', type: 'objet', values: [], method: () => this.loadPolices(), label: 'numeroPolice', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPolice', header: 'Num Police', type: 'text' },
+          { field: 'numeroPolice', header: 'Reference Police', type: 'text' },
           { field: 'label', header: 'Libelle', type: 'text' },
           { field: 'montantSouscription', header: 'Coût', type: 'currency' }
         ]
       },
       { field: 'contrats', header: 'Contrats', type: 'list', values: [], method: () => this.loadContrats(), label: 'numeroContrat', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroContrat', header: 'Num Contrat', type: 'text' },
+          { field: 'numeroContrat', header: 'Reference Contrat', type: 'text' },
           { field: 'dateContrat', header: 'Date du contrat', type: 'date' },
           { field: 'typeContrat', header: 'Type', type: 'enum', values: this.contratTypes, label: 'label', key: 'value' },
           { field: 'couverture', header: 'Couverture', type: 'textarea' },
@@ -148,7 +149,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       },
       { field: 'paiements', header: 'Paiements', type: 'list', values: [], method: () => this.loadPaiements(), label: 'numeroPaiement', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPaiement', header: 'Num Paiement', type: 'text' },
+          { field: 'numeroPaiement', header: 'Reference Paiement', type: 'text' },
           { field: 'datePaiement', header: 'Date du paiement', type: 'date' },
           { field: 'montant', header: 'Montant', type: 'currency' },
           { field: 'type', header: 'Type', type: 'enum', values: this.paymentTypes, label: 'label', key: 'value' },
@@ -157,7 +158,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       },
       { field: 'sinistres', header: 'Sinistres', type: 'list', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+          { field: 'numeroSinistre', header: 'Reference Sinistre', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
           { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
@@ -166,7 +167,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       },
       { field: 'reclamations', header: 'Reclamations', type: 'list', values: [], method: () => this.loadReclamations(), label: 'numeroReclamation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroReclamation', header: 'Num Reclamation', type: 'text' },
+          { field: 'numeroReclamation', header: 'Reference Reclamation', type: 'text' },
           { field: 'type', header: 'Type', type: 'enum', values: this.typeReclamations, label: 'label', key: 'value' },
           { field: 'dateReclamation', header: 'Date de reclamation', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.statutReclamations, label: 'label', key: 'value' }
@@ -174,7 +175,7 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       },
       { field: 'prestations', header: 'Prestations', type: 'list', values: [], method: () => this.loadReclamations(), label: 'numeroPrestation', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+          { field: 'numeroPrestation', header: 'Reference Prestation', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
           { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
@@ -184,9 +185,10 @@ export class SouscriptionCrudComponent extends GenericCrudComponent<Souscription
       }
     ];
   }
-
+ 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroSouscription')?.setValue(GenericUtils.GenerateNumero("SOU"));
   }
 
   // Chargement des assures associés à une souscription

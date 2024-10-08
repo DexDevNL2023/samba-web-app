@@ -15,11 +15,9 @@ import { MessageService } from 'primeng/api';
                     <div class="p-fluid">
                         <div class="field">
                             <label for="mode">Mode de Paiement</label>
-                            <p-dropdown
-                                [options]="modes"
-                                [(ngModel)]="modeInformation"
-                                placeholder="Sélectionnez un mode"
-                            ></p-dropdown>
+                            <p-dropdown id="mode" [options]="modes" [(ngModel)]="modeInformation"
+                                optionLabel="label" optionValue="value" [showClear]="true" appendTo="body"
+                                placeholder="Sélectionnez un mode de paiement"></p-dropdown>
                         </div>
                     </div>
                 </ng-template>

@@ -4,7 +4,7 @@ import { PublicSouscriptionRequest } from './../../../models/public-souscription
 import { PoliceAssurance } from '../../../models/police-assurance.model';
 import { Account } from '../../../models/account.model';
 import { AccountService } from '../../../core/auth/account.service';
-import { EffectuerSouscriptionService } from '../../../service/effectuer.souscription.service';
+import { EffectuerSouscriptionService } from '../../../service/effectuer-souscription.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';

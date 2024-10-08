@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { SouscriptionService } from './../../service/souscription.service';
 import { PaymentFrequency, Souscription, SubscriptionStatus } from './../../models/souscription.model';
 import { Authority } from './../../models/account.model';
@@ -55,7 +56,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroContrat', header: 'Num Contrat', type: 'text', access: [Authority.ADMIN] },
+      { field: 'numeroContrat', header: 'Reference Contrat', type: 'text', access: [Authority.ADMIN] },
       { field: 'dateContrat', header: 'Date du contrat', type: 'date', access: [Authority.ADMIN] },
       { field: 'typeContrat', header: 'Type', type: 'enum', values: this.contratTypes, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'couverture', header: 'Couverture', type: 'textarea', access: [Authority.ADMIN] },
@@ -66,7 +67,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
       { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
       { field: 'souscriptions', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+          { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.soscriptionStatus, label: 'label', key: 'value' },
@@ -78,6 +79,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroContrat')?.setValue(GenericUtils.GenerateNumero("CON"));
   }
 
   // Chargement des souscriptions associés à une police-assurance

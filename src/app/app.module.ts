@@ -1,3 +1,8 @@
+import { ConfirmationEffectuerPrestation } from './site/effectuer-prestation/steps/confirmation.prestation';
+import { DocumentsEffectuerPrestation } from './site/effectuer-prestation/steps/documents.prestation';
+import { InformationEffectuerPrestation } from './site/effectuer-prestation/steps/information.prestation';
+import { EffectuerPrestation } from './site/effectuer-prestation/effectuer-prestation';
+import { EffectuerPrestationService } from './service/effectuer-prestation.service';
 import { AssureDetailComponent } from './site/assure-detail/assure-detail.component';
 import { AssureListComponent } from './site/assure-list/assure-list.component';
 import { SinistreListComponent } from './site/sinistre-list/sinistre-list.component';
@@ -22,7 +27,7 @@ import { ConfirmationSouscription } from './site/effectuer-souscription/steps/co
 import { ModePaiementSouscription } from './site/effectuer-souscription/steps/paiement.souscription';
 import { FrequencePaiementSouscription } from './site/effectuer-souscription/steps/frequence.souscription';
 import { EffectuerSouscription } from './site/effectuer-souscription/effectuer-souscription';
-import { EffectuerSouscriptionService } from './service/effectuer.souscription.service';
+import { EffectuerSouscriptionService } from './service/effectuer-souscription.service';
 import { SouscriptionDetailComponent } from './site/souscription-detail/souscription-detail.component';
 import { SouscriptionListComponent } from './site/souscription-list/souscription-list.component';
 import { ProduitComponent } from './site/produit/produit.component';
@@ -352,6 +357,10 @@ import { ProduitDetailComponent } from './site/produit-detail/produit-detail.com
         SinistreListComponent,
         AssureListComponent,
         AssureDetailComponent,
+        EffectuerPrestation,
+        InformationEffectuerPrestation,
+        DocumentsEffectuerPrestation,
+        ConfirmationEffectuerPrestation,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
@@ -362,7 +371,7 @@ import { ProduitDetailComponent } from './site/produit-detail/produit-detail.com
         RapportService, ReclamationService, SinistreService, SouscriptionService, AssureService, LoginService,
         RoleService, PermissionService, AuthorizationService, CompanyService, MessageService, AuthentificationService,
         AccountService, StateStorageService, CompanyService, DashboardService, ContratAssuranceService, RecuPaiementService,
-        EffectuerSouscriptionService, DeclareSinistreService, DemandeRemboursementService, PayerPrimeService,
+        EffectuerSouscriptionService, DeclareSinistreService, DemandeRemboursementService, PayerPrimeService, EffectuerPrestationService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,

@@ -1,3 +1,4 @@
+import { GenericUtils } from './../../utilities/generic-utils';
 import { SinistreStatus } from './../../models/sinistre.model';
 import { DocumentService } from './../../service/document.service';
 import { FinanceurService } from './../../service/financeur.service';
@@ -80,7 +81,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numeroPrestation', header: 'Num Prestation', type: 'text' },
+      { field: 'numeroPrestation', header: 'Reference Prestation', type: 'text' },
       { field: 'label', header: 'Libellé', type: 'text' },
       { field: 'datePrestation', header: 'Date de prestation', type: 'date' },
       { field: 'type', header: 'Type', type: 'enum', values: this.prestationTypes, label: 'label', key: 'value' },
@@ -89,7 +90,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
       { field: 'status', header: 'Status', type: 'enum', values: this.prestationStatuses, label: 'label', key: 'value', access: [Authority.ADMIN] },
       { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSouscription', header: 'Num Souscription', type: 'text' },
+          { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },
           { field: 'dateExpiration', header: 'Date d\'expiration', type: 'date' },
           { field: 'status', header: 'Status', type: 'enum', values: this.souscriptionStatus, label: 'label', key: 'value' },
@@ -106,7 +107,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
       },
       { field: 'sinistre', header: 'Sinistre', type: 'objet', values: [], method: () => this.loadSinistres(), label: 'numeroSinistre', key: 'id', subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroSinistre', header: 'Num Sinistre', type: 'text' },
+          { field: 'numeroSinistre', header: 'Reference Sinistre', type: 'text' },
           { field: 'label', header: 'Libellé', type: 'text' },
           { field: 'dateDeclaration', header: 'Date de declaration', type: 'date' },
           { field: 'dateTraitement', header: 'Date de traitement', type: 'date' },
@@ -123,7 +124,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
       },
       { field: 'documents', header: 'Documents', type: 'list', values: [], method: () => this.loadDocuments(), label: 'numeroDocument', key: 'id', access: [Authority.SYSTEM], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
-          { field: 'numeroDocument', header: 'Num Document', type: 'text' },
+          { field: 'numeroDocument', header: 'Reference Document', type: 'text' },
           { field: 'nom', header: 'Nom', type: 'text' },
           { field: 'url', header: 'Telecharger', type: 'url' }
         ]
@@ -133,6 +134,7 @@ export class PrestationCrudComponent extends GenericCrudComponent<Prestation> {
 
   // Méthode abstraite à implémenter pour initialiser tous autres fonctions
   protected initializeOthers(): void {
+    this.formGroup.get('numeroPrestation')?.setValue(GenericUtils.GenerateNumero("PRES"));
   }
 
   // Chargement des souscriptions associés à une assure

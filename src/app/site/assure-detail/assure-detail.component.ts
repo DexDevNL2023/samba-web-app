@@ -1,10 +1,10 @@
+import { EffectuerPrestationService } from './../../service/effectuer-prestation.service';
 import { SinistreService } from './../../service/sinistre.service';
 import { DossierMedicalService } from './../../service/dossier-medical.service';
 import { Sinistre, SinistreStatus } from './../../models/sinistre.model';
 import { DossierMedical } from './../../models/dossier-medical.model';
 import { Gender, Assure } from './../../models/assure.model';
 import { PayerPrimeService } from '../../service/payer.prime.service';
-import { DeclareSinistreService } from '../../service/declare-sinistre.service';
 import { AssureService } from '../../service/assure.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; // Pour accéder aux paramètres de route
@@ -67,7 +67,7 @@ export class AssureDetailComponent implements OnInit {
     ];
 
     constructor(
-        public declareSinistreService: DeclareSinistreService,
+        public effectuerPrestationService: EffectuerPrestationService,
         public payerPrimeService: PayerPrimeService,
         private assureService: AssureService,
         private dossierService: DossierMedicalService,
@@ -119,8 +119,8 @@ export class AssureDetailComponent implements OnInit {
     }
 
     onSelectSinistre(payload: Sinistre): void {
-        this.declareSinistreService.setProduct(payload);
-        this.router.navigate(['/site/declarer/sinistre/steps/information']);
+        this.effectuerPrestationService.setProduct(payload);
+        this.router.navigate(['/site/effectuer/prestation/steps/information']);
     }
 
     protected getGenderLabel(value: string) {
