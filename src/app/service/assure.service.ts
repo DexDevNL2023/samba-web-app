@@ -16,7 +16,7 @@ export class AssureService extends GenericCrudService<Assure> {
 
     // Fetch assures by dossier ID
     getAssureByUserId(userId: number): Observable<Assure> {
-    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/user/${userId}`).pipe(
+        return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/user/${userId}`).pipe(
             map(response => this.handleResponse(response, 'Assuré trouvés avec succès')),
             catchError(() => of(null))
         );
@@ -24,7 +24,7 @@ export class AssureService extends GenericCrudService<Assure> {
 
     // Fetch assures by dossier ID
     getAssuresByDossierId(dossierId: number): Observable<Assure> {
-    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/dossier/${dossierId}`).pipe(
+        return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/dossier/${dossierId}`).pipe(
             map(response => this.handleResponse(response, 'Assurés trouvés avec succès')),
             catchError(() => of(null))
         );
@@ -32,8 +32,22 @@ export class AssureService extends GenericCrudService<Assure> {
 
     // Fetch assures by souscription ID
     getAssuresBySouscriptionId(souscriptionId: number): Observable<Assure> {
-    return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/souscription/${souscriptionId}`).pipe(
+        return this.http.get<RessourceResponse<Assure>>(`${this.resourceUrl}/find/by/souscription/${souscriptionId}`).pipe(
             map(response => this.handleResponse(response, 'Assurés trouvés avec succès')),
+            catchError(() => of(null))
+        );
+    }
+
+    getAll(): Observable<Assure[]> {
+        return this.http.get<RessourceResponse<Assure[]>>(`${this.baseUrl}/api/public/assure`).pipe(
+            map(response => this.handleResponse(response, 'Assurés trouvés avec succès')),
+            catchError(() => of([]))
+        );
+    }
+
+    getById(id: number): Observable<Assure> {
+        return this.http.get<RessourceResponse<Assure>>(`${this.baseUrl}/api/public/assure/by/${id}`).pipe(
+            map(response => this.handleResponse(response, 'Récupérer toutes les polices d\'assurance')),
             catchError(() => of(null))
         );
     }

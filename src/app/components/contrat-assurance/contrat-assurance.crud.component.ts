@@ -65,7 +65,7 @@ export class ContratAssuranceCrudComponent extends GenericCrudComponent<ContratA
       { field: 'exclusions', header: 'Exclusions', type: 'textarea', access: [Authority.ADMIN] },
       { field: 'dateDebut', header: 'Date de début', type: 'date', access: [Authority.ADMIN] },
       { field: 'dateFin', header: 'Date de fin', type: 'date', access: [Authority.ADMIN] },
-      { field: 'souscriptions', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
+      { field: 'souscription', header: 'Souscription', type: 'objet', values: [], method: () => this.loadSouscriptions(), label: 'numeroSouscription', key: 'id', access: [Authority.ADMIN], subfield: [
           { field: 'id', header: 'ID', type: 'id' },
           { field: 'numeroSouscription', header: 'Reference Souscription', type: 'text' },
           { field: 'dateSouscription', header: 'Date de souscription', type: 'date' },

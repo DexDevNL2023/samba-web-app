@@ -28,22 +28,13 @@
     <div class="grid nogutter">
         <ng-container *ngIf="filteredAssures.length > 0; else noAssuresTemplate">
             <div *ngFor="let assure of filteredAssures" class="col-12 lg:col-4 p-3">
-                <p-card [header]="'Assure #' + assure?.numeroAssure"
+                <p-card [header]="'Assure #' + assure?.numNiu"
                     [style]="{ 'border-radius': '20px', 'box-shadow': '0px 4px 12px rgba(0, 0, 0, 0.1)', 'height': '100%' }"
                     class="card-equal-height">
                     <ng-template pTemplate="header">
                         <p-tag [value]="getEnumLabel(assure?.sexe)"
                             [severity]="getSeverity(assure?.sexe)" [rounded]="true"></p-tag>
                     </ng-template>
-
-                    <div class="p-4 flex flex-column">
-                        <span class="text-xl text-900 font-medium mb-3">Nom : {{
-                            assure?.montantCotisation }} XAF</span>
-                        <span class="text-xl text-900 font-medium mb-3">Nom : {{
-                            assure?.montantCotisation }} XAF</span>
-                        <span class="text-xl text-900 mb-3">Date d'expiration : {{ assure?.dateExpiration | date
-                            }}</span>
-                    </div>
 
                     <div class="p-4 flex flex-column">
                         <span class="text-xl text-900 font-medium mb-3">Nom complet :

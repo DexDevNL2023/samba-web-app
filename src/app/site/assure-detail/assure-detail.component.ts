@@ -78,18 +78,26 @@ export class AssureDetailComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         try {
+            console.log('Début de ngOnInit');
+
             // Récupérer les paramètres de la route
             const params = await firstValueFrom(this.route.params);
             this.assureId = +params['id']; // 'id' correspond au paramètre de route
+            console.log(`ID de l'assuré récupéré depuis les paramètres de la route : ${this.assureId}`);
 
-            // Charger les données associées à l'ID de la dossier d'dossier
-            this.assure = await this.assureService.find(this.assureId).toPromise();
+            // Charger les données associées à l'ID de la dossier d'assure
+            this.assure = await this.assureService.getById(this.assureId).toPromise();
+            console.log('Données de l\'assuré récupérées:', this.assure);
 
-            // Charger les informations d'dossier
+            // Charger les informations de dossier
             this.dossiers = await this.dossierService.getDossierMedicalWithPatientById(this.assureId).toPromise();
+            console.log('Dossiers médicaux récupérés:', this.dossiers);
 
             // Charger les sinistres associées
             this.sinistres = await this.sinistresService.getByAssureId(this.assureId).toPromise();
+            console.log('Sinistres récupérés:', this.sinistres);
+
+            console.log('Fin de ngOnInit');
         } catch (error) {
             console.error('Erreur lors du chargement des données:', error);
             // Gérer l'erreur selon vos besoins (par exemple, afficher un message d'erreur)
@@ -97,14 +105,34 @@ export class AssureDetailComponent implements OnInit {
     }
 
     refreshSinistres() {
-        this.sinistresService.getByAssureId(this.assureId).subscribe((data: Sinistre[]) => {
-            this.sinistres = data;
+        console.log('Début de refreshSinistres pour l\'ID de l\'assuré:', this.assureId);
+        this.sinistresService.getByAssureId(this.assureId).subscribe({
+            next: (data: Sinistre[]) => {
+                this.sinistres = data;
+                console.log('Sinistres mis à jour:', this.sinistres);
+            },
+            error: (error) => {
+                console.error('Erreur lors de la mise à jour des sinistres:', error);
+            },
+            complete: () => {
+                console.log('Fin de refreshSinistres');
+            }
         });
     }
 
     refreshDossiers() {
-        this.dossierService.getDossierMedicalWithPatientById(this.assureId).subscribe((data: Sinistre[]) => {
-            this.dossiers = data;
+        console.log('Début de refreshDossiers pour l\'ID de l\'assuré:', this.assureId);
+        this.dossierService.getDossierMedicalWithPatientById(this.assureId).subscribe({
+            next: (data: DossierMedical[]) => {
+                this.dossiers = data;
+                console.log('Dossiers mis à jour:', this.dossiers);
+            },
+            error: (error) => {
+                console.error('Erreur lors de la mise à jour des dossiers:', error);
+            },
+            complete: () => {
+                console.log('Fin de refreshDossiers');
+            }
         });
     }
 
@@ -166,5 +194,66 @@ export class AssureDetailComponent implements OnInit {
     // Méthode pour vérifier si une prestation peut être effectuée selon le statut du sinistre
     protected isPrestationAllowed(status: string): boolean {
         return status === 'APPROUVE';  // Active seulement si le statut est 'APPROUVE'
+    }
+
+    getDossiersColumnWidth(field: string): string {
+        switch (field) {
+            case 'numDossierMedical':
+                return '150px'; // Exemple de largeur pour le numéro de dossier
+            case 'dateUpdated':
+                return '120px'; // Exemple de largeur pour la date
+            case 'maladiesChroniques':
+                return '200px'; // Exemple de largeur pour les maladies chroniques
+            case 'maladiesHereditaires':
+                return '200px'; // Exemple de largeur pour les maladies héréditaires
+            case 'interventionsChirurgicales':
+                return '200px'; // Exemple de largeur pour les interventions chirurgicales
+            case 'hospitalisations':
+                return '150px'; // Exemple de largeur pour les hospitalisations
+            case 'allergies':
+                return '150px'; // Exemple de largeur pour les allergies
+            case 'vaccins':
+                return '150px'; // Exemple de largeur pour les vaccins
+            case 'habitudesAlimentaires':
+                return '200px'; // Exemple de largeur pour les habitudes alimentaires
+            case 'consommationAlcool':
+                return '150px'; // Exemple de largeur pour la consommation d'alcool
+            case 'consommationTabac':
+                return '150px'; // Exemple de largeur pour la consommation de tabac
+            case 'niveauActivitePhysique':
+                return '150px'; // Exemple de largeur pour le niveau d'activité physique
+            case 'revenusAnnuels':
+                return '150px'; // Exemple de largeur pour les revenus annuels
+            case 'chargesFinancieres':
+                return '150px'; // Exemple de largeur pour les charges financières
+            case 'declarationBonneSante':
+            case 'consentementCollecteDonnees':
+            case 'declarationNonFraude':
+                return '100px'; // Largeur uniforme pour les booléens
+            default:
+                return 'auto'; // Largeur par défaut
+        }
+    }
+
+    getSinistresColumnWidth(field: string): string {
+        switch (field) {
+            case 'numeroSinistre':
+                return '150px'; // Exemple de largeur pour le numéro de sinistre
+            case 'label':
+                return '200px'; // Exemple de largeur pour le label
+            case 'raison':
+                return '250px'; // Exemple de largeur pour la raison
+            case 'montantSinistre':
+            case 'montantAssure':
+                return '150px'; // Largeur uniforme pour les montants
+            case 'dateSurvenance':
+            case 'dateDeclaration':
+            case 'dateCloture':
+                return '120px'; // Largeur uniforme pour les dates
+            case 'status':
+                return '150px'; // Largeur pour le statut
+            default:
+                return 'auto'; // Largeur par défaut
+        }
     }
 }

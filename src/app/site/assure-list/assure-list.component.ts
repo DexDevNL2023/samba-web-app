@@ -32,7 +32,7 @@ export class AssureListComponent implements OnInit {
     // Charger les assures à partir du service
     async loadAssures(): Promise<void> {
         try {
-            const data = await this.assureService.query().toPromise();
+            const data = await this.assureService.getAll().toPromise();
             this.assures = data;
             this.filteredAssures = data; // Initialement, tous les assures sont affichés
         } catch (error) {

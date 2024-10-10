@@ -3,11 +3,13 @@
         <div class="col-12 lg:col-12">
             <h2 class="text-900 font-bold text-3xl bloc mb-4">{{ assure?.numNiu }}</h2>
             <div class="mb-5">
-                <span class="text-900 font-medium text-xl block">Nom : {{ assure?.lastName }} {{ assure?.firstName }}</span>
-                <span class="text-900 font-medium text-xl block">Date de naissance : {{ assure?.dateNaissance | date }}</span>
+                <span class="text-900 font-medium text-xl block">Nom : {{ assure?.lastName }} {{ assure?.firstName
+                    }}</span>
+                <span class="text-900 font-medium text-xl block">Date de naissance : {{ assure?.dateNaissance | date
+                    }}</span>
                 <span class="text-900 font-medium text-xl block">Numéro CNI : {{ assure?.numCni }}</span>
                 <span class="text-900 font-medium text-xl block">Sexe : <p-tag [value]="getGenderLabel(assure?.sexe)"
-                    [severity]="getGenderSeverity(assure?.sexe)" [rounded]="true"></p-tag></span>
+                        [severity]="getGenderSeverity(assure?.sexe)" [rounded]="true"></p-tag></span>
                 <span class="text-900 font-medium text-xl block">Email : {{ assure?.email }}</span>
                 <span class="text-900 font-medium text-xl block">Téléphone : {{ assure?.telephone }}</span>
                 <span class="text-900 font-medium text-xl block">Adresse : {{ assure?.addresse }}</span>
@@ -17,14 +19,15 @@
 
     <p-tabView>
         <p-tabPanel header="Dossiers medicaux">
-            <p-table [value]="dossiers" [columns]="dossierColumns" styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10"
-                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+            <p-table [value]="dossiers" [columns]="dossierColumns" styleClass="p-datatable-gridlines"
+                responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true"
                 dataKey="id">
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th *ngFor="let col of dossierColumns">
+                        <th *ngFor="let col of dossierColumns" [ngStyle]="{'min-width': getDossiersColumnWidth(col.field), 'flex': '1 1 auto'}">
                             {{ col.header }}
                         </th>
                     </tr>
@@ -34,6 +37,21 @@
                     <tr>
                         <td>{{ dossier?.numDossierMedical }}</td>
                         <td>{{ dossier?.dateUpdated | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ dossier?.maladiesChroniques }}</td>
+                        <td>{{ dossier?.maladiesHereditaires }}</td>
+                        <td>{{ dossier?.interventionsChirurgicales }}</td>
+                        <td>{{ dossier?.hospitalisations }}</td>
+                        <td>{{ dossier?.allergies }}</td>
+                        <td>{{ dossier?.vaccins }}</td>
+                        <td>{{ dossier?.habitudesAlimentaires }}</td>
+                        <td>{{ dossier?.consommationAlcool }}</td>
+                        <td>{{ dossier?.consommationTabac }}</td>
+                        <td>{{ dossier?.niveauActivitePhysique }}</td>
+                        <td>{{ dossier?.revenusAnnuels | currency:'XAF' }}</td>
+                        <td>{{ dossier?.chargesFinancieres | currency:'XAF' }}</td>
+                        <td>{{ dossier?.declarationBonneSante ? 'Oui' : 'Non' }}</td>
+                        <td>{{ dossier?.consentementCollecteDonnees ? 'Oui' : 'Non' }}</td>
+                        <td>{{ dossier?.declarationNonFraude ? 'Oui' : 'Non' }}</td>
                         <td>
                             <button type="button" pButton pRipple icon="pi pi-info" (click)="openDialog(dossier)"
                                 class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
@@ -48,15 +66,15 @@
         </p-tabPanel>
 
         <p-tabPanel header="Sinistres declarés">
-            <p-table [value]="sinistres" [columns]="sinistreColumns"
-                styleClass="p-datatable-gridlines" responsiveLayout="scroll" [rows]="10"
-                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+            <p-table [value]="sinistres" [columns]="sinistreColumns" styleClass="p-datatable-gridlines"
+                responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowHover]="true"
                 dataKey="id">
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th *ngFor="let col of sinistreColumns">
+                        <th *ngFor="let col of sinistreColumns" [ngStyle]="{'min-width': getSinistresColumnWidth(col.field), 'flex': '1 1 auto'}">
                             {{ col.header }}
                         </th>
                     </tr>
@@ -74,15 +92,15 @@
                         <td>{{ sinistre?.dateCloture | date: 'dd/MM/yyyy' }}</td>
                         <td>
                             <p-tag [value]="getStatusEnumLabel(sinistre?.status)"
-                                [severity]="getStatusSeverity(sinistre?.status)"
-                                [rounded]="true">
+                                [severity]="getStatusSeverity(sinistre?.status)" [rounded]="true">
                             </p-tag>
                         </td>
                         <td>
                             <button type="button" pButton pRipple icon="pi pi-info" (click)="onSelectSinistre(sinistre)"
                                 class="p-element p-ripple bg-cyan-500 border-none w-full mt-3 text-white p-button p-component"
-                                style="border-radius: 30px; padding: 10px;" [disabled]="!isPrestationAllowed(sinistre?.status)">
-                                <span class="p-button-label bold font-bold">Effectuer une prestation</span>
+                                style="border-radius: 30px; padding: 10px;"
+                                [disabled]="!isPrestationAllowed(sinistre?.status)">
+                                <span class="p-button-label bold font-bold">Prestation</span>
                                 <span class="p-ink"></span>
                             </button>
                         </td>

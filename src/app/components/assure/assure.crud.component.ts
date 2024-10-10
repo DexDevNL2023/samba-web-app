@@ -70,7 +70,7 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
     // Configuration des colonnes de la table
     this.cols = [
       { field: 'id', header: 'ID', type: 'id' },
-      { field: 'numNiu', header: 'Niu', type: 'text' },
+      { field: 'numNiu', header: 'Niu', type: 'text', access: [Authority.SYSTEM] },
       { field: 'firstName', header: 'Nom', type: 'text' },
       { field: 'lastName', header: 'Prénom', type: 'text' },
       { field: 'dateNaissance', header: 'Né(e) le', type: 'date' },
@@ -173,6 +173,6 @@ export class AssureCrudComponent extends GenericCrudComponent<Assure> {
 
   // Méthode abstraite pour récupérer les champs nécessaires spécifiques à l'entité (à implémenter dans la classe dérivée)
   protected getRequiredFields(): string[] {
-    return ['numNiu', 'lastName', 'dateNaissance', 'numCni', 'email'];
+    return ['lastName', 'dateNaissance', 'numCni', 'email', 'telephone'];
   }
 }

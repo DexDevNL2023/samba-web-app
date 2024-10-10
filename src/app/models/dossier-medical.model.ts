@@ -1,5 +1,5 @@
 import { BaseEntity } from "./base-entity.model";
- 
+
 export interface DossierMedical extends BaseEntity {
   numDossierMedical?: string | null;
   patient?: number | null;
